@@ -22,17 +22,20 @@ import org.testcontainers.junit.jupiter.Container;
 
 public class AppContainerConfig implements SharedContainerConfiguration {
 
+    // Shared network between kafka and app containers
     private static Network network = Network.newNetwork();
 
+    // Building the kafka container
     @Container
     public static KafkaContainer kafka = new KafkaContainer()
         .withNetwork(network);
-    
+
+    // The kitchen service container
     @Container
     public static ApplicationContainer app = new ApplicationContainer()
                     .withAppContextRoot("/")
-                    .withExposedPorts(new Integer(9083))
-                    .withReadinessPath("/kitchen/foodMessaging")
+                    .withExposedPorts(9083)
+                    .withReadinessPath("/health/ready")
                     .withNetwork(network);
     
     @Override

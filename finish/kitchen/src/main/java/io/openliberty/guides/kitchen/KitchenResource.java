@@ -24,11 +24,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
@@ -49,31 +45,16 @@ public class KitchenResource {
     private BlockingQueue<Order> inProgress = new LinkedBlockingQueue<>();
     private Random random = new Random();
 
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response getStatus() {
-        return Response.ok().entity("The kitchen service is running...\n"
-                + inProgress.size() + " orders in the queue.").build();
-    }
-
-    // tag::foodOrderConsume[]
     @Incoming("foodOrderConsume")
-    // end::foodOrderConsume[]
-    // tag::foodOrderPublishIntermediate[]
     @Outgoing("foodOrderPublishIntermediate")
-    // end::foodOrderPublishIntermediate[]
-    // tag::initFoodOrder[]
     public CompletionStage<String> initFoodOrder(String newOrder) {
         Order order = jsonb.fromJson(newOrder, Order.class);
         logger.info("Order " + order.getOrderId() + " received with a status of NEW");
         logger.info(newOrder);
         return prepareOrder(order).thenApply(Order -> jsonb.toJson(Order));
     }
-    // end::initFoodOrder[]
 
-    // tag::foodOrder[]
     @Outgoing("foodOrderPublish")
-    // end::foodOrder[]
     public PublisherBuilder<String> sendReadyOrder() {
         return ReactiveStreams.generate(() -> {
             try {
@@ -90,7 +71,6 @@ public class KitchenResource {
             }
         });
     }
-    
     
     private CompletionStage<Order> prepareOrder(Order order) {
         return CompletableFuture.supplyAsync(() -> {

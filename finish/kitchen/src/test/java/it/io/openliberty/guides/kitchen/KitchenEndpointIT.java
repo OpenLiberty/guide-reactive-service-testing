@@ -22,7 +22,6 @@ import java.util.Properties;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
-import javax.ws.rs.core.Response;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -36,10 +35,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.microshed.testing.SharedContainerConfig;
-import org.microshed.testing.jaxrs.RESTClient;
 import org.microshed.testing.jupiter.MicroShedTest;
 
-import io.openliberty.guides.kitchen.KitchenResource;
 import io.openliberty.guides.models.Status;
 import io.openliberty.guides.models.Type;
 
@@ -49,9 +46,6 @@ public class KitchenEndpointIT {
 
     private static final String CONSUMER_OFFSET_RESET = "earliest";
     private static final long POLL_TIMEOUT = 30 * 1000;
-
-    @RESTClient
-    public static KitchenResource kitchenResource;
     
     private static KafkaProducer<String, String> producer;
     private static KafkaConsumer<String, String> consumer;
@@ -81,13 +75,6 @@ public class KitchenEndpointIT {
 
     @Test
     @Order(1)
-    public void testGetStatus() {
-        Response response = kitchenResource.getStatus();
-        assertEquals(200, response.getStatus());
-    }
-
-    @Test
-    @Order(2)
     public void testInitFoodOrder() throws IOException, InterruptedException {
         order = new io.openliberty.guides.models.Order("0001", "1", Type.FOOD, "burger", Status.NEW);
         String jOrder = JsonbBuilder.create().toJson(order);
@@ -96,7 +83,7 @@ public class KitchenEndpointIT {
     }
     
     @Test
-    @Order(3)
+    @Order(2)
     public void testFoodOrderReady() throws IOException, InterruptedException {
         Thread.sleep(10000);
         verify(Status.READY);
