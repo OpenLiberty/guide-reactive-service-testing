@@ -38,8 +38,8 @@ import io.openliberty.guides.models.Status;
 @Path("/foodMessaging")
 public class KitchenResource {
 
-    private static Logger logger = Logger.getLogger(KitchenResource.class.getName());
-    private static Jsonb jsonb = JsonbBuilder.create();
+    private static final Logger logger = Logger.getLogger(KitchenResource.class.getName());
+    private static final Jsonb jsonb = JsonbBuilder.create();
 
     private Executor executor = Executors.newSingleThreadExecutor();
     private BlockingQueue<Order> inProgress = new LinkedBlockingQueue<>();
