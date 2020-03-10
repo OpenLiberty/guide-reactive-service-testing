@@ -1,0 +1,79 @@
+//  Copyright (c) 2020 IBM Corporation and others.
+// Licensed under Creative Commons Attribution-NoDerivatives
+// 4.0 International (CC BY-ND 4.0)
+//   https://creativecommons.org/licenses/by-nd/4.0/
+//
+// Contributors:
+//     IBM Corporation
+//
+:projectid: testing-reactive-apps
+:page-layout: guide-multipane
+:page-duration: 30 minutes
+:page-releasedate: 2020-04-13
+:page-guide-category: microprofile
+:page-essential: false
+:page-description: Learn how to use MicroShed Testing to test reactive message applications.
+:guide-author: Open Liberty
+:page-tags: ['MicroProfile', 'Jakarta EE', 'Microservices'
+:page-related-guides: ['microprofile-reactive-messaging'
+:page-permalink: /guides/{projectid}
+:imagesdir: /img/guide/{projectid}
+:page-seo-title: Testing a MicroProfile Reactive Messaging service
+:page-seo-description: A tutorial on how to test reactive messaging applications.
+:common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/dev
+:source-highlighter: prettify
+= Testing reactive messaging applications using MicroShed Testing.
+
+[.hidden]
+NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website].
+
+Learn how to test reactive messaging services using MicroShed Testing.
+
+== What you'll learn
+
+You will start with a reactive messaging service that runs on Open Liberty and use MicroShed Testing to write tests
+that exercise the service inside of a Docker container.
+
+=== What is Microprofile Reactive Messaging?
+
+The Microprofile Reactive Messaging specification utilizes a message-driven architecture by providing an
+easy way to send, receive, and process messages. To learn more about Microprofile Reactive Messaging, check out the
+https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating asynchronous reactive microservices using MicroProfile Reactive Messaging^]
+guide.
+
+=== What is MicroShed Testing?
+
+MicroShed Testing offers a fast and simple way of writing and running true-to-production integration tests for Java
+microservice applications. MicroShed Testing exercises your containerized application from outside the container so you
+are testing the exact same image that runs in production.
+
+== Additional prerequisites
+
+You will build, run, and test the service in a Docker container. To learn more about containerizing microservices
+with Docker, check out the https://openliberty.io/guides/containerize.html[Containerizing microservices^] guide.
+
+Install Docker by following the instructions on the official
+https://docs.docker.com/engine/installation[Docker documentation^]. Start your Docker environment.
+
+[role='command']
+include::{common-includes}/gitclone.adoc[]
+
+== Bootstrapping your application for testing
+
+Navigate to the `start` directory to begin.
+
+== Great work! You're done!
+
+You have just developed an application using MicroProfile Reactive Messaging, Open Liberty and Kakfa.
+
+== Related Links
+
+Learn more about MicroProfile.
+
+https://microprofile.io/[See the MicroProfile specs^]
+
+https://openliberty.io/docs/ref/microprofile[View the MicroProfile API^]
+
+https://download.eclipse.org/microprofile/microprofile-reactive-messaging-1.0/microprofile-reactive-messaging-spec.html#_microprofile_reactive_messaging[View the MicroProfile Reactive Messaging Specification^]
+
+include::{common-includes}/attribution.adoc[subs="attributes"]
