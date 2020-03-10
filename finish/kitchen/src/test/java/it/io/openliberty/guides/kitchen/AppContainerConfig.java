@@ -28,19 +28,18 @@ public class AppContainerConfig implements SharedContainerConfiguration {
     // Building the kafka container
     @Container
     public static KafkaContainer kafka = new KafkaContainer()
-        .withNetwork(network);
+                    .withNetwork(network);
 
     // The kitchen service container
     @Container
     public static ApplicationContainer app = new ApplicationContainer()
                     .withAppContextRoot("/")
-                    .withExposedPorts(9083)
                     .withReadinessPath("/health/ready")
                     .withNetwork(network);
     
     @Override
     public void startContainers() {
-        if (ApplicationEnvironment.Resolver.load().getClass() == HollowTestcontainersConfiguration.class) {
+        if (ApplicationEnvironment.Resolver.isSelected(HollowTestcontainersConfiguration.class)) {
             // Run in dev mode. 
             // The application talks to KafkaContainer from outside of the Docker network,
             // and it can talk to kafka directly on 9093. 

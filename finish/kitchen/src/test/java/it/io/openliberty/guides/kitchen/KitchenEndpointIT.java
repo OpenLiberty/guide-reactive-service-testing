@@ -24,8 +24,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
 import org.microshed.testing.SharedContainerConfig;
 import org.microshed.testing.jupiter.MicroShedTest;
@@ -40,14 +38,12 @@ import io.openliberty.guides.models.Order.OrderDeserializer;
 @SharedContainerConfig(AppContainerConfig.class)
 public class KitchenEndpointIT {
 
-    private static final long POLL_TIMEOUT = 30 * 1000;
+    private static final long POLL_TIMEOUT = 5 * 1000;
     
-    @KafkaProducerConfig(keySerializer = StringSerializer.class,
-                         valueSerializer = JsonbSerializer.class)
+    @KafkaProducerConfig(valueSerializer = JsonbSerializer.class)
     public static KafkaProducer<String, Order> producer;
 
-    @KafkaConsumerConfig(keyDeserializer = StringDeserializer.class,
-                         valueDeserializer = OrderDeserializer.class,
+    @KafkaConsumerConfig(valueDeserializer = OrderDeserializer.class,
                          groupId = "update-status",
                          topics = "statusTopic",
                          properties = ConsumerConfig.AUTO_OFFSET_RESET_CONFIG + "=earliest")
@@ -76,7 +72,7 @@ public class KitchenEndpointIT {
         long elapsedTime = 0;
 
         while (recordsProcessed == 0 && elapsedTime < POLL_TIMEOUT) {
-            ConsumerRecords<String, Order> records = consumer.poll(Duration.ofMillis(3000));
+            ConsumerRecords<String, Order> records = consumer.poll(Duration.ofMillis(1000));
             System.out.println("Polled " + records.count() + " records from Kafka:");
             for (ConsumerRecord<String, Order> record : records) {
                 System.out.println(record.value());
