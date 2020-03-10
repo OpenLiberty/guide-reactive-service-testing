@@ -14,12 +14,20 @@ package io.openliberty.guides.models;
 
 import java.util.Objects;
 
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
+
+import org.apache.kafka.common.serialization.Deserializer;
+import org.apache.kafka.common.serialization.Serializer;
+
 public class Order {
     private String orderId;
     private String tableId;
     private Type type;
     private String item;
     private Status status;
+
+    private static final Jsonb jsonb = JsonbBuilder.create();
 
     public Order(String orderId,
                  String tableId,
@@ -97,6 +105,27 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(orderId, tableId, type, item, status);
+    }
+    
+    @Override
+    public String toString() {
+    	return "Order: " + jsonb.toJson(this);
+    }
+    
+    public static class JsonbSerializer implements Serializer<Object> {
+        @Override
+        public byte[] serialize(String topic, Object data) {
+          return jsonb.toJson(data).getBytes();
+        }
+    }
+      
+    public static class OrderDeserializer implements Deserializer<Order> {
+        @Override
+        public Order deserialize(String topic, byte[] data) {
+            if (data == null)
+                return null;
+            return jsonb.fromJson(new String(data), Order.class);
+        }
     }
     
 }
