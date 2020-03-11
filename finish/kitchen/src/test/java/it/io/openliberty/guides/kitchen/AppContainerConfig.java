@@ -34,6 +34,6 @@ public class AppContainerConfig implements SharedContainerConfiguration {
                     .withAppContextRoot("/")
                     .withExposedPorts(9083)
                     .withReadinessPath("/health/ready")
-                    .withEnv("MP_MESSAGING_CONNECTOR_LIBERTY_KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
-                    .withNetwork(network);
+                    .withNetwork(network)
+                    .dependsOn(kafka);
 }
