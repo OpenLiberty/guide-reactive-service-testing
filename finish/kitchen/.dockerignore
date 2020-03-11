@@ -1,0 +1,6 @@
+bin/
+target/
+!target/*.war
+src/
+!src/main/liberty/config
+
