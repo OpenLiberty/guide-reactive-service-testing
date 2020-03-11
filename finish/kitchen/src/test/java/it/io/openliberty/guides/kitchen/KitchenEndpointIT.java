@@ -38,7 +38,7 @@ import io.openliberty.guides.models.Order.OrderDeserializer;
 @SharedContainerConfig(AppContainerConfig.class)
 public class KitchenEndpointIT {
 
-    private static final long POLL_TIMEOUT = 5 * 1000;
+    private static final long POLL_TIMEOUT = 10 * 1000;
     
     @KafkaProducerConfig(valueSerializer = JsonbSerializer.class)
     public static KafkaProducer<String, Order> producer;
@@ -49,43 +49,33 @@ public class KitchenEndpointIT {
                          properties = ConsumerConfig.AUTO_OFFSET_RESET_CONFIG + "=earliest")
     public static KafkaConsumer<String, Order> consumer;
 
-    private static io.openliberty.guides.models.Order order;
-
     @Test
     @org.junit.jupiter.api.Order(1)
-    public void testInitFoodOrder() throws IOException, InterruptedException {
-        Order order = new Order("0001", "1", Type.FOOD, "burger", Status.NEW);
-        producer.send(new ProducerRecord<String, Order>("foodTopic", order));
+    public void testInProgress() {
+        Order newOrder = new Order("0001", "1", Type.FOOD, "burger", Status.NEW);
+        producer.send(new ProducerRecord<String, Order>("foodTopic", newOrder));
         verify(Status.IN_PROGRESS);
     }
-    
+
     @Test
     @org.junit.jupiter.api.Order(2)
-    public void testFoodOrderReady() throws IOException, InterruptedException {
-        Thread.sleep(10000);
+    public void testReady(){
         verify(Status.READY);
     }
-    
-    private void verify(Status expectedStatus) {
-        int recordsProcessed = 0;
-        long startTime = System.currentTimeMillis();
-        long elapsedTime = 0;
 
-        while (recordsProcessed == 0 && elapsedTime < POLL_TIMEOUT) {
-            ConsumerRecords<String, Order> records = consumer.poll(Duration.ofMillis(1000));
-            System.out.println("Polled " + records.count() + " records from Kafka:");
-            for (ConsumerRecord<String, Order> record : records) {
-                System.out.println(record.value());
-                order = record.value();
-                assertEquals("0001", order.getOrderId());
-                assertEquals(expectedStatus, order.getStatus());
-                recordsProcessed++;
-            }
-            consumer.commitAsync();
-            if (recordsProcessed > 0)
-                break;
-            elapsedTime = System.currentTimeMillis() - startTime;
+    private void verify(Status expectedStatus) {
+        System.out.println("Waiting to receive " + expectedStatus +
+                " order from Kafka");
+        ConsumerRecords<String, Order> records = consumer.poll(Duration.ofSeconds(30));
+        System.out.println("Polled " + records.count() + " records from Kafka:");
+
+        assertEquals(1, records.count(), "Expected to poll exactly 1 order from Kafka");
+        for (ConsumerRecord<String, Order> record : records) {
+            System.out.println(record.value());
+            Order receivedOrder = record.value();
+            assertEquals("0001", receivedOrder.getOrderId(), "Order ID did not match expected");
+            assertEquals(expectedStatus, receivedOrder.getStatus(), "Status did not match expected");
         }
-        assertTrue(recordsProcessed > 0, "No records processed");
+        consumer.commitAsync();
     }
 }
