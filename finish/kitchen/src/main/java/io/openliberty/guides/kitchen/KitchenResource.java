@@ -14,8 +14,6 @@ package io.openliberty.guides.kitchen;
 
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -26,8 +24,6 @@ import javax.ws.rs.Path;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 
 import io.openliberty.guides.models.Order;
 import io.openliberty.guides.models.Status;
@@ -42,13 +38,19 @@ public class KitchenResource {
     private BlockingQueue<Order> inProgress = new LinkedBlockingQueue<>();
     private Random random = new Random();
 
+    // tag::Incoming[]
     @Incoming("foodOrderConsume")
+    // end::Incoming[]
+    // tag::Outgoing[]
     @Outgoing("foodOrderPublishStatus")
+    // end::Outgoing[]
+    // tag::initFoodOrder[]
     public Order initFoodOrder(Order newOrder) {
         logger.info("Order " + newOrder.getOrderId() + " received with a status of NEW");
         logger.info(newOrder.toString());
         return prepareOrder(newOrder);
     }
+    // end::initFoodOrder[]
 
     @Outgoing("foodOrderPublishStatus")
     public Order sendReadyOrder() {

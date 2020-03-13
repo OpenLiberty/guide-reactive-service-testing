@@ -59,6 +59,7 @@
         </dependency>
 
         <!-- For tests -->
+        <!-- tag::dependencies[] -->
         <dependency>
             <groupId>org.microshed</groupId>
             <artifactId>microshed-testing-liberty</artifactId>
@@ -71,6 +72,7 @@
             <version>1.12.5</version>
             <scope>test</scope>
         </dependency>
+        <!-- end::dependencies[] -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>

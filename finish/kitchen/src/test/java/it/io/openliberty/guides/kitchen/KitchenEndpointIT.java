@@ -57,6 +57,7 @@ public class KitchenEndpointIT {
 
     @Test
     @org.junit.jupiter.api.Order(1)
+    // tag::testInProgress[]
     public void testInProgress() {
         Order newOrder = new Order("0001", "1", Type.FOOD, "burger", Status.NEW);
         // tag::foodTopic[]
@@ -64,12 +65,15 @@ public class KitchenEndpointIT {
         // end::foodTopic[]
         verify(Status.IN_PROGRESS);
     }
+    // end::testInProgress[]
 
     @Test
     @org.junit.jupiter.api.Order(2)
+    // tag::testReady[]
     public void testReady(){
         verify(Status.READY);
     }
+    // end::testReady[]
 
     private void verify(Status expectedStatus) {
         System.out.println("Waiting to receive " + expectedStatus +
@@ -77,12 +81,15 @@ public class KitchenEndpointIT {
         ConsumerRecords<String, Order> records = consumer.poll(Duration.ofSeconds(30));
         System.out.println("Polled " + records.count() + " records from Kafka:");
 
-        assertEquals(1, records.count(), "Expected to poll exactly 1 order from Kafka");
+        assertEquals(1, records.count(),
+                "Expected to poll exactly 1 order from Kafka");
         for (ConsumerRecord<String, Order> record : records) {
             System.out.println(record.value());
             Order receivedOrder = record.value();
-            assertEquals("0001", receivedOrder.getOrderId(), "Order ID did not match expected");
-            assertEquals(expectedStatus, receivedOrder.getStatus(), "Status did not match expected");
+            assertEquals("0001", receivedOrder.getOrderId(),
+                    "Order ID did not match expected");
+            assertEquals(expectedStatus, receivedOrder.getStatus(),
+                    "Status did not match expected");
         }
         consumer.commitAsync();
     }

@@ -6,23 +6,23 @@
 // Contributors:
 //     IBM Corporation
 //
-:projectid: testing-reactive-apps
+:projectid: reactive-service-testing
 :page-layout: guide-multipane
 :page-duration: 30 minutes
 :page-releasedate: 2020-04-13
 :page-guide-category: microprofile
 :page-essential: false
-:page-description: Learn how to use MicroShed Testing to test reactive message applications.
+:page-description: Learn how to use MicroShed Testing to test reactive message microservices.
 :guide-author: Open Liberty
 :page-tags: ['MicroProfile', 'Jakarta EE', 'Microservices'
 :page-related-guides: ['microprofile-reactive-messaging'
 :page-permalink: /guides/{projectid}
 :imagesdir: /img/guide/{projectid}
-:page-seo-title: Testing a MicroProfile Reactive Messaging service
-:page-seo-description: A tutorial on how to test reactive messaging applications.
+:page-seo-title: Testing a MicroProfile Reactive Messaging microservice
+:page-seo-description: A tutorial on how to test reactive messaging microservices.
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/dev
 :source-highlighter: prettify
-= Testing reactive messaging applications using MicroShed Testing.
+= Testing a reactive messaging microservice using MicroShed Testing.
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website].
@@ -31,21 +31,14 @@ Learn how to test reactive messaging services using MicroShed Testing.
 
 == What you'll learn
 
-//File 0
-KitchenEndpointIT.java
-[source, Java, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/kitchen/src/test/java/it/io/openliberty/guides/kitchen/KitchenEndpointIT.java[]
-----
-
 You will start with a reactive messaging service that runs on Open Liberty and use MicroShed Testing to write tests
 that exercise the service inside of a Docker container.
 
 === What is Microprofile Reactive Messaging?
 
 The MicroProfile Reactive Messaging specification utilizes a message-driven architecture by providing an
-easy way to send, receive, and process messages. The application featured in this guide utilizes the specification
-to mimic a Cafe. To learn more about Microprofile Reactive Messaging and how the application works, check out the
+easy way to send, receive, and process messages. The application featured in this guide uses the `OpenLibertyCafe`
+application that mimics a cafe. To learn more about Microprofile Reactive Messaging and how the application works, check out the
 https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating asynchronous reactive microservices using MicroProfile Reactive Messaging^]
 guide.
 
@@ -71,32 +64,44 @@ include::{common-includes}/gitclone.adoc[]
 
 The `finish` directory in the root of this guide contains the finished application. Give it a try before you proceed.
 
-First, review the [hotspot file=0]`KitchenEndpointIT.java` class to see what the tests look like.
+To try out the application, go to the `finish` directory and run the following Maven goal to install the `models`
+artifact to the local Maven repository for later use by the `kitchen` and other services:
 
-To try out the application, go to the `finish/kitchen` directory and run the following Maven
-goal to build the application and run the integration tests on an Open Liberty server in a container:
+[role='command']
+```
+mvn -pl models install
+```
+
+Now navigate to the `finish/kitchen` directory and run the following Maven goal to build the `kitchen` service and run
+the integration tests on an Open Liberty server in a container:
+
 [role='command']
 ```
 mvn verify
 ```
 
+You will see the following output:
+
+[role='no_copy']
+```
+ Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.001 s - in it.io.openliberty.guides.kitchen.KitchenEndpointIT
+
+ Results:
+
+ Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+
+
+ --- maven-failsafe-plugin:2.22.2:verify (verify) @ kitchen ---
+ ------------------------------------------------------------------------
+ BUILD SUCCESS
+ ------------------------------------------------------------------------
+ Total time:  37.817 s
+ Finished at: 2020-03-13T16:28:55-04:00
+ ------------------------------------------------------------------------
+```
+
 This command might take some time to run the first time because the dependencies and the Docker image for Open Liberty
 must download. If you run the same command again, it will be faster.
-
-The previous example shows how you can run integration tests from a cold start. With Open Liberty development mode, you can use MicroShed Testing to run tests on
-an already running Open Liberty server. Run the following Maven goal to start Open Liberty in development mode:
-
-[role='command']
-```
-mvn liberty:dev
-```
-
-After the Open Liberty server starts and you see the `Press the Enter key to run tests on demand.` message, you can press the
-`enter/return` key to run the integration tests. After the tests finish, you can press the `enter/return` key to run the tests again, or you
-can make code changes to the application or tests. Development mode automatically
-recompiles and updates any application or test code changes that you make.
-
-After you are finished running tests, stop the Open Liberty server by typing `q` in the shell session where you ran the server, and then press the `enter/return` key.
 
 == Creating the tests
 
@@ -128,29 +133,53 @@ Order.java
 include::finish/models/src/main/java/io/openliberty/guides/models/Order.java[]
 ----
 
+//File 4
+KitchenResource.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/kitchen/src/main/java/io/openliberty/guides/kitchen/KitchenResource.java[]
+----
 
 === Configuring your containers
 
 Navigate to the `start` directory to begin.
 
-The reactive application consists of multiple microservices. You will focus on the `kitchen` microservice for this guide.
-MST and test containers have already been included as required test dependencies in your Maven project
-[hotspot file=0]`pom.xml` file
+The `OpenLibertyCafe` reactive application consists of multiple microservices. You will focus on the `kitchen` microservice for this guide.
+MST and Kafka test containers have already been included as required test dependencies in your Maven project
+[hotspot=dependencies file=0]`pom.xml` file.
+
+Run the following Maven goal to install the `models` artifact to the local Maven repository for later use by the
+`kitchen` and other services:
+
+[role='command']
+```
+mvn -pl models install
+```
+
+With Open Liberty development mode, you can use MicroShed Testing to run tests on an already running Open Liberty server.
+Run the following Maven goal to start Open Liberty in development mode:
+
+[role='command']
+```
+mvn liberty:dev
+```
+
+Now Open Liberty is listening for file changes and updates in real time. Now you can add your test files.
 
 
 [role="code_command hotspot file=1", subs="quotes"]
 ----
-#Create the `AppContainerConfig.java` class.#
+#Create the `AppContainerConfig` class.#
 `kitchen/src/test/java/it/io/openliberty/guides/kitchen/AppContainerConfig.java`
 ----
 
 
-The [hotspot file=1]`AppContainerConfig.java` file externalizes test container set up and configuration, so you can use
+The [hotspot file=1]`AppContainerConfig` class externalizes test container set up and configuration, so you can use
 the same application containers across multiple tests.
 
 There are two containers that will be used for testing the `kitchen` service. First is the [hotspot=kafka file=1]`kafka` container
 that the `kitchen` service will be producing and consuming messages from. Second is the [hotspot=kitchen file=1]`kitchen` container,
-which uses the same container that is running in production.
+which uses the same container that you built instead of a mimic test container.
 
 The [hotspot=dependsOn file=1]`dependsOn()` annotation specifies that the `kitchen` service container should wait until the `kafka`
 container is ready before starting up.
@@ -162,7 +191,7 @@ Now you can start writing your tests that will use the configured containers.
 
 [role="code_command hotspot file=2", subs="quotes"]
 ----
-#Create the `KitchenEndpointIT.java` class.#
+#Create the `KitchenEndpointIT` class.#
 `kitchen/src/test/java/it/io/openliberty/guides/kitchen/KitchenEndpointIT.java`
 ----
 
@@ -176,44 +205,68 @@ produce messages to any and is shown producing an Order message to the [hotspot=
 To transmit messages to a stream, they will need to be serialized into bytes. Kafka has its own default serializer,
 however a customer serializer has been provided for you, and configured to the producer's
 [hotspot=KafkaProducerConfig file=2]`valueSerializer`. The custom serializer is implemented in the
-[hotspot=JsonbSerializer file=3]`Order.java` file. Similarly, a deserializer has been configured to the consumer's
+[hotspot=JsonbSerializer file=3]`Order` class. Similarly, a deserializer has been configured to the consumer's
 [hotspot=valueDeserializer file=2]`valueDeserializer` and has been implemented in the
-[hotspot=OrderDeserializer file=3]`Order.java` file.
+[hotspot=OrderDeserializer file=3]`Order` class.
+
+The [hotspot=testInProgress file=2]`testInProgress` test will be executed first, and will be producing a message to the
+[hotspot=foodTopic file=2]`foodTopic` topic. The `kitchen` service will consume messages from that stream, as denoted
+by the [hotspot=Incoming file=4]`@Incoming` annotation on the [hotspot=initFoodOrder file=4]`initFoodOrder()` method.
+The same method will publish messages to the `foodOrderPublishStatus` stream as denoted by the
+[hotspot=Outgoing file=4]`@Outgoing` annotation.
 
 == Running the tests
 
-Ensure you are in the `start/kitchen` directory, then run the following Maven
-goal to build the application and run the integration tests on an Open Liberty server in a container:
+Open Liberty development mode automatically recompiles and updated your test code changes. To run the tests, press the
+`enter/return` key. You will see the following output:
+
+[role='no_copy']
+```
+ Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 25.674 s - in it.io.openliberty.guides.kitchen.KitchenEndpointIT
+
+ Results:
+
+ Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+
+ Integration tests finished.
+```
+
+After you are finished running tests, stop the Open Liberty server by typing `q` in the shell session where you ran
+the server, and then press the `enter/return` key.
+
+You can also run the tests via a cold start by running the following command:
+
 [role='command']
 ```
 mvn verify
 ```
 
-This command might take some time to run the first time because the dependencies and the Docker image for Open Liberty
-must download. If you run the same command again, it will be faster.
+You will see the following output:
 
-The previous example shows how you can run integration tests from a cold start. With Open Liberty development mode, you can use MicroShed Testing to run tests on
-an already running Open Liberty server. Run the following Maven goal to start Open Liberty in development mode:
-
-[role='command']
+[role='no_copy']
 ```
-mvn liberty:dev
+ Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.001 s - in it.io.openliberty.guides.kitchen.KitchenEndpointIT
+
+ Results:
+
+ Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+
+
+ --- maven-failsafe-plugin:2.22.2:verify (verify) @ kitchen ---
+ ------------------------------------------------------------------------
+ BUILD SUCCESS
+ ------------------------------------------------------------------------
+ Total time:  37.817 s
+ Finished at: 2020-03-13T16:28:55-04:00
+ ------------------------------------------------------------------------
 ```
-
-After the Open Liberty server starts and you see the `Press the Enter key to run tests on demand.` message, you can press the
-`enter/return` key to run the integration tests. After the tests finish, you can press the `enter/return` key to run the tests again, or you
-can make code changes to the application or tests. Development mode automatically
-recompiles and updates any application or test code changes that you make.
-
-After you are finished running tests, stop the Open Liberty server by typing `q` in the shell session where you ran the server, and then press the `enter/return` key.
 
 All of the other microservices in the application contain similar tests, feel free to try them out with the same commands
 in their respective directories.
 
-
 == Great work! You're done!
 
-You have just developed an application using MicroProfile Reactive Messaging, Open Liberty and Kakfa.
+You have just tested a reactive messaging service using MicroShed Testing.
 
 == Related Links
 
@@ -223,6 +276,8 @@ https://microprofile.io/[See the MicroProfile specs^]
 
 https://openliberty.io/docs/ref/microprofile[View the MicroProfile API^]
 
-https://download.eclipse.org/microprofile/microprofile-reactive-messaging-1.0/microprofile-reactive-messaging-spec.html#_microprofile_reactive_messaging[View the MicroProfile Reactive Messaging Specification^]
+Learn more about MicroShed Testing.
+
+https://microshed.org/microshed-testing/[Visit the official MicroShed Testing website^]
 
 include::{common-includes}/attribution.adoc[subs="attributes"]
