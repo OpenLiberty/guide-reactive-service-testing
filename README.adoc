@@ -31,21 +31,61 @@ Learn how to test reactive messaging services using MicroShed Testing.
 
 == What you'll learn
 
+//File 0
+KitchenEndpointIT.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/kitchen/src/test/java/it/io/openliberty/guides/kitchen/KitchenEndpointIT.java[]
+----
+
 You will start with a reactive messaging service that runs on Open Liberty and use MicroShed Testing to write tests
 that exercise the service inside of a Docker container.
 
 === What is Microprofile Reactive Messaging?
 
-The Microprofile Reactive Messaging specification utilizes a message-driven architecture by providing an
-easy way to send, receive, and process messages. To learn more about Microprofile Reactive Messaging, check out the
+The MicroProfile Reactive Messaging specification utilizes a message-driven architecture by providing an
+easy way to send, receive, and process messages. The application featured in this guide utilizes the specification
+to mimic a Cafe. To learn more about Microprofile Reactive Messaging and how the application works, check out the
 https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating asynchronous reactive microservices using MicroProfile Reactive Messaging^]
 guide.
 
 === What is MicroShed Testing?
 
-MicroShed Testing offers a fast and simple way of writing and running true-to-production integration tests for Java
+MicroShed Testing (MST) offers a fast and simple way of writing and running true-to-production integration tests for Java
 microservice applications. MicroShed Testing exercises your containerized application from outside the container so you
-are testing the exact same image that runs in production.
+are testing the exact same image that runs in production. To learn more about MicroShed Testing, check out the
+https://openliberty.io/guides/microshed-testing.html[Testing a MicroProfile or Jakarta EE application^] guide.
+
+=== Try what you'll build
+
+The `finish` directory in the root of this guide contains the finished application. Give it a try before you proceed.
+
+First, review the [hotspot file=0]`KitchenEndpointIT.java` class to see what the tests look like.
+
+To try out the application, go to the `finish/kitchen` directory and run the following Maven
+goal to build the application and run the integration tests on an Open Liberty server in a container:
+[role='command']
+```
+mvn verify
+```
+
+This command might take some time to run the first time because the dependencies and the Docker image for Open Liberty
+must download. If you run the same command again, it will be faster.
+
+The previous example shows how you can run integration tests from a cold start. With Open Liberty development mode, you can use MicroShed Testing to run tests on
+an already running Open Liberty server. Run the following Maven goal to start Open Liberty in development mode:
+
+[role='command']
+```
+mvn liberty:dev
+```
+
+After the Open Liberty server starts and you see the `Press the Enter key to run tests on demand.` message, you can press the
+`enter/return` key to run the integration tests. After the tests finish, you can press the `enter/return` key to run the tests again, or you
+can make code changes to the application or tests. Development mode automatically
+recompiles and updates any application or test code changes that you make.
+
+After you are finished running tests, stop the Open Liberty server by typing `q` in the shell session where you ran the server, and then press the `enter/return` key.
 
 == Additional prerequisites
 
@@ -58,9 +98,118 @@ https://docs.docker.com/engine/installation[Docker documentation^]. Start your D
 [role='command']
 include::{common-includes}/gitclone.adoc[]
 
-== Bootstrapping your application for testing
+== Creating the tests
+
+//File 0
+kitchen/pom.xml
+[source, Text, linenums, role='code_column']
+----
+include::finish/kitchen/pom.xml[]
+----
+
+//File 1
+AppContainerConfig.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/kitchen/src/test/java/it/io/openliberty/guides/kitchen/AppContainerConfig.java[]
+----
+
+//File 2
+KitchenEndpointIT.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/kitchen/src/test/java/it/io/openliberty/guides/kitchen/KitchenEndpointIT.java[]
+----
+
+//File 3
+Order.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/models/src/main/java/io/openliberty/guides/models/Order.java[]
+----
+
+
+=== Configuring your containers
 
 Navigate to the `start` directory to begin.
+
+The reactive application consists of multiple microservices. You will focus on the `kitchen` microservice for this guide.
+MST and test containers have already been included as required test dependencies in your Maven project
+[hotspot file=0]`pom.xml` file
+
+
+[role="code_command hotspot file=1", subs="quotes"]
+----
+#Create the `AppContainerConfig.java` class.#
+`kitchen/src/test/java/it/io/openliberty/guides/kitchen/AppContainerConfig.java`
+----
+
+
+The [hotspot file=1]`AppContainerConfig.java` file externalizes test container set up and configuration, so you can use
+the same application containers across multiple tests.
+
+There are two containers that will be used for testing the `kitchen` service. First is the [hotspot=kafka file=1]`kafka` container
+that the `kitchen` service will be producing and consuming messages from. Second is the [hotspot=kitchen file=1]`kitchen` container,
+which uses the same container that is running in production.
+
+The [hotspot=dependsOn file=1]`dependsOn()` annotation specifies that the `kitchen` service container should wait until the `kafka`
+container is ready before starting up.
+
+=== Testing your containers
+
+Now you can start writing your tests that will use the configured containers.
+
+
+[role="code_command hotspot file=2", subs="quotes"]
+----
+#Create the `KitchenEndpointIT.java` class.#
+`kitchen/src/test/java/it/io/openliberty/guides/kitchen/KitchenEndpointIT.java`
+----
+
+
+The test clients that will be used to communicate with the `kafka` container is configured using
+the [hotspot=KafkaProducerConfig file=2]`@KafkaProducerConfig` and
+[hotspot=KafkaConsumerConfig file=2]`@KafkaConsumerConfig` annotations. The consumer client is configured
+to subscribe and consume messages from the [hotspot=statusTopic file=2]`statusTopic` topic. The producer can
+produce messages to any and is shown producing an Order message to the [hotspot=foodTopic file=2]`foodTopic` topic.
+
+To transmit messages to a stream, they will need to be serialized into bytes. Kafka has its own default serializer,
+however a customer serializer has been provided for you, and configured to the producer's
+[hotspot=valueSerializer file=2]`valueSerializer`. The custom serializer is implemented in the
+[hotspot=JsonbSerializer file=3]`Order.java` file. Similarly, a deserializer has been configured to the consumer's
+[hotspot=valueDeserializer file=2]`valueDeserializer` and has been implemented in the
+[hotspot=OrderDeserializer file=3]`Order.java` file.
+
+== Running the tests
+
+Ensure you are in the `start/kitchen` directory, then run the following Maven
+goal to build the application and run the integration tests on an Open Liberty server in a container:
+[role='command']
+```
+mvn verify
+```
+
+This command might take some time to run the first time because the dependencies and the Docker image for Open Liberty
+must download. If you run the same command again, it will be faster.
+
+The previous example shows how you can run integration tests from a cold start. With Open Liberty development mode, you can use MicroShed Testing to run tests on
+an already running Open Liberty server. Run the following Maven goal to start Open Liberty in development mode:
+
+[role='command']
+```
+mvn liberty:dev
+```
+
+After the Open Liberty server starts and you see the `Press the Enter key to run tests on demand.` message, you can press the
+`enter/return` key to run the integration tests. After the tests finish, you can press the `enter/return` key to run the tests again, or you
+can make code changes to the application or tests. Development mode automatically
+recompiles and updates any application or test code changes that you make.
+
+After you are finished running tests, stop the Open Liberty server by typing `q` in the shell session where you ran the server, and then press the `enter/return` key.
+
+All of the other microservices in the application contain similar tests, feel free to try them out with the same commands
+in their respective directories.
+
 
 == Great work! You're done!
 

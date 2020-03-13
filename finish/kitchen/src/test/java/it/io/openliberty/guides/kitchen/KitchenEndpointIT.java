@@ -13,9 +13,7 @@
 package it.io.openliberty.guides.kitchen;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
 import java.time.Duration;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -39,21 +37,29 @@ import io.openliberty.guides.models.Order.OrderDeserializer;
 public class KitchenEndpointIT {
 
     private static final long POLL_TIMEOUT = 10 * 1000;
-    
+
+    // tag::KafkaProducerConfig[]
     @KafkaProducerConfig(valueSerializer = JsonbSerializer.class)
+    // end::KafkaProducerConfig[]
     public static KafkaProducer<String, Order> producer;
 
+    // tag::KafkaConsumerConfig[]
     @KafkaConsumerConfig(valueDeserializer = OrderDeserializer.class,
                          groupId = "update-status",
+                         // tag::statusTopic[]
                          topics = "statusTopic",
+                         // end::statusTopic[]
                          properties = ConsumerConfig.AUTO_OFFSET_RESET_CONFIG + "=earliest")
+    // end::KafkaConsumerConfig[]
     public static KafkaConsumer<String, Order> consumer;
 
     @Test
     @org.junit.jupiter.api.Order(1)
     public void testInProgress() {
         Order newOrder = new Order("0001", "1", Type.FOOD, "burger", Status.NEW);
+        // tag::foodTopic[]
         producer.send(new ProducerRecord<String, Order>("foodTopic", newOrder));
+        // end::foodTopic[]
         verify(Status.IN_PROGRESS);
     }
 

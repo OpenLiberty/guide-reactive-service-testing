@@ -111,14 +111,17 @@ public class Order {
     public String toString() {
     	return "Order: " + jsonb.toJson(this);
     }
-    
+
+    // tag::JsonbSerializer[]
     public static class JsonbSerializer implements Serializer<Object> {
         @Override
         public byte[] serialize(String topic, Object data) {
           return jsonb.toJson(data).getBytes();
         }
     }
-      
+    // end::JsonbSerializer[]
+
+    // tag::OrderDeserializer[]
     public static class OrderDeserializer implements Deserializer<Order> {
         @Override
         public Order deserialize(String topic, byte[] data) {
@@ -127,5 +130,6 @@ public class Order {
             return jsonb.fromJson(new String(data), Order.class);
         }
     }
+    // end::OrderDeserializer[]
     
 }
