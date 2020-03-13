@@ -175,7 +175,7 @@ produce messages to any and is shown producing an Order message to the [hotspot=
 
 To transmit messages to a stream, they will need to be serialized into bytes. Kafka has its own default serializer,
 however a customer serializer has been provided for you, and configured to the producer's
-[hotspot=valueSerializer file=2]`valueSerializer`. The custom serializer is implemented in the
+[hotspot=KafkaProducerConfig file=2]`valueSerializer`. The custom serializer is implemented in the
 [hotspot=JsonbSerializer file=3]`Order.java` file. Similarly, a deserializer has been configured to the consumer's
 [hotspot=valueDeserializer file=2]`valueDeserializer` and has been implemented in the
 [hotspot=OrderDeserializer file=3]`Order.java` file.

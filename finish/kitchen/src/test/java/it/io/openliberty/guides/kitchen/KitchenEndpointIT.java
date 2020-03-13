@@ -44,7 +44,9 @@ public class KitchenEndpointIT {
     public static KafkaProducer<String, Order> producer;
 
     // tag::KafkaConsumerConfig[]
+    // tag::valueDeserializer[]
     @KafkaConsumerConfig(valueDeserializer = OrderDeserializer.class,
+    // end::valueDeserializer[]
                          groupId = "update-status",
                          // tag::statusTopic[]
                          topics = "statusTopic",
