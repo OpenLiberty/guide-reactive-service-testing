@@ -56,6 +56,17 @@ microservice applications. MicroShed Testing exercises your containerized applic
 are testing the exact same image that runs in production. To learn more about MicroShed Testing, check out the
 https://openliberty.io/guides/microshed-testing.html[Testing a MicroProfile or Jakarta EE application^] guide.
 
+== Additional prerequisites
+
+You will build, run, and test the service in a Docker container. To learn more about containerizing microservices
+with Docker, check out the https://openliberty.io/guides/containerize.html[Containerizing microservices^] guide.
+
+Install Docker by following the instructions on the official
+https://docs.docker.com/engine/installation[Docker documentation^]. Start your Docker environment.
+
+[role='command']
+include::{common-includes}/gitclone.adoc[]
+
 === Try what you'll build
 
 The `finish` directory in the root of this guide contains the finished application. Give it a try before you proceed.
@@ -86,17 +97,6 @@ can make code changes to the application or tests. Development mode automaticall
 recompiles and updates any application or test code changes that you make.
 
 After you are finished running tests, stop the Open Liberty server by typing `q` in the shell session where you ran the server, and then press the `enter/return` key.
-
-== Additional prerequisites
-
-You will build, run, and test the service in a Docker container. To learn more about containerizing microservices
-with Docker, check out the https://openliberty.io/guides/containerize.html[Containerizing microservices^] guide.
-
-Install Docker by following the instructions on the official
-https://docs.docker.com/engine/installation[Docker documentation^]. Start your Docker environment.
-
-[role='command']
-include::{common-includes}/gitclone.adoc[]
 
 == Creating the tests
 
