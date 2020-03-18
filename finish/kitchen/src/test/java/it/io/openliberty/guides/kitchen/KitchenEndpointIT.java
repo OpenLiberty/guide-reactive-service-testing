@@ -63,7 +63,9 @@ public class KitchenEndpointIT {
         // tag::foodTopic[]
         producer.send(new ProducerRecord<String, Order>("foodTopic", newOrder));
         // end::foodTopic[]
+        // tag::verifyInProgress[]
         verify(Status.IN_PROGRESS);
+        // end::verifyInProgress[]
     }
     // end::testInProgress[]
 
@@ -75,6 +77,7 @@ public class KitchenEndpointIT {
     }
     // end::testReady[]
 
+    // tag::verify[]
     private void verify(Status expectedStatus) {
         System.out.println("Waiting to receive " + expectedStatus +
                 " order from Kafka");
@@ -86,11 +89,14 @@ public class KitchenEndpointIT {
         for (ConsumerRecord<String, Order> record : records) {
             System.out.println(record.value());
             Order receivedOrder = record.value();
+            // tag::assert[]
             assertEquals("0001", receivedOrder.getOrderId(),
                     "Order ID did not match expected");
             assertEquals(expectedStatus, receivedOrder.getStatus(),
                     "Status did not match expected");
+            // end::assert[]
         }
         consumer.commitAsync();
     }
+    // end::verify[]
 }

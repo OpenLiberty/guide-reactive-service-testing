@@ -196,11 +196,11 @@ Now you can start writing your tests that will use the configured containers.
 ----
 
 
-The test clients that will be used to communicate with the `kafka` container is configured using
-the [hotspot=KafkaProducerConfig file=2]`@KafkaProducerConfig` and
+The tests use the Kafka client APIs `kafkaProducer` and `kafkaConsumer` to communicate with the `kafka` container, and
+is configured using the [hotspot=KafkaProducerConfig file=2]`@KafkaProducerConfig` and
 [hotspot=KafkaConsumerConfig file=2]`@KafkaConsumerConfig` annotations. The consumer client is configured
 to subscribe and consume messages from the [hotspot=statusTopic file=2]`statusTopic` topic. The producer can
-produce messages to any and is shown producing an Order message to the [hotspot=foodTopic file=2]`foodTopic` topic.
+produce messages to any topic and is shown producing an Order message to the [hotspot=foodTopic file=2]`foodTopic` topic.
 
 To transmit messages to a stream, they will need to be serialized into bytes. Kafka has its own default serializer,
 however a customer serializer has been provided for you, and configured to the producer's
@@ -209,11 +209,17 @@ however a customer serializer has been provided for you, and configured to the p
 [hotspot=valueDeserializer file=2]`valueDeserializer` and has been implemented in the
 [hotspot=OrderDeserializer file=3]`Order` class.
 
-The [hotspot=testInProgress file=2]`testInProgress` test will be executed first, and will be producing a message to the
-[hotspot=foodTopic file=2]`foodTopic` topic. The `kitchen` service will consume messages from that stream, as denoted
-by the [hotspot=Incoming file=4]`@Incoming` annotation on the [hotspot=initFoodOrder file=4]`initFoodOrder()` method.
-The same method will publish messages to the `foodOrderPublishStatus` stream as denoted by the
-[hotspot=Outgoing file=4]`@Outgoing` annotation.
+The [hotspot=testInProgress file=2]`testInProgress` test will be executed first, and will produce a message to the
+[hotspot=foodTopic file=2]`foodTopic` topic. The `kitchen` service will consume that message from the `foodOrderConsume`
+stream, as denoted by the [hotspot=Incoming file=4]`@Incoming` annotation on the
+[hotspot=initFoodOrder file=4]`initFoodOrder()` method. The the
+[hotspot=initFoodOrder file=4]`initFoodOrder()` method will publish back an `IN_PROGRESS` message to the
+`foodOrderPublishStatus` stream as denoted by the [hotspot=Outgoing file=4]`@Outgoing` annotation.
+
+The [hotspot=verify file=2]`verify()` method will [hotspot=poll file=2]`poll()` records from Kafka over 30 seconds.
+It will then [hotspot=assert file=2]`verify` that the record polled matched the expected record. For example, the first
+[hotspot=verifyInProgress file=2]`verify()` method call expects that the first `Order` record polled to have a status of
+[hotspot=verifyInProgress file=2]`IN_PROGRESS`, and also ensures that the `Order` record has the right `orderId`.
 
 == Running the tests
 
