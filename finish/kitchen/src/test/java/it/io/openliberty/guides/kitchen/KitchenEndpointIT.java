@@ -81,7 +81,9 @@ public class KitchenEndpointIT {
     private void verify(Status expectedStatus) {
         System.out.println("Waiting to receive " + expectedStatus +
                 " order from Kafka");
+        // tag::poll[]
         ConsumerRecords<String, Order> records = consumer.poll(Duration.ofSeconds(30));
+        // end::poll[]
         System.out.println("Polled " + records.count() + " records from Kafka:");
 
         assertEquals(1, records.count(),
