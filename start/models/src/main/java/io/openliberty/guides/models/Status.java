@@ -10,13 +10,11 @@
  *     IBM Corporation - Initial implementation
  *******************************************************************************/
 // end::copyright[]
-package io.openliberty.guides.kitchen;
+package io.openliberty.guides.models;
 
-// JAX-RS
-import javax.ws.rs.core.Application;
-import javax.ws.rs.ApplicationPath;
-
-@ApplicationPath("kitchen")
-public class KitchenApplication extends Application {
-
+public enum Status {
+    NEW,            // The order has just been sent
+    IN_PROGRESS,    // The order has reached the kitchen/bar service via Kafka
+    READY,          // The order is ready to be picked up by the servingWindow service
+    COMPLETED;      // The order has been picked up, this is the final status.
 }

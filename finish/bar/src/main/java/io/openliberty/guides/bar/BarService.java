@@ -10,69 +10,62 @@
  *     IBM Corporation - Initial implementation
  *******************************************************************************/
 // end::copyright[]
-package io.openliberty.guides.kitchen;
+package io.openliberty.guides.bar;
 
 import java.util.Random;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.Path;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
+import org.reactivestreams.Publisher;
 
 import io.openliberty.guides.models.Order;
 import io.openliberty.guides.models.Status;
+import io.reactivex.rxjava3.core.BackpressureStrategy;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.FlowableEmitter;
 
 @ApplicationScoped
-@Path("/foodMessaging")
-public class KitchenResource {
+public class BarService {
 
-    private static Logger logger = Logger.getLogger(KitchenResource.class.getName());
+    private static Logger logger = Logger.getLogger(BarService.class.getName());
 
     private Executor executor = Executors.newSingleThreadExecutor();
-    private BlockingQueue<Order> inProgress = new LinkedBlockingQueue<>();
     private Random random = new Random();
+    private FlowableEmitter<Order> receivedOrders;
 
-    // tag::Incoming[]
-    @Incoming("foodOrderConsume")
-    // end::Incoming[]
-    // tag::Outgoing[]
-    @Outgoing("foodOrderPublishStatus")
-    // end::Outgoing[]
-    // tag::initFoodOrder[]
-    public Order initFoodOrder(Order newOrder) {
-        logger.info("Order " + newOrder.getOrderId() + " received with a status of NEW");
+    // tag::bevOrderConsume[]    
+    @Incoming("beverageOrderConsume")
+    // end::bevOrderConsume[]
+    // tag::bevOrderPublishInter[]
+    @Outgoing("beverageOrderPublishStatus")
+    // end::bevOrderPublishInter[]
+    // tag::initBevOrder[]
+    public Order receiveBeverageOrder(Order newOrder) {
+        logger.info("Order " + newOrder.getOrderId() + " received as NEW");
         logger.info(newOrder.toString());
-        return prepareOrder(newOrder);
-    }
-    // end::initFoodOrder[]
-
-    @Outgoing("foodOrderPublishStatus")
-    public Order sendReadyOrder() {
-        try {
-            Order order = inProgress.take();
+        Order order = prepareOrder(newOrder);
+        executor.execute(() -> {
             prepare(5);
             order.setStatus(Status.READY);
             logger.info("Order " + order.getOrderId() + " is READY");
             logger.info(order.toString());
-            return order;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return null;
-        }
+            receivedOrders.onNext(order);
+        });
+        return order;
     }
+    // end::initBevOrder[]
 
     private Order prepareOrder(Order order) {
-        prepare(5);
-        Order inProgressOrder = order.setStatus(Status.IN_PROGRESS);
-        logger.info("Order " + order.getOrderId() + " is IN PROGRESS");
-        inProgress.add(inProgressOrder);
-        return inProgressOrder;
+            prepare(10);
+            Order inProgressOrder = order.setStatus(Status.IN_PROGRESS);
+            logger.info("Order " + order.getOrderId() + " is IN PROGRESS");
+            logger.info(order.toString());
+            return inProgressOrder;
     }
 
     private void prepare(int sleepTime) {
@@ -81,5 +74,14 @@ public class KitchenResource {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+    
+    // tag::bevOrder[]
+    @Outgoing("beverageOrderPublishStatus")
+    // end::bevOrder[]
+    public Publisher<Order> sendReadyOrder() {
+        Flowable<Order> flowable = Flowable.<Order>create(emitter -> this.receivedOrders = emitter,
+                BackpressureStrategy.BUFFER);
+        return flowable;
     }
 }
