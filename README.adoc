@@ -107,7 +107,7 @@ must download. If you run the same command again, it will be faster.
 
 //File 0
 kitchen/pom.xml
-[source, Text, linenums, role='code_column']
+[source, XML, linenums, role='code_column']
 ----
 include::finish/kitchen/pom.xml[]
 ----
