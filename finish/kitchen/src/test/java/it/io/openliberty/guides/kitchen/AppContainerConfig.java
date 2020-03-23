@@ -36,6 +36,7 @@ public class AppContainerConfig implements SharedContainerConfiguration {
     public static ApplicationContainer app = new ApplicationContainer()
                     .withAppContextRoot("/")
                     .withReadinessPath("/health/ready")
+                    .withExposedPorts(9083)
                     .withNetwork(network)
                     // tag::dependsOn[]
                     .dependsOn(kafka);

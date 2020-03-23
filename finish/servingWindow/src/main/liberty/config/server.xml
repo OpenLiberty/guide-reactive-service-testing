@@ -1,6 +1,7 @@
 <server description="Serving Window Service">
 
   <featureManager>
+    <feature>mpHealth-2.1</feature>
     <feature>jaxrs-2.1</feature>
     <feature>cdi-2.0</feature>
     <feature>mpRestClient-1.2</feature>

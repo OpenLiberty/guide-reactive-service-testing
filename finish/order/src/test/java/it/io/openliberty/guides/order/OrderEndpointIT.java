@@ -61,7 +61,7 @@ public class OrderEndpointIT {
     @KafkaConsumerConfig(valueDeserializer = OrderDeserializer.class, 
             groupId = "beverage-consumer", topics = "beverageTopic", 
             properties = ConsumerConfig.AUTO_OFFSET_RESET_CONFIG + "=earliest")
-        public static KafkaConsumer<String, Order> beverageConsumer;
+    public static KafkaConsumer<String, Order> beverageConsumer;
     
     @KafkaConsumerConfig(valueDeserializer = OrderDeserializer.class, 
             groupId = "update-status", topics = "statusTopic", 

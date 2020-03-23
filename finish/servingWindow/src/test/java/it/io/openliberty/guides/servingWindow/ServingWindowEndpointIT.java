@@ -12,9 +12,11 @@
 // end::copyright[]
 package it.io.openliberty.guides.servingWindow;
 
+import java.lang.reflect.Array;
 import java.time.Duration;
 import java.util.ArrayList;
 
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;

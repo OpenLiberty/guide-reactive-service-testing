@@ -34,7 +34,7 @@ import io.openliberty.guides.models.Order.OrderDeserializer;
 
 @MicroShedTest
 @SharedContainerConfig(AppContainerConfig.class)
-public class KitchenEndpointIT {
+public class KitchenServiceIT {
 
     private static final long POLL_TIMEOUT = 10 * 1000;
 
@@ -58,7 +58,7 @@ public class KitchenEndpointIT {
     @Test
     @org.junit.jupiter.api.Order(1)
     // tag::testInProgress[]
-    public void testInProgress() {
+    public void testInitFoodOrder() {
         Order newOrder = new Order("0001", "1", Type.FOOD, "burger", Status.NEW);
         // tag::foodTopic[]
         producer.send(new ProducerRecord<String, Order>("foodTopic", newOrder));
@@ -72,7 +72,7 @@ public class KitchenEndpointIT {
     @Test
     @org.junit.jupiter.api.Order(2)
     // tag::testReady[]
-    public void testReady(){
+    public void testFoodOrderReady(){
         verify(Status.READY);
     }
     // end::testReady[]

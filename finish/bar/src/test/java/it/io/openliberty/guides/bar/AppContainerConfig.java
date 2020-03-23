@@ -29,7 +29,7 @@ public class AppContainerConfig implements SharedContainerConfiguration {
     @Container
     public static ApplicationContainer app = new ApplicationContainer()
                     .withAppContextRoot("/")
-                    .withExposedPorts(new Integer(9084))
+                    .withExposedPorts(9084)
                     .withReadinessPath("/health/ready")
                     .withNetwork(network)
                     .dependsOn(kafka);

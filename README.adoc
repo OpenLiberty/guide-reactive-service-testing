@@ -64,7 +64,7 @@ include::{common-includes}/gitclone.adoc[]
 
 The `finish` directory in the root of this guide contains the finished application. Give it a try before you proceed.
 
-To try out the application, go to the `finish` directory and run the following Maven goal to install the `models`
+To try out the tests, go to the `finish` directory and run the following Maven goal to install the `models`
 artifact to the local Maven repository for later use by the `kitchen` and other services:
 
 [role='command']
@@ -134,10 +134,10 @@ include::finish/models/src/main/java/io/openliberty/guides/models/Order.java[]
 ----
 
 //File 4
-KitchenResource.java
+KitchenService.java
 [source, Java, linenums, role='code_column hide_tags=copyright']
 ----
-include::finish/kitchen/src/main/java/io/openliberty/guides/kitchen/KitchenResource.java[]
+include::finish/kitchen/src/main/java/io/openliberty/guides/kitchen/KitchenService.java[]
 ----
 
 === Configuring your containers
@@ -191,12 +191,12 @@ Now you can start writing your tests that will use the configured containers.
 
 [role="code_command hotspot file=2", subs="quotes"]
 ----
-#Create the `KitchenEndpointIT` class.#
-`kitchen/src/test/java/it/io/openliberty/guides/kitchen/KitchenEndpointIT.java`
+#Create the `KitchenServiceIT` class.#
+`kitchen/src/test/java/it/io/openliberty/guides/kitchen/KitchenServiceIT.java`
 ----
 
 
-The tests use the Kafka client APIs `kafkaProducer` and `kafkaConsumer` to communicate with the `kafka` container, and
+The tests use the Kafka client APIs `KafkaProducer` and `KafkaConsumer` to communicate with the `kafka` container, and
 is configured using the [hotspot=KafkaProducerConfig file=2]`@KafkaProducerConfig` and
 [hotspot=KafkaConsumerConfig file=2]`@KafkaConsumerConfig` annotations. The consumer client is configured
 to subscribe and consume messages from the [hotspot=statusTopic file=2]`statusTopic` topic. The producer can
@@ -212,8 +212,8 @@ however a customer serializer has been provided for you, and configured to the p
 The [hotspot=testInProgress file=2]`testInProgress` test will be executed first, and will produce a message to the
 [hotspot=foodTopic file=2]`foodTopic` topic. The `kitchen` service will consume that message from the `foodOrderConsume`
 stream, as denoted by the [hotspot=Incoming file=4]`@Incoming` annotation on the
-[hotspot=initFoodOrder file=4]`initFoodOrder()` method. The the
-[hotspot=initFoodOrder file=4]`initFoodOrder()` method will publish back an `IN_PROGRESS` message to the
+[hotspot=receiveFoodOrder file=4]`receiveFoodOrder()` method. The
+[hotspot=receiveFoodOrder file=4]`receiveFoodOrder()` method will publish back an `IN_PROGRESS` message to the
 `foodOrderPublishStatus` stream as denoted by the [hotspot=Outgoing file=4]`@Outgoing` annotation.
 
 The [hotspot=verify file=2]`verify()` method will [hotspot=poll file=2]`poll()` records from Kafka over 30 seconds.
@@ -228,7 +228,7 @@ Open Liberty development mode automatically recompiles and updated your test cod
 
 [role='no_copy']
 ```
- Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 25.674 s - in it.io.openliberty.guides.kitchen.KitchenEndpointIT
+ Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 25.674 s - in it.io.openliberty.guides.kitchen.KitchenServiceIT
 
  Results:
 
@@ -251,7 +251,7 @@ You will see the following output:
 
 [role='no_copy']
 ```
- Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.001 s - in it.io.openliberty.guides.kitchen.KitchenEndpointIT
+ Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.001 s - in it.io.openliberty.guides.kitchen.KitchenServiceIT
 
  Results:
 

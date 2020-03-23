@@ -12,11 +12,10 @@
 // end::copyright[]
 package io.openliberty.guides.models;
 
-import java.util.ArrayList;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
 
 @OrderListNotEmpty
 public class OrderRequest {
