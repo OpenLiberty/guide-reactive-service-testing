@@ -84,7 +84,7 @@ You will see the following output:
 
 [role='no_copy']
 ```
- Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.001 s - in it.io.openliberty.guides.kitchen.KitchenEndpointIT
+ Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.001 s - in it.io.openliberty.guides.kitchen.KitchenServiceIT
 
  Results:
 
@@ -120,10 +120,10 @@ include::finish/kitchen/src/test/java/it/io/openliberty/guides/kitchen/AppContai
 ----
 
 //File 2
-KitchenEndpointIT.java
+KitchenServiceIT.java
 [source, Java, linenums, role='code_column hide_tags=copyright']
 ----
-include::finish/kitchen/src/test/java/it/io/openliberty/guides/kitchen/KitchenEndpointIT.java[]
+include::finish/kitchen/src/test/java/it/io/openliberty/guides/kitchen/KitchenServiceIT.java[]
 ----
 
 //File 3
