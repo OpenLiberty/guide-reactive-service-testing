@@ -62,6 +62,7 @@
             <version>3.0.0</version>
         </dependency>
         <!-- For tests -->
+        <!-- tag::dependencies -->
         <dependency>
             <groupId>org.microshed</groupId>
             <artifactId>microshed-testing-liberty</artifactId>
@@ -86,6 +87,7 @@
             <version>1.7.30</version>
             <scope>test</scope>
         </dependency>
+        <!-- end::dependencies -->
     </dependencies>
 
     <build>
