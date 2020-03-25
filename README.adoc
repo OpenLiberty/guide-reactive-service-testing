@@ -31,8 +31,8 @@ Learn how to test reactive messaging services using MicroShed Testing.
 
 == What you'll learn
 
-You will start with a reactive messaging service that runs on Open Liberty and use MicroShed Testing to write tests
-that exercise the service inside of a Docker container.
+You will start with a reactive messaging service that runs on Open Liberty and learn how to use MicroShed Testing to
+write tests that exercise the service inside of a Docker container.
 
 === What is Microprofile Reactive Messaging?
 
@@ -55,7 +55,8 @@ You will build, run, and test the service in a Docker container. To learn more a
 with Docker, check out the https://openliberty.io/guides/containerize.html[Containerizing microservices^] guide.
 
 Install Docker by following the instructions on the official
-https://docs.docker.com/engine/installation[Docker documentation^]. Start your Docker environment.
+https://docs.docker.com/engine/installation[Docker documentation^]. Start your Docker environment. Ensure you are using
+Linux containers, not Windows.
 
 [role='command']
 include::{common-includes}/gitclone.adoc[]
@@ -174,7 +175,7 @@ Open Liberty is now listening for file changes and updates in real time. Now you
 ----
 
 
-The [hotspot file=1]`AppContainerConfig` class externalizes test container set up and configuration, so you can use
+The [hotspot=AppContainerConfig file=1]`AppContainerConfig` class externalizes test container set up and configuration, so you can use
 the same application containers across multiple tests. The [hotspot=container file=1]`@Container` annotation denotes an
 application container that will be started up and used in the tests.
 

@@ -18,6 +18,7 @@ import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.junit.jupiter.Container;
 
+// tag::AppContainerConfig[]
 public class AppContainerConfig implements SharedContainerConfiguration {
 
     // Shared network between kafka and app containers
@@ -47,3 +48,4 @@ public class AppContainerConfig implements SharedContainerConfiguration {
                     // end::dependsOn[]
     // end::kitchen[]
 }
+// end::AppContainerConfig[]
