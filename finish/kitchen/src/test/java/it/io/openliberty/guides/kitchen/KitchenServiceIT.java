@@ -57,7 +57,7 @@ public class KitchenServiceIT {
 
     @Test
     @org.junit.jupiter.api.Order(1)
-    // tag::testInProgress[]
+    // tag::testInitFoodOrder[]
     public void testInitFoodOrder() {
         Order newOrder = new Order("0001", "1", Type.FOOD, "burger", Status.NEW);
         // tag::foodTopic[]
@@ -67,7 +67,7 @@ public class KitchenServiceIT {
         verify(Status.IN_PROGRESS);
         // end::verifyInProgress[]
     }
-    // end::testInProgress[]
+    // end::testInitFoodOrder[]
 
     @Test
     @org.junit.jupiter.api.Order(2)

@@ -158,14 +158,14 @@ mvn -pl models install
 ```
 
 With Open Liberty development mode, you can use MicroShed Testing to run tests on an already running Open Liberty server.
-Navigate to the `start/kitchen` directory and run the following Maven goal to start Open Liberty in development mode:
+Navigate to the `start/kitchen` directory.
+
+and run the following Maven goal to start Open Liberty in development mode:
 
 [role='command']
-```
-mvn liberty:dev
-```
+include::{common-includes}/devmode-start.adoc[]
 
-Open Liberty is now listening for file changes and updates in real time. Now you can add your test files.
+Now you can add your test files.
 
 
 [role="code_command hotspot file=1", subs="quotes"]
@@ -211,7 +211,7 @@ however, a customer serializer has been provided for you, and is configured to t
 [hotspot=valueDeserializer file=2]`valueDeserializer` and has been implemented in the
 [hotspot=OrderDeserializer file=3]`Order` class.
 
-The [hotspot=testInProgress file=2]`testInProgress` test will be executed first, and will produce a message to the
+The [hotspot=testInitFoodOrder file=2]`testInitFoodOrder` test will be executed first, and will produce a message to the
 [hotspot=foodTopic file=2]`foodTopic` topic. The `kitchen` service will consume that message from the `foodOrderConsume`
 stream, as denoted by the [hotspot=Incoming file=4]`@Incoming` annotation on the
 [hotspot=receiveFoodOrder file=4]`receiveFoodOrder()` method. The
