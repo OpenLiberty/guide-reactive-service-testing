@@ -223,10 +223,10 @@ It will then [hotspot=assert file=2]`verify` that the record polled matched the 
 [hotspot=verifyInProgress file=2]`verify()` method call expects that the first `Order` record polled to have a status of
 [hotspot=verifyInProgress file=2]`IN_PROGRESS`, and also ensures that the `Order` record has the right `orderId`.
 
-== Running the tests
+[role='command']
+include::{common-includes}/devmode-test.adoc[]
 
-Open Liberty development mode automatically recompiles and updates your test code changes. To run the tests, press the
-`enter/return` key. You will see the following output:
+You will see the following output:
 
 [role='no_copy']
 ```
