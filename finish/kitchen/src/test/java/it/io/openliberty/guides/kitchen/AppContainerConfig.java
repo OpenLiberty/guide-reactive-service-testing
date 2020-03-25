@@ -25,14 +25,18 @@ public class AppContainerConfig implements SharedContainerConfiguration {
 
     // Building the kafka container
     // tag::kafka[]
+    // tag::container[]
     @Container
+    // end::container[]
     public static KafkaContainer kafka = new KafkaContainer()
                     .withNetwork(network);
     // end::kafka[]
 
     // The kitchen service container
     // tag::kitchen[]
+    // tag::container[]
     @Container
+    // end::container[]
     public static ApplicationContainer app = new ApplicationContainer()
                     .withAppContextRoot("/")
                     .withReadinessPath("/health/ready")

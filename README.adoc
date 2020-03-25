@@ -8,7 +8,7 @@
 //
 :projectid: reactive-service-testing
 :page-layout: guide-multipane
-:page-duration: 30 minutes
+:page-duration: 20 minutes
 :page-releasedate: 2020-04-13
 :page-guide-category: microprofile
 :page-essential: false
@@ -157,14 +157,14 @@ mvn -pl models install
 ```
 
 With Open Liberty development mode, you can use MicroShed Testing to run tests on an already running Open Liberty server.
-Run the following Maven goal to start Open Liberty in development mode:
+Navigate to the `start/kitchen` directory and run the following Maven goal to start Open Liberty in development mode:
 
 [role='command']
 ```
 mvn liberty:dev
 ```
 
-Now Open Liberty is listening for file changes and updates in real time. Now you can add your test files.
+Open Liberty is now listening for file changes and updates in real time. Now you can add your test files.
 
 
 [role="code_command hotspot file=1", subs="quotes"]
@@ -175,7 +175,8 @@ Now Open Liberty is listening for file changes and updates in real time. Now you
 
 
 The [hotspot file=1]`AppContainerConfig` class externalizes test container set up and configuration, so you can use
-the same application containers across multiple tests.
+the same application containers across multiple tests. The [hotspot=container file=1]`@Container` annotation denotes an
+application container that will be started up and used in the tests.
 
 There are two containers that will be used for testing the `kitchen` service. First is the [hotspot=kafka file=1]`kafka` container
 that the `kitchen` service will be producing and consuming messages from. Second is the [hotspot=kitchen file=1]`kitchen` container,
@@ -203,7 +204,7 @@ to subscribe and consume messages from the [hotspot=statusTopic file=2]`statusTo
 produce messages to any topic and is shown producing an Order message to the [hotspot=foodTopic file=2]`foodTopic` topic.
 
 To transmit messages to a stream, they will need to be serialized into bytes. Kafka has its own default serializer,
-however a customer serializer has been provided for you, and configured to the producer's
+however, a customer serializer has been provided for you, and is configured to the producer's
 [hotspot=KafkaProducerConfig file=2]`valueSerializer`. The custom serializer is implemented in the
 [hotspot=JsonbSerializer file=3]`Order` class. Similarly, a deserializer has been configured to the consumer's
 [hotspot=valueDeserializer file=2]`valueDeserializer` and has been implemented in the
@@ -214,7 +215,7 @@ The [hotspot=testInProgress file=2]`testInProgress` test will be executed first,
 stream, as denoted by the [hotspot=Incoming file=4]`@Incoming` annotation on the
 [hotspot=receiveFoodOrder file=4]`receiveFoodOrder()` method. The
 [hotspot=receiveFoodOrder file=4]`receiveFoodOrder()` method will publish back an `IN_PROGRESS` message to the
-`foodOrderPublishStatus` stream as denoted by the [hotspot=Outgoing file=4]`@Outgoing` annotation.
+`foodOrderPublishStatus` stream, as denoted by the [hotspot=Outgoing file=4]`@Outgoing` annotation.
 
 The [hotspot=verify file=2]`verify()` method will [hotspot=poll file=2]`poll()` records from Kafka over 30 seconds.
 It will then [hotspot=assert file=2]`verify` that the record polled matched the expected record. For example, the first
@@ -223,7 +224,7 @@ It will then [hotspot=assert file=2]`verify` that the record polled matched the 
 
 == Running the tests
 
-Open Liberty development mode automatically recompiles and updated your test code changes. To run the tests, press the
+Open Liberty development mode automatically recompiles and updates your test code changes. To run the tests, press the
 `enter/return` key. You will see the following output:
 
 [role='no_copy']
@@ -267,7 +268,7 @@ You will see the following output:
  ------------------------------------------------------------------------
 ```
 
-All of the other microservices in the application contain similar tests, feel free to try them out with the same commands
+All of the other microservices in the application contain similar tests; feel free to try them out with the same commands
 in their respective directories.
 
 == Great work! You're done!
