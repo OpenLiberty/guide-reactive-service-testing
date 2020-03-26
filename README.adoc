@@ -160,8 +160,6 @@ mvn -pl models install
 With Open Liberty development mode, you can use MicroShed Testing to run tests on an already running Open Liberty server.
 Navigate to the `start/kitchen` directory.
 
-and run the following Maven goal to start Open Liberty in development mode:
-
 [role='command']
 include::{common-includes}/devmode-start.adoc[]
 
