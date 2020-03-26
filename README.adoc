@@ -15,7 +15,7 @@
 :page-description: Learn how to use MicroShed Testing to test reactive message microservices.
 :guide-author: Open Liberty
 :page-tags: ['MicroProfile', 'Jakarta EE', 'Microservices']
-:page-related-guides: ['microprofile-reactive-messaging', 'microshed-testing', 'reactive-messaging-sse']
+:page-related-guides: ['microprofile-reactive-messaging', 'microshed-testing', 'reactive-messaging-sse', 'microprofile-reactive-messaging-acknowledgement', 'microprofile-rest-client-async']
 :page-permalink: /guides/{projectid}
 :imagesdir: /img/guide/{projectid}
 :page-seo-title: Testing a MicroProfile Reactive Messaging microservice
