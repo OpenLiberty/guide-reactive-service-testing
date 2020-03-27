@@ -18,8 +18,8 @@
 :page-related-guides: ['microprofile-reactive-messaging', 'microshed-testing', 'reactive-messaging-sse', 'microprofile-reactive-messaging-acknowledgement', 'microprofile-rest-client-async']
 :page-permalink: /guides/{projectid}
 :imagesdir: /img/guide/{projectid}
-:page-seo-title: Testing a MicroProfile Reactive Messaging microservice
-:page-seo-description: A tutorial on how to test reactive messaging microservices.
+:page-seo-title: Testing MicroProfile Reactive Messaging microservices using MicroShed Testing (MST)
+:page-seo-description: A getting started tutorial with examples on how to test asynchronous Java microservices in a MicroProfile Reactive Messaging application using MicroShed Testing (MST).
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/dev
 :source-highlighter: prettify
 = Testing a reactive messaging microservice using MicroShed Testing.
