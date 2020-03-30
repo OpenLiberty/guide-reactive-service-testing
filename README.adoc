@@ -201,6 +201,8 @@ is configured using the [hotspot=KafkaProducerConfig file=2]`@KafkaProducerConfi
 [hotspot=KafkaConsumerConfig file=2]`@KafkaConsumerConfig` annotations. The consumer client is configured
 to subscribe and consume messages from the [hotspot=statusTopic file=2]`statusTopic` topic. The producer can
 produce messages to any topic and is shown producing an Order message to the [hotspot=foodTopic file=2]`foodTopic` topic.
+To learn more about Kafka APIs and how to use them, check out the
+https://kafka.apache.org/documentation/#api[official Kafka Documentation^]
 
 To transmit messages to a stream, they will need to be serialized into bytes. Kafka has its own default serializer,
 however, a customer serializer has been provided for you, and is configured to the producer's
