@@ -21,7 +21,9 @@ import java.time.Duration;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+// tag::KafkaConsumer[]
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+// end::KafkaConsumer[]
 import org.junit.jupiter.api.Test;
 import org.microshed.testing.SharedContainerConfig;
 import org.microshed.testing.jupiter.MicroShedTest;
@@ -36,25 +38,38 @@ public class SystemServiceIT {
 
     private static final long POLL_TIMEOUT = 30 * 1000;
 
-    @KafkaConsumerConfig(valueDeserializer = SystemLoadDeserializer.class, 
+    // tag::KafkaConsumer[]
+    // tag::KafkaConsumerConfig[]
+    // tag::valueDeserializer[]
+    @KafkaConsumerConfig(valueDeserializer = SystemLoadDeserializer.class,
+    // end::valueDeserializer[]
                          groupId = "system-load-status",
+                         // tag::systemLoadTopic[]
                          topics = "systemLoadTopic",
+                         // end::systemLoadTopic[]
                          properties = ConsumerConfig.AUTO_OFFSET_RESET_CONFIG + "=earliest")
+    // end::KafkaConsumerConfig[]
     public static KafkaConsumer<String, SystemLoad> cpuConsumer;
+    // end::KafkaConsumer[]
 
+    // tag::testCpuStatus[]
     @Test
     public void testCpuStatus() throws IOException, InterruptedException {
         int recordsProcessed = 0;
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0;
         while (recordsProcessed == 0 && elapsedTime < POLL_TIMEOUT) {
+            // tag::poll[]
             ConsumerRecords<String, SystemLoad> records = cpuConsumer.poll(Duration.ofMillis(3000));
+            // end::poll[]
             System.out.println("Polled " + records.count() + " records from Kafka:");
             for (ConsumerRecord<String, SystemLoad> record : records) {
                 SystemLoad c = record.value();
                 System.out.println(c);
+                // tag::assert[]
                 assertNotNull(c.hostId);
                 assertNotNull(c.cpuUsage);
+                // end::assert[]
                 recordsProcessed++;
             }
             cpuConsumer.commitAsync();
@@ -64,4 +79,5 @@ public class SystemServiceIT {
         }
         assertTrue(recordsProcessed > 0, "No records processed");
     }
+    // end::testCpuStatus[]
 }

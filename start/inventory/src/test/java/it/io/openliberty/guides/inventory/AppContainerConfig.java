@@ -27,7 +27,7 @@ public class AppContainerConfig implements SharedContainerConfiguration {
                     .withNetwork(network);
     
     @Container
-    public static ApplicationContainer app = new ApplicationContainer()
+    public static ApplicationContainer inventory = new ApplicationContainer()
                     .withAppContextRoot("/")
                     .withExposedPorts(9085)
                     .withReadinessPath("/health/ready")

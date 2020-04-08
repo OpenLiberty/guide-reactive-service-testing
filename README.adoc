@@ -12,7 +12,7 @@
 :page-releasedate: 2020-04-13
 :page-guide-category: microprofile
 :page-essential: false
-:page-description: Learn how to use MicroShed Testing to test reactive message microservices.
+:page-description: Learn how to use MicroShed Testing to test reactive messaging microservices.
 :guide-author: Open Liberty
 :page-tags: ['MicroProfile', 'Jakarta EE', 'Microservices']
 :page-related-guides: ['microprofile-reactive-messaging', 'microshed-testing', 'reactive-messaging-sse', 'microprofile-reactive-messaging-acknowledgement', 'microprofile-rest-client-async']
@@ -37,8 +37,9 @@ write tests that exercise the service inside of a Docker container.
 === What is Microprofile Reactive Messaging?
 
 The MicroProfile Reactive Messaging specification utilizes a message-driven architecture by providing an
-easy way to send, receive, and process messages. The application featured in this guide uses the `OpenLibertyCafe`
-application that mimics a cafe. To learn more about Microprofile Reactive Messaging and how the application works, check out the
+easy way to send, receive, and process messages. The application featured in this guide uses the `System` and `Inventory`
+application to showcase a reactive messaging architecture. To learn more about Microprofile Reactive Messaging and how
+the application works, check out the
 https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating asynchronous reactive microservices using MicroProfile Reactive Messaging^]
 guide.
 
@@ -66,14 +67,14 @@ include::{common-includes}/gitclone.adoc[]
 The `finish` directory in the root of this guide contains the finished application. Give it a try before you proceed.
 
 To try out the tests, go to the `finish` directory and run the following Maven goal to install the `models`
-artifact to the local Maven repository for later use by the `kitchen` and other services:
+artifact to the local Maven repository for later use by the `System` and `Inventory` services:
 
 [role='command']
 ```
 mvn -pl models install
 ```
 
-Now navigate to the `finish/kitchen` directory and run the following Maven goal to build the `kitchen` service and run
+Now navigate to the `finish/system` directory and run the following Maven goal to build the `System` service and run
 the integration tests on an Open Liberty server in a container:
 
 [role='command']
@@ -85,18 +86,18 @@ You will see the following output:
 
 [role='no_copy']
 ```
- Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.001 s - in it.io.openliberty.guides.kitchen.KitchenServiceIT
+ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.001 s - in it.io.openliberty.guides.system.SystemServiceIT
 
  Results:
 
- Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
 
- --- maven-failsafe-plugin:2.22.2:verify (verify) @ kitchen ---
+ --- maven-failsafe-plugin:2.22.2:verify (verify) @ system ---
  ------------------------------------------------------------------------
  BUILD SUCCESS
  ------------------------------------------------------------------------
- Total time:  37.817 s
+ Total time:  52.817 s
  Finished at: 2020-03-13T16:28:55-04:00
  ------------------------------------------------------------------------
 ```
@@ -104,53 +105,54 @@ You will see the following output:
 This command might take some time to run the first time because the dependencies and the Docker image for Open Liberty
 must download. If you run the same command again, it will be faster.
 
-== Creating the tests
+== Creating the System service tests
 
 //File 0
-kitchen/pom.xml
+system/pom.xml
 [source, XML, linenums, role='code_column']
 ----
-include::finish/kitchen/pom.xml[]
+include::finish/system/pom.xml[]
 ----
 
 //File 1
-AppContainerConfig.java
+system/AppContainerConfig.java
 [source, Java, linenums, role='code_column hide_tags=copyright']
 ----
-include::finish/kitchen/src/test/java/it/io/openliberty/guides/kitchen/AppContainerConfig.java[]
+include::finish/system/src/test/java/it/io/openliberty/guides/system/AppContainerConfig.java[]
 ----
 
 //File 2
-KitchenServiceIT.java
+SystemServiceIT.java
 [source, Java, linenums, role='code_column hide_tags=copyright']
 ----
-include::finish/kitchen/src/test/java/it/io/openliberty/guides/kitchen/KitchenServiceIT.java[]
+include::finish/system/src/test/java/it/io/openliberty/guides/system/SystemServiceIT.java[]
 ----
 
 //File 3
-Order.java
+SystemLoad.java
 [source, Java, linenums, role='code_column hide_tags=copyright']
 ----
-include::finish/models/src/main/java/io/openliberty/guides/models/Order.java[]
+include::finish/models/src/main/java/io/openliberty/guides/models/SystemLoad.java[]
 ----
 
 //File 4
-KitchenService.java
+SystemService.java
 [source, Java, linenums, role='code_column hide_tags=copyright']
 ----
-include::finish/kitchen/src/main/java/io/openliberty/guides/kitchen/KitchenService.java[]
+include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
 ----
 
 === Configuring your containers
 
 Navigate to the `start` directory to begin.
 
-The `OpenLibertyCafe` reactive application consists of multiple microservices. You will focus on the `kitchen` microservice for this guide.
-MST and Kafka test containers have already been included as required test dependencies in your Maven project
-[hotspot=dependencies file=0]`pom.xml` file.
+The provided example reactive application consists of the `System` and `Inventory` microservices, which produces and
+consumes messages to Kafka respectively. You will write integration tests to see how you can use the Kafka consumer
+and producer client APIs to test each service. MST and Kafka test containers have already been included as required
+test dependencies in your Maven project [hotspot=dependencies file=0]`system/pom.xml` file.
 
 Run the following Maven goal to install the `models` artifact to the local Maven repository for later use by the
-`kitchen` and other services:
+`System` and `Inventory` services:
 
 [role='command']
 ```
@@ -158,7 +160,7 @@ mvn -pl models install
 ```
 
 With Open Liberty development mode, you can use MicroShed Testing to run tests on an already running Open Liberty server.
-Navigate to the `start/kitchen` directory.
+Navigate to the `start/system` directory.
 
 [role='command']
 include::{common-includes}/devmode-start.adoc[]
@@ -169,7 +171,7 @@ Now you can add your test files.
 [role="code_command hotspot file=1", subs="quotes"]
 ----
 #Create the `AppContainerConfig` class.#
-`kitchen/src/test/java/it/io/openliberty/guides/kitchen/AppContainerConfig.java`
+`system/src/test/java/it/io/openliberty/guides/system/AppContainerConfig.java`
 ----
 
 
@@ -177,51 +179,40 @@ The [hotspot=AppContainerConfig file=1]`AppContainerConfig` class externalizes t
 the same application containers across multiple tests. The [hotspot=container file=1]`@Container` annotation denotes an
 application container that will be started up and used in the tests.
 
-There are two containers that will be used for testing the `kitchen` service. First is the [hotspot=kafka file=1]`kafka` container
-that the `kitchen` service will be producing and consuming messages from. Second is the [hotspot=kitchen file=1]`kitchen` container,
-which uses the same container that you built instead of a mimic test container.
+There are two containers that will be used for testing the `System` service. First is the [hotspot=kafka file=1]`kafka` container
+that the `System` service will be producing messages to. Second is the [hotspot=system file=1]`system` container,
+which uses the same container that you built.
 
-The [hotspot=dependsOn file=1]`dependsOn()` annotation specifies that the `kitchen` service container should wait until the `kafka`
+The [hotspot=dependsOn file=1]`dependsOn()` annotation specifies that the `system` service container should wait until the `kafka`
 container is ready before starting up.
 
 === Testing your containers
 
-Now you can start writing your tests that will use the configured containers.
+Now you can start writing your test that will use the configured containers.
 
 
 [role="code_command hotspot file=2", subs="quotes"]
 ----
-#Create the `KitchenServiceIT` class.#
-`kitchen/src/test/java/it/io/openliberty/guides/kitchen/KitchenServiceIT.java`
+#Create the `SystemServiceIT` class.#
+`system/src/test/java/it/io/openliberty/guides/system/SystemServiceIT.java`
 ----
 
 
-The tests use the Kafka client APIs `KafkaProducer` and `KafkaConsumer` to communicate with the `kafka` container, and
-is configured using the [hotspot=KafkaProducerConfig file=2]`@KafkaProducerConfig` and
-[hotspot=KafkaConsumerConfig file=2]`@KafkaConsumerConfig` annotations. The consumer client is configured
-to subscribe and consume messages from the [hotspot=statusTopic file=2]`statusTopic` topic. The producer can
-produce messages to any topic and is shown producing an Order message to the [hotspot=foodTopic file=2]`foodTopic` topic.
+The test uses the [hotspot=KafkaConsumer file=2]`KafkaConsumer` client API, and
+is configured using the [hotspot=KafkaConsumerConfig file=2]`@KafkaConsumerConfig` annotation. The consumer client is configured
+to consume messages from the [hotspot=systemLoadTopic file=2]`systemLoadTopic` topic from the `kafka` container.
 To learn more about Kafka APIs and how to use them, check out the
 https://kafka.apache.org/documentation/#api[official Kafka Documentation^]
 
-To transmit messages to a stream, they will need to be serialized into bytes. Kafka has its own default serializer,
-however, a customer serializer has been provided for you, and is configured to the producer's
-[hotspot=KafkaProducerConfig file=2]`valueSerializer`. The custom serializer is implemented in the
-[hotspot=JsonbSerializer file=3]`Order` class. Similarly, a deserializer has been configured to the consumer's
+To consume messages from a stream, they will need to be deserialized from bytes. Kafka has its own default deserializer,
+however, a customer deserializer has been provided for you, and is configured to the consumers's
 [hotspot=valueDeserializer file=2]`valueDeserializer` and has been implemented in the
-[hotspot=OrderDeserializer file=3]`Order` class.
+[hotspot=SystemLoadDeserializer file=3]`SystemLoad` class.
 
-The [hotspot=testInitFoodOrder file=2]`testInitFoodOrder` test will be executed first, and will produce a message to the
-[hotspot=foodTopic file=2]`foodTopic` topic. The `kitchen` service will consume that message from the `foodOrderConsume`
-stream, as denoted by the [hotspot=Incoming file=4]`@Incoming` annotation on the
-[hotspot=receiveFoodOrder file=4]`receiveFoodOrder()` method. The
-[hotspot=receiveFoodOrder file=4]`receiveFoodOrder()` method will publish back an `IN_PROGRESS` message to the
-`foodOrderPublishStatus` stream, as denoted by the [hotspot=Outgoing file=4]`@Outgoing` annotation.
-
-The [hotspot=verify file=2]`verify()` method will [hotspot=poll file=2]`poll()` records from Kafka over 30 seconds.
-It will then [hotspot=assert file=2]`verify` that the record polled matched the expected record. For example, the first
-[hotspot=verifyInProgress file=2]`verify()` method call expects that the first `Order` record polled to have a status of
-[hotspot=verifyInProgress file=2]`IN_PROGRESS`, and also ensures that the `Order` record has the right `orderId`.
+The running `System` service container will produce messages to the [hotspot=systemLoad file=4]`systemLoad` Kafka topic,
+as denoted by the [hotspot=Outgoing file=4]`@Outgoing` annotation. The [hotspot=testCpuStatus file=2]`testCpuStatus()`
+test method will [hotspot=poll file=2]`poll()` records from Kafka over 30 seconds.
+It will then [hotspot=assert file=2]`verify` that the record polled matched the expected record.
 
 [role='command']
 include::{common-includes}/devmode-test.adoc[]
@@ -230,11 +221,11 @@ You will see the following output:
 
 [role='no_copy']
 ```
- Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 25.674 s - in it.io.openliberty.guides.kitchen.KitchenServiceIT
+ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 25.674 s - in it.io.openliberty.guides.system.SystemServiceIT
 
  Results:
 
- Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
  Integration tests finished.
 ```
@@ -253,28 +244,114 @@ You will see the following output:
 
 [role='no_copy']
 ```
- Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.001 s - in it.io.openliberty.guides.kitchen.KitchenServiceIT
+ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.001 s - in it.io.openliberty.guides.system.SystemServiceIT
 
  Results:
 
- Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
 
- --- maven-failsafe-plugin:2.22.2:verify (verify) @ kitchen ---
+ --- maven-failsafe-plugin:2.22.2:verify (verify) @ system ---
  ------------------------------------------------------------------------
  BUILD SUCCESS
  ------------------------------------------------------------------------
- Total time:  37.817 s
+ Total time:  52.817 s
  Finished at: 2020-03-13T16:28:55-04:00
  ------------------------------------------------------------------------
 ```
 
-All of the other microservices in the application contain similar tests; feel free to try them out with the same commands
-in their respective directories.
+== Creating the Inventory service tests
+
+//File 0
+InventoryServiceIT.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java[]
+----
+
+//File 1
+SystemLoad.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/models/src/main/java/io/openliberty/guides/models/SystemLoad.java[]
+----
+
+The `Inventory` service can be tested the same way as the `System` service, the only difference being that the `Inventory`
+service consumes messages, allowing tests to be written using the Kafka producer client.
+
+=== Configuring your containers
+
+The `AppContainerConfig` class has been provided for you, and is configured in the same way as the `System` service.
+The two containers configured for use in the `Inventory` service integration test is the `Kafka` and `Inventory`
+containers.
+
+=== Testing your containers
+
+[role="code_command hotspot file=0", subs="quotes"]
+----
+#Create the `InventoryServiceIT` class.#
+`inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java`
+----
+
+The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [hotspot=KafkaProducer file=0]`KafkaProducer`
+client to produce messages in the test environment for the `Inventory` service container to consume. The producer is
+configured using the [hotspot=KafkaProducerConfig file=0]`@KafkaProducerConfig` annotation to use the custom serializer provided
+in the [hotspot=JsonbSerializer file=1]`SystemLoad` class. The config annotation does not include a topic for the client
+to produce messages to, as it has the flexibility to produce messages to any topic, and is shown producing messages to
+the [hotspot=systemLoadTopic file=0]`systemLoadTopic` topic.
+
+The [hotspot=testCpuUsage file=0]`testCpuUsage` test method will produce a message to Kafka, and then
+[hotspot=assert file=0]`verify` that the response from the `Inventory` service matches what is expected.
+
+[role='command']
+include::{common-includes}/devmode-test.adoc[]
+
+You will see the following output:
+
+[role='no_copy']
+```
+ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 32.564 s - in it.io.openliberty.guides.inventory.InventoryServiceIT
+
+ Results:
+
+ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+ Integration tests finished.
+```
+
+After you are finished running tests, stop the Open Liberty server by typing `q` in the shell session where you ran
+the server, and then press the `enter/return` key.
+
+You can also run the tests via a cold start by running the following command:
+
+[role='command']
+```
+mvn verify
+```
+
+You will see the following output:
+
+[role='no_copy']
+```
+ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 42.345 s - in it.io.openliberty.guides.inventory.InventoryServiceIT
+
+ Results:
+
+ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+
+ --- maven-failsafe-plugin:2.22.2:verify (verify) @ inventory ---
+ ------------------------------------------------------------------------
+ BUILD SUCCESS
+ ------------------------------------------------------------------------
+ Total time:  48.213 s
+ Finished at: 2020-03-13T16:43:34-04:00
+ ------------------------------------------------------------------------
+```
 
 == Great work! You're done!
 
-You have just tested a reactive messaging service using MicroShed Testing.
+You have just tested two reactive messaging services using MicroShed Testing.
 
 == Related Links
 

@@ -18,19 +18,31 @@ import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.junit.jupiter.Container;
 
+// tag::AppContainerConfig[]
 public class AppContainerConfig implements SharedContainerConfiguration {
 
     private static Network network = Network.newNetwork();
 
+    // tag::container[]
+    // tag::kafka[]
     @Container
+    // end::container[]
     public static KafkaContainer kafka = new KafkaContainer()
                     .withNetwork(network);
-    
+    // end::kafka[]
+
+    // tag::container[]
+    // tag::system[]
     @Container
-    public static ApplicationContainer app = new ApplicationContainer()
+    // end::container[]
+    public static ApplicationContainer system = new ApplicationContainer()
                     .withAppContextRoot("/")
                     .withExposedPorts(9083)
                     .withReadinessPath("/health/ready")
                     .withNetwork(network)
+                    // tag::dependsOn[]
                     .dependsOn(kafka);
+                    // end::dependsOn[]
+    // end::system[]
 }
+// end::AppContainerConfig[]
