@@ -31,10 +31,10 @@ public class AppContainerConfig implements SharedContainerConfiguration {
                     .withNetwork(network);
     // end::kafka[]
 
-    // tag::container[]
+    // tag::container2[]
     // tag::system[]
     @Container
-    // end::container[]
+    // end::container2[]
     public static ApplicationContainer system = new ApplicationContainer()
                     .withAppContextRoot("/")
                     .withExposedPorts(9083)

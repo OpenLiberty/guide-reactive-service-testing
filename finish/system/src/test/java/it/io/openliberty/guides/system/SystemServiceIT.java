@@ -38,7 +38,7 @@ public class SystemServiceIT {
 
     private static final long POLL_TIMEOUT = 30 * 1000;
 
-    // tag::KafkaConsumer[]
+    // tag::KafkaConsumer2[]
     // tag::KafkaConsumerConfig[]
     // tag::valueDeserializer[]
     @KafkaConsumerConfig(valueDeserializer = SystemLoadDeserializer.class,
@@ -50,7 +50,7 @@ public class SystemServiceIT {
                          properties = ConsumerConfig.AUTO_OFFSET_RESET_CONFIG + "=earliest")
     // end::KafkaConsumerConfig[]
     public static KafkaConsumer<String, SystemLoad> cpuConsumer;
-    // end::KafkaConsumer[]
+    // end::KafkaConsumer2[]
 
     // tag::testCpuStatus[]
     @Test
@@ -60,7 +60,8 @@ public class SystemServiceIT {
         long elapsedTime = 0;
         while (recordsProcessed == 0 && elapsedTime < POLL_TIMEOUT) {
             // tag::poll[]
-            ConsumerRecords<String, SystemLoad> records = cpuConsumer.poll(Duration.ofMillis(3000));
+            ConsumerRecords<String, SystemLoad> records =
+                    cpuConsumer.poll(Duration.ofMillis(3000));
             // end::poll[]
             System.out.println("Polled " + records.count() + " records from Kafka:");
             for (ConsumerRecord<String, SystemLoad> record : records) {

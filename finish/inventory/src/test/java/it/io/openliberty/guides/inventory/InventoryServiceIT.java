@@ -19,7 +19,9 @@ import java.util.Properties;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
+// tag::KafkaProducer[]
 import org.apache.kafka.clients.producer.KafkaProducer;
+// end::KafkaProducer[]
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -44,18 +46,19 @@ public class InventoryServiceIT {
     @RESTClient
     public static InventoryResource inventoryResource;
 
-    // tag::KafkaProducer[]
+    // tag::KafkaProducer2[]
     // tag::KafkaProducerConfig[]
     @KafkaProducerConfig(valueSerializer = JsonbSerializer.class)
     // end::KafkaProducerConfig[]
     public static KafkaProducer<String, SystemLoad> cpuProducer;
-    // end::KafkaProducer[]
+    // end::KafkaProducer2[]
 
     @AfterAll
     public static void cleanup() {
         inventoryResource.resetSystems();
     }
 
+    // tag::testCpuUsage[]
     @Test
     public void testCpuUsage() throws InterruptedException {
         SystemLoad c = new SystemLoad("localhost", 1.1);
@@ -64,23 +67,25 @@ public class InventoryServiceIT {
         // end::systemLoadTopic[]
         Thread.sleep(5000);
         Response response = inventoryResource.getSystems();
-        List<Properties> systems = response.readEntity(new GenericType<List<Properties>>() {});
+        List<Properties> systems =
+                response.readEntity(new GenericType<List<Properties>>() {});
         // tag::assert[]
         Assertions.assertEquals(200, response.getStatus(),
                 "Response should be 200");
         Assertions.assertEquals(systems.size(), 1);
         // end::assert[]
         for (Properties system : systems) {
-            // tag::assert[]
+            // tag::assert2[]
             Assertions.assertEquals(c.hostId, system.get("hostname"),
                     "HostId not match!");
-            // end::assert[]
+            // end::assert2[]
             BigDecimal cpu = (BigDecimal) system.get("systemLoad");
-            // tag::assert[]
+            // tag::assert3[]
             Assertions.assertEquals(c.cpuUsage, cpu.doubleValue(),
                     "CPU Usage not match!");
-            // end::assert[]
+            // end::assert3[]
         }
     }
+    // end::testCpuUsage[]
 }
 // end::InventoryServiceIT[]

@@ -50,7 +50,8 @@ public class SystemService {
     // end::Outgoing[]
     public Publisher<SystemLoad> sendSystemLoad() {
         return Flowable.interval(15, TimeUnit.SECONDS)
-                .map((interval -> new SystemLoad(getHostname(), osMean.getSystemLoadAverage())));
+                .map((interval -> new SystemLoad(getHostname(),
+                        osMean.getSystemLoadAverage())));
     }
     // end::systemLoad[]
     
