@@ -12,11 +12,11 @@
 // end::copyright[]
 package io.openliberty.guides.inventory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -41,18 +41,12 @@ public class InventoryResource {
 
     @Inject
     private InventoryManager manager;
-
     
     @GET
-    // tag::inventoryEndPoint[]
     @Path("/systems")
-    // end::inventoryEndPoint[]
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSystems() {
-        List<Properties> systems = manager.getSystems()
-                .values()
-                .stream()
-                .collect(Collectors.toList());
+        List<Properties> systems = new ArrayList<>(manager.getSystems().values());
         return Response
                 .status(Response.Status.OK)
                 .entity(systems)
@@ -85,9 +79,7 @@ public class InventoryResource {
                 .build();
     }
 
-    // tag::systemLoad[]
     @Incoming("systemLoad")
-    // end::systemLoad[]
     public void updateStatus(SystemLoad s)  {
         String hostId = s.hostId;
         if (manager.getSystem(hostId).isPresent()) {

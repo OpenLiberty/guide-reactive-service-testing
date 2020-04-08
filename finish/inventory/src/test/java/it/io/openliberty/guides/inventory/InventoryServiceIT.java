@@ -42,18 +42,13 @@ import io.openliberty.guides.models.SystemLoad.JsonbSerializer;
 @MicroShedTest
 @SharedContainerConfig(AppContainerConfig.class)
 @TestMethodOrder(OrderAnnotation.class)
-public class InventoryEndpointIT {
+public class InventoryServiceIT {
 
     @RESTClient
     public static InventoryResource inventoryResource;
 
     @KafkaProducerConfig(valueSerializer = JsonbSerializer.class)
     public static KafkaProducer<String, SystemLoad> cpuProducer;
-
-    @KafkaConsumerConfig(valueDeserializer = SystemLoadDeserializer.class, 
-            groupId = "system-load-status", topics = "systemLoadTopic", 
-            properties = ConsumerConfig.AUTO_OFFSET_RESET_CONFIG + "=earliest")
-    public static KafkaConsumer<String, SystemLoad> cpuConsumer;
 
     @AfterAll
     public static void cleanup() {
@@ -62,7 +57,7 @@ public class InventoryEndpointIT {
 
     @Test
     public void testCpuUsage() throws InterruptedException {
-        SystemLoad c = new SystemLoad("localhost", new Double(1.1));
+        SystemLoad c = new SystemLoad("localhost", 1.1);
         cpuProducer.send(new ProducerRecord<String, SystemLoad>("systemLoadTopic", c));
         Thread.sleep(5000);
         Response response = inventoryResource.getSystems();
@@ -71,9 +66,11 @@ public class InventoryEndpointIT {
                 "Response should be 200");
         Assertions.assertEquals(systems.size(), 1);
         for (Properties system : systems) {
-            Assertions.assertEquals(c.hostId, system.get("hostname"), "HostId not match!");
+            Assertions.assertEquals(c.hostId, system.get("hostname"),
+                    "HostId not match!");
             BigDecimal cpu = (BigDecimal) system.get("systemLoad");
-            Assertions.assertEquals(c.cpuUsage.doubleValue(), cpu.doubleValue(), "CPU Usage not match!");
+            Assertions.assertEquals(c.cpuUsage.doubleValue(), cpu.doubleValue(),
+                    "CPU Usage not match!");
         }
     }
 }
