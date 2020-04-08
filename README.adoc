@@ -179,7 +179,7 @@ Now you can add your test files.
 
 
 The [hotspot=AppContainerConfig file=1]`AppContainerConfig` class externalizes test container set up and configuration, so you can use
-the same application containers across multiple tests. The [hotspot=container, container2 file=1]`@Container` annotation denotes an
+the same application containers across multiple tests. The [hotspot=container container2 file=1]`@Container` annotation denotes an
 application container that will be started up and used in the tests.
 
 There are two containers that will be used for testing the `System` service. First is the [hotspot=kafka file=1]`kafka` container
@@ -201,7 +201,7 @@ Now you can start writing your test that will use the configured containers.
 ----
 
 
-The test uses the [hotspot=KafkaConsumer, KafkaConsumer2 file=2]`KafkaConsumer` client API, and
+The test uses the [hotspot=KafkaConsumer KafkaConsumer2 file=2]`KafkaConsumer` client API, and
 is configured using the [hotspot=KafkaConsumerConfig file=2]`@KafkaConsumerConfig` annotation. The consumer client is configured
 to consume messages from the [hotspot=systemLoadTopic file=2]`systemLoadTopic` topic from the `kafka` container.
 To learn more about Kafka APIs and how to use them, check out the
@@ -297,7 +297,7 @@ containers.
 `inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java`
 ----
 
-The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [hotspot=KafkaProducer, KafkaProducer file=0]`KafkaProducer`
+The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [hotspot=KafkaProducer KafkaProducer file=0]`KafkaProducer`
 client to produce messages in the test environment for the `Inventory` service container to consume. The producer is
 configured using the [hotspot=KafkaProducerConfig file=0]`@KafkaProducerConfig` annotation to use the custom serializer provided
 in the [hotspot=JsonbSerializer file=1]`SystemLoad` class. The config annotation does not include a topic for the client
@@ -305,7 +305,7 @@ to produce messages to, as it has the flexibility to produce messages to any top
 the [hotspot=systemLoadTopic file=0]`systemLoadTopic` topic.
 
 The [hotspot=testCpuUsage file=0]`testCpuUsage` test method will produce a message to Kafka, and then
-[hotspot=assert, assert2, assert3 file=0]`verify` that the response from the `Inventory` service matches what is expected.
+[hotspot=assert assert2 assert3 file=0]`verify` that the response from the `Inventory` service matches what is expected.
 
 [role='command']
 include::{common-includes}/devmode-test.adoc[]
