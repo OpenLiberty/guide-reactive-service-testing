@@ -9,10 +9,10 @@
 :projectid: reactive-service-testing
 :page-layout: guide-multipane
 :page-duration: 20 minutes
-:page-releasedate: 2020-04-13
+:page-releasedate: 2020-04-16
 :page-guide-category: microprofile
 :page-essential: false
-:page-description: Learn how to use MicroShed Testing to test reactive messaging microservices.
+:page-description: Learn how to use Kafka client APIs and MicroShed Testing to test a MicroProfile Reactive Messaging application.
 :guide-author: Open Liberty
 :page-tags: ['MicroProfile', 'Jakarta EE', 'Microservices']
 :page-related-guides: ['microprofile-reactive-messaging', 'microshed-testing', 'reactive-messaging-sse', 'microprofile-reactive-messaging-acknowledgement', 'microprofile-rest-client-async']
@@ -22,12 +22,12 @@
 :page-seo-description: A getting started tutorial with examples on how to test asynchronous Java microservices in a MicroProfile Reactive Messaging application using MicroShed Testing (MST), as well as Kafka's producer and consumer client APIs.
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/dev
 :source-highlighter: prettify
-= Testing a MicroProfile Reactive Messaging application using MicroShed Testing
+= Testing a MicroProfile Reactive Messaging application
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website].
 
-Learn how to use Kafka client APIs and MicroShed Testing to test a MicroProfile Reactive Messaging application.
+Learn how to use Kafka client APIs and MicroShed Testing to test reactive messaging microservices.
 
 == What you'll learn
 
@@ -45,7 +45,7 @@ be connected to external messaging systems.
 The application featured in this guide uses the `system` and `inventory`
 services to showcase MicroProfile Reactive Messaging. To learn more about MicroProfile Reactive Messaging and how
 the application works, check out the
-https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating asynchronous reactive microservices using MicroProfile Reactive Messaging^]
+https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating reactive microservices using MicroProfile Reactive Messaging^]
 guide.
 
 === What is MicroShed Testing?
