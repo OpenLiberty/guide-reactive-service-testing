@@ -65,11 +65,11 @@ public class SystemServiceIT {
             // end::poll[]
             System.out.println("Polled " + records.count() + " records from Kafka:");
             for (ConsumerRecord<String, SystemLoad> record : records) {
-                SystemLoad c = record.value();
-                System.out.println(c);
+                SystemLoad sl = record.value();
+                System.out.println(sl);
                 // tag::assert[]
-                assertNotNull(c.hostId);
-                assertNotNull(c.cpuUsage);
+                assertNotNull(sl.hostId);
+                assertNotNull(sl.loadAverage);
                 // end::assert[]
                 recordsProcessed++;
             }

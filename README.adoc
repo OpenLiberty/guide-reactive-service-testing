@@ -22,7 +22,7 @@
 :page-seo-description: A getting started tutorial with examples on how to test asynchronous Java microservices in a MicroProfile Reactive Messaging application using MicroShed Testing (MST).
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/dev
 :source-highlighter: prettify
-= Testing a reactive messaging microservice using MicroShed Testing.
+= Testing a reactive messaging microservice using MicroShed Testing
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website].
@@ -37,7 +37,7 @@ write tests that exercise the service inside of a Docker container.
 === What is Microprofile Reactive Messaging?
 
 The MicroProfile Reactive Messaging specification utilizes a message-driven architecture by providing an
-easy way to send, receive, and process messages. The application featured in this guide uses the `System` and `Inventory`
+easy way to send, receive, and process messages. The application featured in this guide uses the `system` and `inventory`
 services to showcase a reactive messaging architecture. To learn more about Microprofile Reactive Messaging and how
 the application works, check out the
 https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating asynchronous reactive microservices using MicroProfile Reactive Messaging^]
@@ -67,14 +67,14 @@ include::{common-includes}/gitclone.adoc[]
 The `finish` directory in the root of this guide contains the finished application. Give it a try before you proceed.
 
 To try out the tests, go to the `finish` directory and run the following Maven goal to install the `models`
-artifact to the local Maven repository for later use by the `System` and `Inventory` services:
+artifact to the local Maven repository for later use by the `system` and `inventory` services:
 
 [role='command']
 ```
 mvn -pl models install
 ```
 
-Now navigate to the `finish/system` directory and run the following Maven goal to build the `System` service and run
+Now navigate to the `finish/system` directory and run the following Maven goal to build the `system` service and run
 the integration tests on an Open Liberty server in a container:
 
 [role='command']
@@ -105,10 +105,10 @@ You will see the following output:
 This command might take some time to run the first time because the dependencies and the Docker image for Open Liberty
 must download. If you run the same command again, it will be faster.
 
-Similarly, you can try out the `Inventory` integration tests by repeating the same commands in the `finish/inventory`
+Similarly, you can try out the `inventory` integration tests by repeating the same commands in the `finish/inventory`
 directory.
 
-== Creating the System service tests
+== Testing using the Kafka producer client
 
 //File 0
 system/pom.xml
@@ -145,17 +145,15 @@ SystemService.java
 include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
 ----
 
-=== Configuring your containers
-
 Navigate to the `start` directory to begin.
 
-The provided example reactive application consists of the `System` and `Inventory` microservices, which produces to and
+The provided example reactive application consists of the `system` and `inventory` microservices, which produces to and
 consumes messages from Kafka respectively. You will write integration tests to see how you can use the Kafka consumer
 and producer client APIs to test each service. MST and Kafka test containers have already been included as required
 test dependencies in your Maven project `system/` and `inventory/` [hotspot=dependencies file=0]`pom.xml` files.
 
 Run the following Maven goal to install the `models` artifact to the local Maven repository for later use by the
-`System` and `Inventory` services:
+`system` and `inventory` services:
 
 [role='command']
 ```
@@ -170,6 +168,7 @@ include::{common-includes}/devmode-start.adoc[]
 
 Now you can add your test files.
 
+=== Configuring your containers
 
 [role="code_command hotspot file=1", subs="quotes"]
 ----
@@ -182,8 +181,8 @@ The [hotspot=AppContainerConfig file=1]`AppContainerConfig` class externalizes t
 the same application containers across multiple tests. The [hotspot=container hotspot=container2 file=1]`@Container` annotation denotes an
 application container that will be started up and used in the tests.
 
-There are two containers that will be used for testing the `System` service. First is the [hotspot=kafka file=1]`kafka` container
-that the `System` service will be producing messages to. Second is the [hotspot=system file=1]`system` container,
+There are two containers that will be used for testing the `system` service. First is the [hotspot=kafka file=1]`kafka` container
+that the `system` service will be producing messages to. Second is the [hotspot=system file=1]`system` container,
 which uses the same container that you built.
 
 The [hotspot=dependsOn file=1]`dependsOn()` annotation specifies that the `system` service container should wait until the `kafka`
@@ -212,9 +211,9 @@ however, a customer deserializer has been provided for you, and is configured to
 [hotspot=valueDeserializer file=2]`valueDeserializer` and has been implemented in the
 [hotspot=SystemLoadDeserializer file=3]`SystemLoad` class.
 
-The running `System` service container will produce messages to the [hotspot=systemLoad file=4]`systemLoad` Kafka topic,
+The running `system` service container will produce messages to the [hotspot=systemLoad file=4]`systemLoad` Kafka topic,
 as denoted by the [hotspot=Outgoing file=4]`@Outgoing` annotation. The [hotspot=testCpuStatus file=2]`testCpuStatus()`
-test method will [hotspot=poll file=2]`poll()` records from Kafka over 30 seconds.
+test method will [hotspot=poll file=2]`poll()` records from Kafka every three seconds until the timeout limit.
 It will then [hotspot=assert file=2]`verify` that the record polled matched the expected record.
 
 [role='command']
@@ -263,7 +262,7 @@ You will see the following output:
  ------------------------------------------------------------------------
 ```
 
-== Creating the Inventory service tests
+== Testing using the Kafka consumer client
 
 //File 0
 InventoryServiceIT.java
@@ -279,17 +278,26 @@ SystemLoad.java
 include::finish/models/src/main/java/io/openliberty/guides/models/SystemLoad.java[]
 ----
 
-The `Inventory` service can be tested the same way as the `System` service, the only difference being that the `Inventory`
+The `inventory` service can be tested the same way as the `system` service, the only difference being that the `inventory`
 service consumes messages, allowing tests to be written using the Kafka producer client.
 
 === Configuring your containers
 
-The `AppContainerConfig` class has been provided for you, and is configured in the same way as the `System` service.
-The two containers configured for use in the `Inventory` service integration test is the `Kafka` and `Inventory`
+The `AppContainerConfig` class has been provided for you, and is configured in the same way as the `system` service.
+The two containers configured for use in the `inventory` service integration test is the `Kafka` and `inventory`
 containers.
 
 === Testing your containers
 
+Similar to the `system` service, you can run Open Liberty in dev mode to listen for file changes by running the
+following command:
+
+[role='command']
+```
+mvn liberty:dev
+```
+
+Now you can create your integrated test.
 
 [role="code_command hotspot file=0", subs="quotes"]
 ----
@@ -298,14 +306,14 @@ containers.
 ----
 
 The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer`
-client to produce messages in the test environment for the `Inventory` service container to consume. The producer is
+client to produce messages in the test environment for the `inventory` service container to consume. The producer is
 configured using the [hotspot=KafkaProducerConfig file=0]`@KafkaProducerConfig` annotation to use the custom serializer provided
-in the [hotspot=JsonbSerializer file=1]`SystemLoad` class. The config annotation does not include a topic for the client
+in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class. The config annotation does not include a topic for the client
 to produce messages to, as it has the flexibility to produce messages to any topic, and is shown producing messages to
 the [hotspot=systemLoadTopic file=0]`systemLoadTopic` topic.
 
 The [hotspot=testCpuUsage file=0]`testCpuUsage` test method will produce a message to Kafka, and then
-[hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`verify` that the response from the `Inventory` service matches what is expected.
+[hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`verify` that the response from the `inventory` service matches what is expected.
 
 [role='command']
 include::{common-includes}/devmode-test.adoc[]
