@@ -35,7 +35,7 @@ import org.microshed.testing.kafka.KafkaProducerConfig;
 
 import io.openliberty.guides.inventory.InventoryResource;
 import io.openliberty.guides.models.SystemLoad;
-import io.openliberty.guides.models.SystemLoad.JsonbSerializer;
+import io.openliberty.guides.models.SystemLoad.SystemLoadSerializer;
 
 @MicroShedTest
 @SharedContainerConfig(AppContainerConfig.class)
@@ -48,7 +48,7 @@ public class InventoryServiceIT {
 
     // tag::KafkaProducer2[]
     // tag::KafkaProducerConfig[]
-    @KafkaProducerConfig(valueSerializer = JsonbSerializer.class)
+    @KafkaProducerConfig(valueSerializer = SystemLoadSerializer.class)
     // end::KafkaProducerConfig[]
     public static KafkaProducer<String, SystemLoad> cpuProducer;
     // end::KafkaProducer2[]
@@ -61,9 +61,9 @@ public class InventoryServiceIT {
     // tag::testCpuUsage[]
     @Test
     public void testCpuUsage() throws InterruptedException {
-        SystemLoad c = new SystemLoad("localhost", 1.1);
+        SystemLoad sl = new SystemLoad("localhost", 1.1);
         // tag::systemLoadTopic[]
-        cpuProducer.send(new ProducerRecord<String, SystemLoad>("systemLoadTopic", c));
+        cpuProducer.send(new ProducerRecord<String, SystemLoad>("systemLoadTopic", sl));
         // end::systemLoadTopic[]
         Thread.sleep(5000);
         Response response = inventoryResource.getSystems();
@@ -76,13 +76,13 @@ public class InventoryServiceIT {
         // end::assert[]
         for (Properties system : systems) {
             // tag::assert2[]
-            Assertions.assertEquals(c.hostId, system.get("hostname"),
+            Assertions.assertEquals(sl.hostId, system.get("hostname"),
                     "HostId not match!");
             // end::assert2[]
-            BigDecimal cpu = (BigDecimal) system.get("systemLoad");
+            BigDecimal cpuLoad = (BigDecimal) system.get("systemLoad");
             // tag::assert3[]
-            Assertions.assertEquals(c.cpuUsage, cpu.doubleValue(),
-                    "CPU Usage not match!");
+            Assertions.assertEquals(sl.loadAverage, cpuLoad.doubleValue(),
+                    "CPU load doesn't match!");
             // end::assert3[]
         }
     }

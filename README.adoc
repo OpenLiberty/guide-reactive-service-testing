@@ -308,7 +308,7 @@ Now you can create your integrated test.
 The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer`
 client to produce messages in the test environment for the `inventory` service container to consume. The producer is
 configured using the [hotspot=KafkaProducerConfig file=0]`@KafkaProducerConfig` annotation to use the custom serializer provided
-in the [hotspot=JsonbSerializer file=1]`SystemLoad` class. The config annotation does not include a topic for the client
+in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class. The config annotation does not include a topic for the client
 to produce messages to, as it has the flexibility to produce messages to any topic, and is shown producing messages to
 the [hotspot=systemLoadTopic file=0]`systemLoadTopic` topic.
 

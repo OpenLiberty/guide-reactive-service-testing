@@ -25,11 +25,11 @@ public class SystemLoad {
     private static final Jsonb jsonb = JsonbBuilder.create();
 
     public String hostId;
-    public Double cpuUsage;
+    public Double loadAverage;
         
-    public SystemLoad(String hostId, Double cpuUsage) {
+    public SystemLoad(String hostId, Double cpuLoadAvg) {
         this.hostId = hostId;
-        this.cpuUsage = cpuUsage;
+        this.loadAverage = cpuLoadAvg;
     }
 
     public SystemLoad() {
@@ -39,29 +39,29 @@ public class SystemLoad {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SystemLoad)) return false;
-        SystemLoad c = (SystemLoad) o;
-        return Objects.equals(hostId, c.hostId)
-                && Objects.equals(cpuUsage, c.cpuUsage);
+        SystemLoad sl = (SystemLoad) o;
+        return Objects.equals(hostId, sl.hostId)
+                && Objects.equals(loadAverage, sl.loadAverage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(hostId, cpuUsage);
+        return Objects.hash(hostId, loadAverage);
     }
     
     @Override
     public String toString() {
-        return "CpuUsage: " + jsonb.toJson(this);
+        return "CpuLoadAverage: " + jsonb.toJson(this);
     }
 
-    // tag::JsonbSerializer[]
-    public static class JsonbSerializer implements Serializer<Object> {
+    // tag::SystemLoadSerializer[]
+    public static class SystemLoadSerializer implements Serializer<Object> {
         @Override
         public byte[] serialize(String topic, Object data) {
           return jsonb.toJson(data).getBytes();
         }
     }
-    // end::JsonbSerializer[]
+    // end::SystemLoadSerializer[]
 
     // tag::SystemLoadDeserializer[]
     public static class SystemLoadDeserializer implements Deserializer<SystemLoad> {
