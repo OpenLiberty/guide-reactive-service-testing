@@ -18,26 +18,31 @@
 :page-related-guides: ['microprofile-reactive-messaging', 'microshed-testing', 'reactive-messaging-sse', 'microprofile-reactive-messaging-acknowledgement', 'microprofile-rest-client-async']
 :page-permalink: /guides/{projectid}
 :imagesdir: /img/guide/{projectid}
-:page-seo-title: Testing MicroProfile Reactive Messaging microservices using MicroShed Testing (MST)
+:page-seo-title: Testing a MicroProfile Reactive Messaging application using MicroShed Testing (MST)
 :page-seo-description: A getting started tutorial with examples on how to test asynchronous Java microservices in a MicroProfile Reactive Messaging application using MicroShed Testing (MST).
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/dev
 :source-highlighter: prettify
-= Testing a reactive messaging microservice using MicroShed Testing
+= Testing a MicroProfile Reactive Messaging application using MicroShed Testing
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website].
 
-Learn how to test reactive messaging services using MicroShed Testing.
+Learn how to use Kafka client APIs to test MicroProfile Reactive Messaging using MicroShed Testing.
 
 == What you'll learn
 
-You will start with a reactive messaging service that runs on Open Liberty and learn how to use MicroShed Testing to
-write tests that exercise the service inside of a Docker container.
+You will start with a reactive messaging service that runs on Open Liberty and learn how to use Kafka client APIs and
+MicroShed Testing to write tests that exercise the service inside of a Docker container.
 
 === What is Microprofile Reactive Messaging?
 
-The MicroProfile Reactive Messaging specification utilizes a message-driven architecture by providing an
-easy way to send, receive, and process messages. The application featured in this guide uses the `system` and `inventory`
+MicroProfile Reactive Messaging provides a very easy-to-use way to send, receive, and process messages asynchronously and
+is well-suited to writing applications that process streams of events. With MicroProfile Reactive Messaging, you annotate
+application beans’ methods and, under the covers, Liberty converts these to reactive streams-compatible publishers,
+subscribers and processors and connects them up to each other. It also provides a Connector API to allow your methods to
+be connected to external messaging systems.
+
+The application featured in this guide uses the `system` and `inventory`
 services to showcase a reactive messaging architecture. To learn more about Microprofile Reactive Messaging and how
 the application works, check out the
 https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating asynchronous reactive microservices using MicroProfile Reactive Messaging^]
