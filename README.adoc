@@ -22,7 +22,7 @@
 :page-seo-description: A getting started tutorial with examples on how to test asynchronous Java microservices in a MicroProfile Reactive Messaging application using MicroShed Testing (MST).
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/dev
 :source-highlighter: prettify
-= Testing a reactive messaging microservice using MicroShed Testing.
+= Testing a reactive messaging microservice using MicroShed Testing
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website].
@@ -105,10 +105,10 @@ You will see the following output:
 This command might take some time to run the first time because the dependencies and the Docker image for Open Liberty
 must download. If you run the same command again, it will be faster.
 
-Similarly, you can try out the `Inventory` integration tests by repeating the same commands in the `finish/inventory`
+Similarly, you can try out the `inventory` integration tests by repeating the same commands in the `finish/inventory`
 directory.
 
-== Creating the system service tests
+== Testing using the Kafka producer client
 
 //File 0
 system/pom.xml
@@ -145,8 +145,6 @@ SystemService.java
 include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
 ----
 
-=== Configuring your containers
-
 Navigate to the `start` directory to begin.
 
 The provided example reactive application consists of the `system` and `inventory` microservices, which produces to and
@@ -170,6 +168,7 @@ include::{common-includes}/devmode-start.adoc[]
 
 Now you can add your test files.
 
+=== Configuring your containers
 
 [role="code_command hotspot file=1", subs="quotes"]
 ----
@@ -214,7 +213,7 @@ however, a customer deserializer has been provided for you, and is configured to
 
 The running `system` service container will produce messages to the [hotspot=systemLoad file=4]`systemLoad` Kafka topic,
 as denoted by the [hotspot=Outgoing file=4]`@Outgoing` annotation. The [hotspot=testCpuStatus file=2]`testCpuStatus()`
-test method will [hotspot=poll file=2]`poll()` records from Kafka over 30 seconds.
+test method will [hotspot=poll file=2]`poll()` records from Kafka every three seconds until the timeout limit.
 It will then [hotspot=assert file=2]`verify` that the record polled matched the expected record.
 
 [role='command']
@@ -263,7 +262,7 @@ You will see the following output:
  ------------------------------------------------------------------------
 ```
 
-== Creating the inventory service tests
+== Testing using the Kafka consumer client
 
 //File 0
 InventoryServiceIT.java
@@ -290,6 +289,15 @@ containers.
 
 === Testing your containers
 
+Similar to the `system` service, you can run Open Liberty in dev mode to listen for file changes by running the
+following command:
+
+[role='command']
+```
+mvn liberty:dev
+```
+
+Now you can create your integrated test.
 
 [role="code_command hotspot file=0", subs="quotes"]
 ----
