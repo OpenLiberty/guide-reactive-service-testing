@@ -19,7 +19,7 @@ sleep 120
 
 systemCPULoad="$(curl --write-out "%{http_code}" --silent --output /dev/null "http://localhost:9085/inventory/systems")"
 
-if [ "systemCPULoad" == "200" ]
+if [ "$systemCPULoad" == "200" ]
 then
   echo SystemInventory OK
 
