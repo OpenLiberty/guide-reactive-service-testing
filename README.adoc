@@ -50,9 +50,10 @@ guide.
 
 === What is MicroShed Testing?
 
-MicroShed Testing (MST) offers a fast and simple way of writing and running true-to-production integration tests for Java
-microservice applications. MicroShed Testing exercises your containerized application from outside the container so you
-are testing the exact same image that runs in production. To learn more about MicroShed Testing, check out the
+From the https://microshed.org/microshed-testing/[MicroShed Testing^] website, "MicroShed Testing offers a fast
+and simple way of writing and running true-to-production integration tests for Java microservice applications.
+MicroShed Testing exercises your containerized application from outside the container so you are testing the exact
+same image that runs in production." To learn more about MicroShed Testing, check out the
 https://openliberty.io/guides/microshed-testing.html[Testing a MicroProfile or Jakarta EE application^] guide.
 
 == Additional prerequisites
@@ -154,7 +155,7 @@ Navigate to the `start` directory to begin.
 
 The provided example reactive application consists of the `system` and `inventory` microservices, which produces to and
 consumes messages from Kafka respectively. You will write integration tests to see how you can use the Kafka consumer
-and producer client APIs to test each service. MST and Kafka test containers have already been included as required
+and producer client APIs to test each service. MicroShed Testing (MST) and Kafka test containers have already been included as required
 test dependencies in your Maven project `system/` and `inventory/` [hotspot=dependencies file=0]`pom.xml` files.
 
 Run the following Maven goal to install the `models` artifact to the local Maven repository for later use by the
