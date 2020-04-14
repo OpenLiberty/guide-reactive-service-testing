@@ -39,7 +39,7 @@ then
   fi
 else
   echo System Inventory status:
-  echo "systemCPULoad"
+  echo "$systemCPULoad"
   echo ENDPOINT
   exit 1
 fi

@@ -288,7 +288,8 @@ service consumes messages, allowing tests to be written using the Kafka producer
 
 === Configuring your containers
 
-The `AppContainerConfig` class has been provided for you, and is configured in the same way as the `system` service.
+Navigate to the `start/inventory` directory. The `AppContainerConfig` class has been provided for you, and is configured
+in the same way as the `system` service.
 The two containers configured for use in the `inventory` service integration test is the `Kafka` and `inventory`
 containers.
 
