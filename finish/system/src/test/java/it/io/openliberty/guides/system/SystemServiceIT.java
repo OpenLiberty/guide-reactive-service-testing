@@ -36,8 +36,6 @@ import io.openliberty.guides.models.SystemLoad.SystemLoadDeserializer;
 @SharedContainerConfig(AppContainerConfig.class)
 public class SystemServiceIT {
 
-    private static final long POLL_TIMEOUT = 30 * 1000;
-
     // tag::KafkaConsumer2[]
     // tag::KafkaConsumerConfig[]
     // tag::valueDeserializer[]
@@ -54,31 +52,27 @@ public class SystemServiceIT {
 
     // tag::testCpuStatus[]
     @Test
-    public void testCpuStatus() throws IOException, InterruptedException {
+    public void testCpuStatus() {
         int recordsProcessed = 0;
-        long startTime = System.currentTimeMillis();
-        long elapsedTime = 0;
-        while (recordsProcessed == 0 && elapsedTime < POLL_TIMEOUT) {
-            // tag::poll[]
-            ConsumerRecords<String, SystemLoad> records =
-                    cpuConsumer.poll(Duration.ofMillis(3000));
-            // end::poll[]
-            System.out.println("Polled " + records.count() + " records from Kafka:");
-            for (ConsumerRecord<String, SystemLoad> record : records) {
-                SystemLoad sl = record.value();
-                System.out.println(sl);
-                // tag::assert[]
-                assertNotNull(sl.hostId);
-                assertNotNull(sl.loadAverage);
-                // end::assert[]
-                recordsProcessed++;
-            }
-            cpuConsumer.commitAsync();
-            if (recordsProcessed > 0)
-                break;
-            elapsedTime = System.currentTimeMillis() - startTime;
+
+        // tag::poll[]
+        ConsumerRecords<String, SystemLoad> records =
+                cpuConsumer.poll(Duration.ofMillis(30 * 1000));
+        // end::poll[]
+        System.out.println("Polled " + records.count() + " records from Kafka:");
+
+        for (ConsumerRecord<String, SystemLoad> record : records) {
+            SystemLoad sl = record.value();
+            System.out.println(sl);
+            // tag::assert[]
+            assertNotNull(sl.hostId);
+            assertNotNull(sl.loadAverage);
+            // end::assert[]
+            recordsProcessed++;
         }
+
         assertTrue(recordsProcessed > 0, "No records processed");
+        cpuConsumer.commitAsync();
     }
     // end::testCpuStatus[]
 }
