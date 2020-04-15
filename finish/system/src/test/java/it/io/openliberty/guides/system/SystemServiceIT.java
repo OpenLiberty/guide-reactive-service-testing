@@ -14,6 +14,7 @@ package it.io.openliberty.guides.system;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -53,13 +54,14 @@ public class SystemServiceIT {
     // tag::testCpuStatus[]
     @Test
     public void testCpuStatus() {
-        int recordsProcessed = 0;
-
         // tag::poll[]
         ConsumerRecords<String, SystemLoad> records =
                 cpuConsumer.poll(Duration.ofMillis(30 * 1000));
         // end::poll[]
         System.out.println("Polled " + records.count() + " records from Kafka:");
+
+        assertEquals(0, records.count(),
+                "Expected only 1 record, but received " + records.count());
 
         for (ConsumerRecord<String, SystemLoad> record : records) {
             SystemLoad sl = record.value();
@@ -68,10 +70,8 @@ public class SystemServiceIT {
             assertNotNull(sl.hostId);
             assertNotNull(sl.loadAverage);
             // end::assert[]
-            recordsProcessed++;
         }
 
-        assertTrue(recordsProcessed > 0, "No records processed");
         cpuConsumer.commitAsync();
     }
     // end::testCpuStatus[]
