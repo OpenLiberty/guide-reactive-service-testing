@@ -60,7 +60,7 @@ public class SystemServiceIT {
         // end::poll[]
         System.out.println("Polled " + records.count() + " records from Kafka:");
 
-        assertEquals(0, records.count(),
+        assertEquals(1, records.count(),
                 "Expected only 1 record, but received " + records.count());
 
         for (ConsumerRecord<String, SystemLoad> record : records) {
