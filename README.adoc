@@ -114,7 +114,7 @@ must download. If you run the same command again, it will be faster.
 Similarly, you can try out the `inventory` integration tests by repeating the same commands in the `finish/inventory`
 directory.
 
-== Testing using the Kafka producer client
+== Testing using the Kafka consumer client
 
 //File 0
 system/pom.xml
@@ -268,7 +268,7 @@ You will see the following output:
  ------------------------------------------------------------------------
 ```
 
-== Testing using the Kafka consumer client
+== Testing using the Kafka producer client
 
 //File 0
 InventoryServiceIT.java
