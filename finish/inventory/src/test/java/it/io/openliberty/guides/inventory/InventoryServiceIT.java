@@ -43,8 +43,10 @@ import io.openliberty.guides.models.SystemLoad.SystemLoadSerializer;
 // tag::InventoryServiceIT[]
 public class InventoryServiceIT {
 
+    // tag::RESTClient[]
     @RESTClient
     public static InventoryResource inventoryResource;
+    // end::RESTClient[]
 
     // tag::KafkaProducer2[]
     // tag::KafkaProducerConfig[]

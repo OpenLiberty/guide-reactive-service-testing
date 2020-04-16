@@ -35,6 +35,7 @@ import io.openliberty.guides.models.SystemLoad;
 
 @ApplicationScoped
 @Path("/inventory")
+// tag::InventoryResource[]
 public class InventoryResource {
 
     private static Logger logger = Logger.getLogger(InventoryResource.class.getName());
@@ -91,3 +92,4 @@ public class InventoryResource {
         }
     }
 }
+// end::InventoryResource[]
