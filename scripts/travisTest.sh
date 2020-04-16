@@ -17,6 +17,10 @@ mvn -pl inventory verify
 
 sleep 180
 
+docker logs system
+
+docker logs inventory
+
 systemCPULoad="$(curl --write-out "%{http_code}" --silent --output /dev/null "http://localhost:9085/inventory/systems")"
 
 if [ "$systemCPULoad" == "200" ]
