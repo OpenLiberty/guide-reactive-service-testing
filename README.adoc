@@ -50,9 +50,15 @@ guide.
 
 === What is MicroShed Testing?
 
-MicroShed Testing (MST) offers a fast and simple way of writing and running true-to-production integration tests for Java
-microservice applications. MicroShed Testing exercises your containerized application from outside the container so you
-are testing the exact same image that runs in production. To learn more about MicroShed Testing, check out the
+Sometimes tests might pass in development and testing (dev/test) environments, but fail in production because the
+application is running differently in production than it is in dev/test. Fortunately, you can minimize these parity
+issues between development and production by testing your application in the same Docker container that you’ll use
+in production.
+
+From the https://microshed.org/microshed-testing/[MicroShed Testing^] website, "MicroShed Testing offers a fast
+and simple way of writing and running true-to-production integration tests for Java microservice applications.
+MicroShed Testing exercises your containerized application from outside the container so you are testing the exact
+same image that runs in production." To learn more about MicroShed Testing, check out the
 https://openliberty.io/guides/microshed-testing.html[Testing a MicroProfile or Jakarta EE application^] guide.
 
 == Additional prerequisites
@@ -113,7 +119,7 @@ must download. If you run the same command again, it will be faster.
 Similarly, you can try out the `inventory` integration tests by repeating the same commands in the `finish/inventory`
 directory.
 
-== Testing using the Kafka producer client
+== Testing using the Kafka consumer client
 
 //File 0
 system/pom.xml
@@ -154,7 +160,7 @@ Navigate to the `start` directory to begin.
 
 The provided example reactive application consists of the `system` and `inventory` microservices, which produces to and
 consumes messages from Kafka respectively. You will write integration tests to see how you can use the Kafka consumer
-and producer client APIs to test each service. MST and Kafka test containers have already been included as required
+and producer client APIs to test each service. MicroShed Testing (MST) and Kafka test containers have already been included as required
 test dependencies in your Maven project `system/` and `inventory/` [hotspot=dependencies file=0]`pom.xml` files.
 
 Run the following Maven goal to install the `models` artifact to the local Maven repository for later use by the
@@ -267,7 +273,7 @@ You will see the following output:
  ------------------------------------------------------------------------
 ```
 
-== Testing using the Kafka consumer client
+== Testing using the Kafka producer client
 
 //File 0
 InventoryServiceIT.java
@@ -281,6 +287,13 @@ SystemLoad.java
 [source, Java, linenums, role='code_column hide_tags=copyright']
 ----
 include::finish/models/src/main/java/io/openliberty/guides/models/SystemLoad.java[]
+----
+
+//File 2
+InventoryResource.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/inventory/src/main/java/io/openliberty/guides/inventory/InventoryResource.java[]
 ----
 
 The `inventory` service can be tested the same way as the `system` service, the only difference being that the `inventory`
@@ -320,6 +333,11 @@ the [hotspot=systemLoadTopic file=0]`systemLoadTopic` topic.
 
 The [hotspot=testCpuUsage file=0]`testCpuUsage` test method will produce a message to Kafka, and then
 [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`verify` that the response from the `inventory` service matches what is expected.
+
+The [hotspot=RESTClient file=0]`@RESTClient` annotation injects a REST client proxy of the
+[hotspot=InventoryResource file=2]`InventoryResource` class, allowing for easy HTTP requests to be made to the running application.
+To learn more about REST clients, check out the https://openliberty.io/guides/microprofile-rest-client.html[Consuming RESTful services with template interfaces^]
+guide.
 
 [role='command']
 include::{common-includes}/devmode-test.adoc[]
