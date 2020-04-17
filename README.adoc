@@ -56,9 +56,10 @@ guide.
 === What is MicroShed Testing?
 
 Sometimes tests might pass in development and testing (dev/test) environments, but fail in production because the
-application is running differently in production than it is in dev/test. Fortunately, you can minimize these parity
-issues between development and production by testing your application in the same Docker container that you’ll use
-in production.
+application is running differently in production than it is in dev/test. A mocking framework is sometimes used to
+test your microservices, however, in an application involving Kafka, it is difficult to mock a live system.
+Fortunately, you can minimize these issues by testing your application in the same Docker container that you’ll use
+in production, avoiding a mocking framework which might not effectively imitate the exact environment you need.
 
 From the https://microshed.org/microshed-testing/[MicroShed Testing^] website, "MicroShed Testing offers a fast
 and simple way of writing and running true-to-production integration tests for Java microservice applications.
