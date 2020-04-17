@@ -52,7 +52,7 @@ public class InventoryServiceIT {
     // tag::KafkaProducerConfig[]
     @KafkaProducerConfig(valueSerializer = SystemLoadSerializer.class)
     // end::KafkaProducerConfig[]
-    public static KafkaProducer<String, SystemLoad> cpuProducer;
+    public static KafkaProducer<String, SystemLoad> producer;
     // end::KafkaProducer2[]
 
     @AfterAll
@@ -65,7 +65,7 @@ public class InventoryServiceIT {
     public void testCpuUsage() throws InterruptedException {
         SystemLoad sl = new SystemLoad("localhost", 1.1);
         // tag::systemLoadTopic[]
-        cpuProducer.send(new ProducerRecord<String, SystemLoad>("systemLoadTopic", sl));
+        producer.send(new ProducerRecord<String, SystemLoad>("systemLoadTopic", sl));
         // end::systemLoadTopic[]
         Thread.sleep(5000);
         Response response = inventoryResource.getSystems();
@@ -81,9 +81,9 @@ public class InventoryServiceIT {
             Assertions.assertEquals(sl.hostId, system.get("hostname"),
                     "HostId not match!");
             // end::assert2[]
-            BigDecimal cpuLoad = (BigDecimal) system.get("systemLoad");
+            BigDecimal systemLoad = (BigDecimal) system.get("systemLoad");
             // tag::assert3[]
-            Assertions.assertEquals(sl.loadAverage, cpuLoad.doubleValue(),
+            Assertions.assertEquals(sl.loadAverage, systemLoad.doubleValue(),
                     "CPU load doesn't match!");
             // end::assert3[]
         }

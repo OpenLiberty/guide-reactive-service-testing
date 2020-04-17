@@ -16,7 +16,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
 import java.time.Duration;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -48,7 +47,7 @@ public class SystemServiceIT {
                          // end::systemLoadTopic[]
                          properties = ConsumerConfig.AUTO_OFFSET_RESET_CONFIG + "=earliest")
     // end::KafkaConsumerConfig[]
-    public static KafkaConsumer<String, SystemLoad> cpuConsumer;
+    public static KafkaConsumer<String, SystemLoad> consumer;
     // end::KafkaConsumer2[]
 
     // tag::testCpuStatus[]
@@ -56,12 +55,9 @@ public class SystemServiceIT {
     public void testCpuStatus() {
         // tag::poll[]
         ConsumerRecords<String, SystemLoad> records =
-                cpuConsumer.poll(Duration.ofMillis(30 * 1000));
+                consumer.poll(Duration.ofMillis(30 * 1000));
         // end::poll[]
         System.out.println("Polled " + records.count() + " records from Kafka:");
-
-        assertEquals(1, records.count(),
-                "Expected only 1 record, but received " + records.count());
 
         for (ConsumerRecord<String, SystemLoad> record : records) {
             SystemLoad sl = record.value();
@@ -71,8 +67,8 @@ public class SystemServiceIT {
             assertNotNull(sl.loadAverage);
             // end::assert[]
         }
-
-        cpuConsumer.commitAsync();
+        
+        consumer.commitAsync();
     }
     // end::testCpuStatus[]
 }
