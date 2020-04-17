@@ -36,11 +36,16 @@ MicroShed Testing to write tests that exercise the services inside of a Docker c
 
 === What is MicroProfile Reactive Messaging?
 
-MicroProfile Reactive Messaging provides a very easy-to-use way to send, receive, and process messages asynchronously and
-is well-suited to writing applications that process streams of events. With MicroProfile Reactive Messaging, you annotate
-application beans’ methods and, under the covers, Liberty converts these to reactive streams-compatible publishers,
-subscribers and processors and connects them up to each other. It also provides a Connector API to allow your methods to
-be connected to external messaging systems.
+The degree of association between the services is called coupling. Decoupling of services can be accomplished by means
+of asynchronous communication in a microservice-based architecture. The coupling of services may bring about a fragile
+framework in an architecture based on microservice, with flexibility and scaling properties than might be worse than a
+monolith. One way to save you this is to embody asynchronous communication as much as possible.
+
+MicroProfile Reactive Messaging provides a very easy-to-use way to send, receive, and process messages asynchronously
+and is well-suited to writing applications that process streams of events. With MicroProfile Reactive Messaging, you
+annotate application beans' methods and, under the covers, Liberty converts these to reactive streams-compatible publishers,
+subscribers and processors and connects them up to each other. It also provides a Connector API to allow your methods to be
+connected to external messaging systems.
 
 The application featured in this guide uses the `system` and `inventory`
 services to showcase MicroProfile Reactive Messaging. To learn more about MicroProfile Reactive Messaging and how
