@@ -1,4 +1,4 @@
-FROM openliberty/open-liberty:kernel-java8-openj9-ubi
+FROM open-liberty
 
 ARG VERSION=1.0
 ARG REVISION=SNAPSHOT
