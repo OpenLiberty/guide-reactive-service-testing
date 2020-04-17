@@ -169,7 +169,9 @@ consumes messages from Kafka respectively. You will write integration tests to s
 and producer client APIs to test each service. MicroShed Testing (MST) and Kafka test containers have already been included as required
 test dependencies in your Maven project `system/` and `inventory/` [hotspot=dependencies file=0]`pom.xml` files.
 
-Run the following Maven goal to install the `models` artifact to the local Maven repository for later use by the
+The `start` directory contains three directories. The `system` service directory, the `inventory` service directory, and the `models`
+directory which contains the model class that defines the structure of the system load data that is used in the application.
+Run the following Maven goal to install the packaged `models` artifact to the local Maven repository to be later used by the
 `system` and `inventory` services:
 
 [role='command']
