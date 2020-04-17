@@ -31,26 +31,29 @@ Learn how to use Kafka client APIs and MicroShed Testing to test reactive Java m
 
 == What you'll learn
 
-You will start with Java reactive messaging services that runs on Open Liberty and learn how to use Kafka client APIs and
+You will start with Java reactive messaging services that run on Open Liberty and learn how to use Kafka client APIs and
 MicroShed Testing to write tests that exercise the services inside of a Docker container.
 
-=== What is MicroProfile Reactive Messaging?
+=== What is a reactive microservice?
 
-The degree of association between the services is called coupling. Decoupling of services can be accomplished by means
-of asynchronous communication in a microservice-based architecture. The coupling of services may bring about a fragile
-framework in an architecture based on microservice, with flexibility and scaling properties than might be worse than a
-monolith. One way to save you this is to embody asynchronous communication as much as possible.
+Reactive microservices are responsive and resilient under varying workloads because they receive, process, and send messages
+asynchronously without blocking other work. For example, in a restaurant, a waitress might come to your table and take your order.
+Then, while you are waiting for your food to be prepared, she serves other tables, taking their orders too. When your food
+is ready, she brings your food to your table, then continues to serve the other tables too. The waitress is operating asynchronously;
+if she were to operate synchronously, she would have to take your order and then wait until she had brought your food to your
+table before she could serve any other tables. This is clearly not an efficient way to operate a restaurant. Similarly,
+sending and receiving messages synchronously between microservices is not an efficient way to run microservices.
 
-MicroProfile Reactive Messaging provides a very easy-to-use way to send, receive, and process messages asynchronously
-and is well-suited to writing applications that process streams of events. With MicroProfile Reactive Messaging, you
-annotate application beans' methods and, under the covers, Liberty converts these to reactive streams-compatible publishers,
-subscribers and processors and connects them up to each other. It also provides a Connector API to allow your methods to be
-connected to external messaging systems.
+HTTP request calls from a REST client to another microservice can be time-consuming; the network might be slow, or the
+other service might be overwhelmed with requests and can’t respond quickly. In a reactive system, a microservice sends
+an HTTP request to another microservice then continues to send other calls, and to receive and process other responses.
+When the microservice receives a response to the original request, it can process that request but, in the meantime, it
+is not blocked from completing other work.
 
 The application featured in this guide uses the `system` and `inventory`
 services to showcase MicroProfile Reactive Messaging. To learn more about MicroProfile Reactive Messaging and how
 the application works, check out the
-https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating reactive microservices using MicroProfile Reactive Messaging^]
+https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating reactive Java microservices^]
 guide.
 
 === What is MicroShed Testing?
@@ -69,12 +72,8 @@ https://openliberty.io/guides/microshed-testing.html[Testing a MicroProfile or J
 
 == Additional prerequisites
 
-You will build, run, and test the services in Docker containers. To learn more about containerizing microservices
-with Docker, check out the https://openliberty.io/guides/containerize.html[Containerizing microservices^] guide.
-
-Install Docker by following the instructions on the official
-https://docs.docker.com/engine/installation[Docker documentation^]. Start your Docker environment. Ensure you are using
-Linux containers, not Windows.
+Install Docker (https://docs.docker.com/engine/installation[see the official Docker documentation^]) and start your Docker environment.
+You will build and run the microservices in Docker containers. An installation of Apache Kafka is provided in another Docker container.
 
 [role='command']
 include::{common-includes}/gitclone.adoc[]
@@ -188,6 +187,8 @@ include::{common-includes}/devmode-start.adoc[]
 Now you can add your test files.
 
 === Configuring your containers
+
+You will need to create a class to externalize your container configurations.
 
 [role="code_command hotspot file=1", subs="quotes"]
 ----
