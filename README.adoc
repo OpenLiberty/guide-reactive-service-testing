@@ -12,27 +12,27 @@
 :page-releasedate: 2020-04-16
 :page-guide-category: microprofile
 :page-essential: false
-:page-description: Learn how to use Kafka client APIs and MicroShed Testing to test a MicroProfile Reactive Messaging application.
+:page-description: Learn how to use Kafka client APIs and MicroShed Testing to test reactive Java microservices.
 :guide-author: Open Liberty
 :page-tags: ['MicroProfile', 'Jakarta EE', 'Microservices']
 :page-related-guides: ['microprofile-reactive-messaging', 'microshed-testing', 'reactive-messaging-sse', 'microprofile-reactive-messaging-acknowledgement', 'microprofile-rest-client-async']
 :page-permalink: /guides/{projectid}
 :imagesdir: /img/guide/{projectid}
-:page-seo-title: Testing a MicroProfile Reactive Messaging application using MicroShed Testing (MST)
+:page-seo-title: Testing Java microservices using MicroShed Testing (MST)
 :page-seo-description: A getting started tutorial with examples on how to test asynchronous Java microservices in a MicroProfile Reactive Messaging application using MicroShed Testing (MST), as well as Kafka's producer and consumer client APIs.
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/dev
 :source-highlighter: prettify
-= Testing a MicroProfile Reactive Messaging application
+= Testing reactive Java microservices
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website].
 
-Learn how to use Kafka client APIs and MicroShed Testing to test reactive messaging microservices.
+Learn how to use Kafka client APIs and MicroShed Testing to test reactive Java microservices.
 
 == What you'll learn
 
-You will start with a reactive messaging service that runs on Open Liberty and learn how to use Kafka client APIs and
-MicroShed Testing to write tests that exercise the service inside of a Docker container.
+You will start with Java reactive messaging services that runs on Open Liberty and learn how to use Kafka client APIs and
+MicroShed Testing to write tests that exercise the services inside of a Docker container.
 
 === What is MicroProfile Reactive Messaging?
 
