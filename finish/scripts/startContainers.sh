@@ -22,7 +22,7 @@ docker run -d \
   --rm \
   bitnami/kafka:2 &
 
-sleep 20
+sleep 25
 
 docker run -d \
   -e MP_MESSAGING_CONNECTOR_LIBERTY_KAFKA_BOOTSTRAP_SERVERS=$KAFKA_SERVER \
