@@ -188,7 +188,7 @@ Now you can add your test files.
 
 Note that this guide covers the development of MST for reactive services, and the running `system` service will search
 for a Kafka topic to push its messages to, however, since there is no current running Kafka services, the `system` service
-will expectedly throw errors. Writing and running the tests later on in the guide will spin up a Kafka container for
+will expectedly throw errors. Writing and running the tests later on in the guide will spin up a Kafka test container for
 your `system` service to communicate with, effectively testing the functionality of the `system` service.
 
 === Configuring your containers
