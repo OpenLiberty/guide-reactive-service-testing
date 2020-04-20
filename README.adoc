@@ -227,7 +227,7 @@ To learn more about Kafka APIs and how to use them, check out the
 https://kafka.apache.org/documentation/#api[official Kafka Documentation^]
 
 To consume messages from a stream, they will need to be deserialized from bytes. Kafka has its own default deserializer,
-however, a customer deserializer has been provided for you, and is configured to the consumers's
+however, a custom deserializer has been provided for you, and is configured to the consumers's
 [hotspot=valueDeserializer file=2]`valueDeserializer` and has been implemented in the
 [hotspot=SystemLoadDeserializer file=3]`SystemLoad` class.
 
