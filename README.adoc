@@ -186,6 +186,11 @@ include::{common-includes}/devmode-start.adoc[]
 
 Now you can add your test files.
 
+Note that this guide covers the development of MST for reactive services, and the running `system` service will search
+for a Kafka topic to push its messages to, however, since there is no current running Kafka services, the `system` service
+will expectedly throw errors. Writing and running the tests later on in the guide will spin up a Kafka test container for
+your `system` service to communicate with, effectively testing the functionality of the `system` service.
+
 === Configuring your containers
 
 You will need to create a class to externalize your container configurations.
@@ -227,7 +232,7 @@ To learn more about Kafka APIs and how to use them, check out the
 https://kafka.apache.org/documentation/#api[official Kafka Documentation^]
 
 To consume messages from a stream, they will need to be deserialized from bytes. Kafka has its own default deserializer,
-however, a customer deserializer has been provided for you, and is configured to the consumers's
+however, a custom deserializer has been provided for you, and is configured to the consumers's
 [hotspot=valueDeserializer file=2]`valueDeserializer` and has been implemented in the
 [hotspot=SystemLoadDeserializer file=3]`SystemLoad` class.
 
