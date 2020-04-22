@@ -9,7 +9,7 @@
 :projectid: reactive-service-testing
 :page-layout: guide-multipane
 :page-duration: 20 minutes
-:page-releasedate: 2020-04-16
+:page-releasedate: 2020-04-26
 :page-guide-category: microprofile
 :page-essential: false
 :page-description: Learn how to use Kafka client APIs and MicroShed Testing to test reactive Java microservices.
