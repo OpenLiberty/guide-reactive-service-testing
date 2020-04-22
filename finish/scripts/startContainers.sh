@@ -22,6 +22,7 @@ docker run -d \
   --rm \
   bitnami/kafka:2 &
 
+echo "Waiting until Kafka is ready..."
 sleep 15
 
 docker run -d \
