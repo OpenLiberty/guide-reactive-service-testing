@@ -55,10 +55,10 @@ public class InventoryResource {
     }
 
     @GET
-    @Path("/system/{hostId}")
+    @Path("/system/{hostname}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSystem(@PathParam("hostId") String hostId) {
-        Optional<Properties> system = manager.getSystem(hostId);
+    public Response getSystem(@PathParam("hostname") String hostname) {
+        Optional<Properties> system = manager.getSystem(hostname);
         if (system.isPresent()) {
             return Response
                     .status(Response.Status.OK)
@@ -67,7 +67,7 @@ public class InventoryResource {
         }
         return Response
                 .status(Response.Status.NOT_FOUND)
-                .entity("hostId does not exist.")
+                .entity("hostname does not exist.")
                 .build();
     }
 
@@ -82,13 +82,13 @@ public class InventoryResource {
 
     @Incoming("systemLoad")
     public void updateStatus(SystemLoad s)  {
-        String hostId = s.hostId;
-        if (manager.getSystem(hostId).isPresent()) {
-            manager.updateCpuStatus(hostId, s.loadAverage);
-            logger.info("Host " + hostId + " was updated: " + s);
+        String hostname = s.hostname;
+        if (manager.getSystem(hostname).isPresent()) {
+            manager.updateCpuStatus(hostname, s.loadAverage);
+            logger.info("Host " + hostname + " was updated: " + s);
         } else {
-            manager.addSystem(hostId, s.loadAverage);
-            logger.info("Host " + hostId + " was added: " + s);
+            manager.addSystem(hostname, s.loadAverage);
+            logger.info("Host " + hostname + " was added: " + s);
         }
     }
 }

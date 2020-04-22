@@ -61,7 +61,7 @@ public class SystemServiceIT {
             SystemLoad sl = record.value();
             System.out.println(sl);
             // tag::assert[]
-            assertNotNull(sl.hostId);
+            assertNotNull(sl.hostname);
             assertNotNull(sl.loadAverage);
             // end::assert[]
         }
