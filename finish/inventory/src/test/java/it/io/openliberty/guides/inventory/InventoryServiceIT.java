@@ -79,7 +79,7 @@ public class InventoryServiceIT {
         for (Properties system : systems) {
             // tag::assert2[]
             Assertions.assertEquals(sl.hostname, system.get("hostname"),
-                    "HostId not match!");
+                    "Hostname doesn't match!");
             // end::assert2[]
             BigDecimal systemLoad = (BigDecimal) system.get("systemLoad");
             // tag::assert3[]
