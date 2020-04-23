@@ -398,12 +398,6 @@ You have just tested two reactive messaging services using MicroShed Testing.
 
 == Related Links
 
-Learn more about MicroProfile.
-
-https://microprofile.io/[See the MicroProfile specs^]
-
-https://openliberty.io/docs/ref/microprofile[View the MicroProfile API^]
-
 Learn more about MicroShed Testing.
 
 https://microshed.org/microshed-testing/[Visit the official MicroShed Testing website^]
