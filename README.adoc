@@ -14,12 +14,12 @@
 :page-essential: false
 :page-description: Learn how to test reactive Java microservices in true-to-production environments using MicroShed Testing.
 :guide-author: Open Liberty
-:page-tags: ['MicroProfile', 'Jakarta EE', 'Microservices']
+:page-tags: ['MicroProfile', 'Jakarta EE']
 :page-related-guides: ['microprofile-reactive-messaging', 'microshed-testing']
 :page-permalink: /guides/{projectid}
 :imagesdir: /img/guide/{projectid}
-:page-seo-title: Testing Java microservices using MicroShed Testing
-:page-seo-description: A getting started tutorial with examples on how to test asynchronous Java microservices in a MicroProfile Reactive Messaging application using MicroShed Testing, as well as Kafka's producer and consumer client APIs.
+:page-seo-title: Testing reactive Java microservices using MicroShed Testing framework
+:page-seo-description: A getting started tutorial with examples on how to test asynchronous Java microservices developed with Eclipse MicroProfile Reactive Messaging API using MicroShed Testing, a Testcontainers-based testing framework, and Apache Kafka client API.
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/dev
 :source-highlighter: prettify
 = Testing reactive Java microservices
@@ -36,7 +36,7 @@ environments using containers with https://microshed.org/microshed-testing/[Micr
 your containerized application from outside the container so that you are testing the exact same image that runs in
 production. The reactive application in this guide sends and receives messages between services using an external message
 broker, https://kafka.apache.org/[Apache Kafka^]. Using an external message broker enables asynchronous communications
-between services so that requests are non-blocking and decoupled from responses. You can learn more about Java reactive
+between services so that requests are non-blocking and decoupled from responses. You can learn more about reactive Java 
 services that use an external message broker to manage communications in the
 https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating reactive Java microservices^] guide.
 
@@ -389,7 +389,7 @@ You will see the following output:
 
 == Great work! You're done!
 
-You have just tested two reactive messaging services using MicroShed Testing.
+You just tested two reactive Java microservices using MicroShed Testing.
 
 == Related Links
 
