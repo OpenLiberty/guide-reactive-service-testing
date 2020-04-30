@@ -55,9 +55,8 @@ https://openliberty.io/guides/microshed-testing.html[Testing a MicroProfile or J
 
 == Additional prerequisites
 
-You need to have Docker installed. For installation instructions, refer to the
-(https://docs.docker.com/engine/installation[official Docker documentation^]) You will build and run the microservices in
-Docker containers. An installation of Apache Kafka is provided in another Docker container.
+You need to have Docker installed. For installation instructions, refer to the official https://docs.docker.com/get-docker/[Docker documentation].
+You will build and run the microservices in Docker containers. An installation of Apache Kafka is provided in another Docker container.
 
 [role='command']
 include::{common-includes}/gitclone.adoc[]
@@ -179,7 +178,7 @@ Now you can add your test files.
 
 The running `system` service searches for a Kafka topic to push its messages to. Because there are not yet any running Kafka
 services, the `system` service throws errors. Later in the guide, you will write and run tests that start a Kafka
-Testcontainer that can communicate with the`system` service. This will resolve the errors that you see now.
+Testcontainer that can communicate with the `system` service. This will resolve the errors that you see now.
 
 === Configuring your containers
 
