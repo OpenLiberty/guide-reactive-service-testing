@@ -13,7 +13,7 @@ LABEL \
   vendor="Open Liberty" \
   name="system" \
   version="$VERSION-$REVISION" \
-  summary="The system microservice from the 'Testing a reactive messaging microservice using MicroShed Testing' guide" \
+  summary="The system microservice from the 'Testing reactive Java microservices' guide" \
   description="This image contains the system microservice running with the Open Liberty runtime."
 
 COPY --chown=1001:0 src/main/liberty/config /config/
