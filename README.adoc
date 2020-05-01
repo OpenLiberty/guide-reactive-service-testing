@@ -9,7 +9,7 @@
 :projectid: reactive-service-testing
 :page-layout: guide-multipane
 :page-duration: 20 minutes
-:page-releasedate: 2020-04-26
+:page-releasedate: 2020-05-01
 :page-guide-category: microprofile
 :page-essential: false
 :page-description: Learn how to test reactive Java microservices in true-to-production environments using MicroShed Testing.
@@ -32,7 +32,7 @@ Learn how to test reactive Java microservices in true-to-production environments
 == What you'll learn
 
 You will learn how to write integration tests for reactive Java microservices and to run the tests in true-to-production
-environments by using containers with https://microshed.org/microshed-testing/[MicroShed Testing^]. MicroShed Testing runs
+environments by using containers with https://microshed.org/microshed-testing/[MicroShed Testing^]. MicroShed Testing tests
 your containerized application from outside the container so that you are testing the exact same image that runs in
 production. The reactive application in this guide sends and receives messages between services by using an external message
 broker, https://kafka.apache.org/[Apache Kafka^]. Using an external message broker enables asynchronous communications
