@@ -187,7 +187,7 @@ Create a class to externalize your container configurations.
 [role="code_command hotspot file=1", subs="quotes"]
 ----
 #Create the `AppContainerConfig` class.#
-`system/src/test/java/it/io/openliberty/guides/system/AppContainerConfig.java`
+`src/test/java/it/io/openliberty/guides/system/AppContainerConfig.java`
 ----
 
 The [hotspot=AppContainerConfig file=1]`AppContainerConfig` class externalizes test container setup and configuration, so
