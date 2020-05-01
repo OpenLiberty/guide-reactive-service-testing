@@ -321,7 +321,7 @@ Now you can create your integrated test.
 [role="code_command hotspot file=0", subs="quotes"]
 ----
 #Create the `InventoryServiceIT` class.#
-`inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java`
+`src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java`
 ----
 
 The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class uses the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer`
