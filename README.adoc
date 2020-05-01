@@ -208,7 +208,7 @@ Now you can start writing the test that uses the configured containers.
 [role="code_command hotspot file=2", subs="quotes"]
 ----
 #Create the `SystemServiceIT` class.#
-`system/src/test/java/it/io/openliberty/guides/system/SystemServiceIT.java`
+`src/test/java/it/io/openliberty/guides/system/SystemServiceIT.java`
 ----
 
 
