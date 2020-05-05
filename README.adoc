@@ -175,7 +175,7 @@ so it can be used later by the `system` and `inventory` services:
 mvn -pl models install
 ```
 
-Next, run the following command to pull the latest Docker image:
+If you have not pulled the latest Docker image yet, do so by running the following command:
 
 [role='command']
 ```
