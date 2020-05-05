@@ -73,12 +73,8 @@ the local Maven repository:
 mvn -pl models install
 ```
 
-Next, run the following command to pull the latest Docker image:
-
 [role='command']
-```
-docker pull openliberty/open-liberty:kernel-java8-openj9-ubi
-```
+include::{common-includes}/ol-kernel-docker-pull.adoc[]
 
 Next, navigate to the `finish/system` directory and run the following Maven goal to build the `system` service and run
 the integration tests on an Open Liberty server in a container:
