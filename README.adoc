@@ -73,6 +73,13 @@ the local Maven repository:
 mvn -pl models install
 ```
 
+Next, run the following command to pull the latest Docker image:
+
+[role='command']
+```
+docker pull openliberty/open-liberty:kernel-java8-openj9-ubi
+```
+
 Next, navigate to the `finish/system` directory and run the following Maven goal to build the `system` service and run
 the integration tests on an Open Liberty server in a container:
 
@@ -166,6 +173,13 @@ so it can be used later by the `system` and `inventory` services:
 [role='command']
 ```
 mvn -pl models install
+```
+
+Next, run the following command to pull the latest Docker image:
+
+[role='command']
+```
+docker pull openliberty/open-liberty:kernel-java8-openj9-ubi
 ```
 
 With Open Liberty development mode, known as dev mode, you can use MicroShed Testing to run tests on an already running
