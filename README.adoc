@@ -20,7 +20,7 @@
 :imagesdir: /img/guide/{projectid}
 :page-seo-title: Testing reactive Java microservices using MicroShed Testing framework
 :page-seo-description: A getting started tutorial with examples on how to test asynchronous Java microservices developed with Eclipse MicroProfile Reactive Messaging API using MicroShed Testing, a Testcontainers-based testing framework, and Apache Kafka client API.
-:common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/dev
+:common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/master
 :source-highlighter: prettify
 = Testing reactive Java microservices
 
@@ -72,6 +72,8 @@ the local Maven repository:
 ```
 mvn -pl models install
 ```
+
+include::{common-includes}/ol-kernel-docker-pull.adoc[]
 
 Next, navigate to the `finish/system` directory and run the following Maven goal to build the `system` service and run
 the integration tests on an Open Liberty server in a container:
@@ -166,6 +168,13 @@ so it can be used later by the `system` and `inventory` services:
 [role='command']
 ```
 mvn -pl models install
+```
+
+If you don't have the latest Docker image, pull it by running the following command:
+
+[role='command']
+```
+docker pull openliberty/open-liberty:kernel-java8-openj9-ubi
 ```
 
 With Open Liberty development mode, known as dev mode, you can use MicroShed Testing to run tests on an already running
