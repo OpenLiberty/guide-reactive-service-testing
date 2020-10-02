@@ -70,6 +70,7 @@ the local Maven repository:
 
 [role='command']
 ```
+cd finish
 mvn -pl models install
 ```
 
@@ -80,6 +81,7 @@ the integration tests on an Open Liberty server in a container:
 
 [role='command']
 ```
+cd finish/system
 mvn verify
 ```
 
