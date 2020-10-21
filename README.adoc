@@ -81,7 +81,7 @@ the integration tests on an Open Liberty server in a container:
 
 [role='command']
 ```
-cd finish/system
+cd system
 mvn verify
 ```
 
