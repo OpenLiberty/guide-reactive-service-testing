@@ -41,7 +41,7 @@ public class SystemServiceIT {
     // end::valueDeserializer[]
                          groupId = "system-load-status",
                          // tag::systemLoadTopic[]
-                         topics = "systemLoadTopic",
+                         topics = "system.load",
                          // end::systemLoadTopic[]
                          properties = ConsumerConfig.AUTO_OFFSET_RESET_CONFIG + "=earliest")
     // end::KafkaConsumerClient[]
