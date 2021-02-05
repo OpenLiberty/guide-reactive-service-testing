@@ -43,7 +43,8 @@ public class SystemServiceIT {
                          // tag::systemLoadTopic[]
                          topics = "system.load",
                          // end::systemLoadTopic[]
-                         properties = ConsumerConfig.AUTO_OFFSET_RESET_CONFIG + "=earliest")
+                         properties = ConsumerConfig.AUTO_OFFSET_RESET_CONFIG
+                                      + "=earliest")
     // end::KafkaConsumerClient[]
     public static KafkaConsumer<String, SystemLoad> consumer;
     // end::KafkaConsumer2[]
@@ -65,7 +66,7 @@ public class SystemServiceIT {
             assertNotNull(sl.loadAverage);
             // end::assert[]
         }
-        
+
         consumer.commitAsync();
     }
     // end::testCpuStatus[]
