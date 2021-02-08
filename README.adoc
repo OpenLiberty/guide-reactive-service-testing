@@ -225,7 +225,7 @@ Now you can start writing the test that uses the configured containers.
 
 The test uses the [hotspot=KafkaConsumer hotspot=KafkaConsumer2 file=2]`KafkaConsumer` client API and
 is configured by using the [hotspot=KafkaConsumerConfig file=2]`@KafkaConsumerConfig` annotation. The consumer client is configured
-to consume messages from the [hotspot=systemLoadTopic file=2]`systemLoadTopic` topic in the `kafka` container.
+to consume messages from the [hotspot=systemLoadTopic file=2]`system.load` topic in the `kafka` container.
 To learn more about Kafka APIs and how to use them, check out the
 https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
 
@@ -340,7 +340,7 @@ client API to produce messages in the test environment for the `inventory` servi
 [hotspot=KafkaProducerClient file=0]`@KafkaProducerClient` annotation configures the producer to use the custom serializer provided in
 the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class. The [hotspot=KafkaProducerClient file=0]`@KafkaProducerClient` annotation
 doesn't include a topic that the client produces messages to because it has the flexibility to produce messages to any topic.
-In this example, it is configured to produce messages to the [hotspot=systemLoadTopic file=0]`systemLoadTopic` topic.
+In this example, it is configured to produce messages to the [hotspot=systemLoadTopic file=0]`system.load` topic.
 
 The [hotspot=testCpuUsage file=0]`testCpuUsage` test method produces a message to Kafka and then
 [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`verifies` that the response from the `inventory` service matches what is expected.
