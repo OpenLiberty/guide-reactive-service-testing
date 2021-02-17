@@ -183,7 +183,7 @@ With Open Liberty development mode, known as dev mode, you can use MicroShed Tes
 Open Liberty server. Navigate to the `start/system` directory.
 
 [role='command']
-include::{common-includes}/devmode-start.adoc[]
+include::{common-includes}/devmode-lmp33-start.adoc[]
 
 Now you can add your test files.
 
@@ -224,7 +224,7 @@ Now you can start writing the test that uses the configured containers.
 
 
 The test uses the [hotspot=KafkaConsumer hotspot=KafkaConsumer2 file=2]`KafkaConsumer` client API and
-is configured by using the [hotspot=KafkaConsumerConfig file=2]`@KafkaConsumerConfig` annotation. The consumer client is configured
+is configured by using the [hotspot=KafkaConsumerClient file=2]`@KafkaConsumerClient` annotation. The consumer client is configured
 to consume messages from the [hotspot=systemLoadTopic file=2]`system.load` topic in the `kafka` container.
 To learn more about Kafka APIs and how to use them, check out the
 https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
