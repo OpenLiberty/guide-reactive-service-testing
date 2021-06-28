@@ -20,7 +20,7 @@
 :imagesdir: /img/guide/{projectid}
 :page-seo-title: Testing reactive Java microservices using MicroShed Testing framework
 :page-seo-description: A getting started tutorial with examples on how to test asynchronous Java microservices developed with Eclipse MicroProfile Reactive Messaging API using MicroShed Testing, a Testcontainers-based testing framework, and Apache Kafka client API.
-:common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/master
+:common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/prod
 :source-highlighter: prettify
 = Testing reactive Java microservices
 
