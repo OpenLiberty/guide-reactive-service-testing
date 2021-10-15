@@ -155,6 +155,13 @@ include::finish/inventory/pom.xml[]
 ----
 
 Navigate to the `start` directory to begin.
+// cloud hosted instruction
+ifdef::cloud-hosted[]
+```
+cd /home/project/guide-reactive-service-testing/start
+```
+{: codeblock}
+endif::[]
 
 The example reactive application consists of the `system` and `inventory` microservices. The `system` microservice produces
 messages to the Kafka message broker, and the `inventory` microservice consumes messages from the Kafka message broker.
@@ -181,6 +188,13 @@ docker pull openliberty/open-liberty:full-java11-openj9-ubi
 
 With Open Liberty development mode, known as dev mode, you can use MicroShed Testing to run tests on an already running
 Open Liberty server. Navigate to the `start/system` directory.
+// cloud hosted instruction
+ifdef::cloud-hosted[]
+```
+cd system
+```
+{: codeblock}
+endif::[]
 
 [role='command']
 include::{common-includes}/devmode-lmp33-start.adoc[]
@@ -314,6 +328,12 @@ consumes messages, which means that tests are written to use the Kafka producer 
 === Configuring your containers
 
 Navigate to the `start/inventory` directory.
+ifdef::cloud-hosted[]
+```
+cd /home/project/guide-reactive-service-testing/start/inventory
+```
+{: codeblock}
+endif::[]
 
 The `AppContainerConfig` class is provided, and it is configured in the same way as it was for the `system` service. The two
 containers that are configured for use in the `inventory` service integration test are the `kafka` and `inventory` containers.
