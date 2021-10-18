@@ -328,6 +328,7 @@ consumes messages, which means that tests are written to use the Kafka producer 
 === Configuring your containers
 
 Navigate to the `start/inventory` directory.
+// cloud hosted instruction
 ifdef::cloud-hosted[]
 ```
 cd /home/project/guide-reactive-service-testing/start/inventory
