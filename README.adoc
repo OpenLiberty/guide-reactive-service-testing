@@ -191,7 +191,7 @@ Open Liberty server. Navigate to the `start/system` directory.
 // cloud hosted instruction
 ifdef::cloud-hosted[]
 ```
-cd system
+cd /home/project/guide-reactive-service-testing/start/system
 ```
 {: codeblock}
 endif::[]
