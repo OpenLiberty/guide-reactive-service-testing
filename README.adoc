@@ -94,48 +94,6 @@ You can also try out the `inventory` integration tests by repeating the same com
 
 == Testing with the Kafka consumer client
 
-//File 0
-system/pom.xml
-[source, XML, linenums, role='code_column']
-----
-include::finish/system/pom.xml[]
-----
-
-//File 1
-AppContainerConfig.java
-[source, Java, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/system/src/test/java/it/io/openliberty/guides/system/AppContainerConfig.java[]
-----
-
-//File 2
-SystemServiceIT.java
-[source, Java, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/system/src/test/java/it/io/openliberty/guides/system/SystemServiceIT.java[]
-----
-
-//File 3
-SystemLoad.java
-[source, Java, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/models/src/main/java/io/openliberty/guides/models/SystemLoad.java[]
-----
-
-//File 4
-SystemService.java
-[source, Java, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
-----
-
-//File 5
-inventory/pom.xml
-[source, XML, linenums, role='code_column']
-----
-include::finish/inventory/pom.xml[]
-----
-
 Navigate to the `start` directory to begin.
 // cloud hosted instruction
 ifdef::cloud-hosted[]
@@ -185,6 +143,13 @@ Create a class to externalize your container configurations.
 `system/src/test/java/it/io/openliberty/guides/system/AppContainerConfig.java`
 ----
 
+//File 1
+AppContainerConfig.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/system/src/test/java/it/io/openliberty/guides/system/AppContainerConfig.java[]
+----
+
 The [hotspot=AppContainerConfig file=1]`AppContainerConfig` class externalizes test container setup and configuration, so you can use the same application containers across multiple tests.The [hotspot=container hotspot=container2 file=1]`@Container` annotation denotes an application container that is started up and used in the tests.
 
 Two containers are used for testing the `system` service: the [hotspot=system file=1]`system` container, which you built, and the [hotspot=kafka file=1]`kafka` container, which receives messages from the `system` service.
@@ -200,6 +165,13 @@ Now you can start writing the test that uses the configured containers.
 ----
 #Create the `SystemServiceIT` class.#
 `system/src/test/java/it/io/openliberty/guides/system/SystemServiceIT.java`
+----
+
+//File 2
+SystemServiceIT.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/system/src/test/java/it/io/openliberty/guides/system/SystemServiceIT.java[]
 ----
 
 
@@ -256,27 +228,6 @@ You will see the following output:
 
 == Testing with the Kafka producer client
 
-//File 0
-InventoryServiceIT.java
-[source, Java, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java[]
-----
-
-//File 1
-SystemLoad.java
-[source, Java, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/models/src/main/java/io/openliberty/guides/models/SystemLoad.java[]
-----
-
-//File 2
-InventoryResource.java
-[source, Java, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/inventory/src/main/java/io/openliberty/guides/inventory/InventoryResource.java[]
-----
-
 The `inventory` service is tested in the same way as the `system` service. The only difference is that the `inventory` service consumes messages, which means that tests are written to use the Kafka producer client.
 
 === Configuring your containers
@@ -306,6 +257,13 @@ Now you can create your integrated test.
 ----
 #Create the `InventoryServiceIT` class.#
 `inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java`
+----
+
+//File 0
+InventoryServiceIT.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java[]
 ----
 
 The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class uses the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer` client API to produce messages in the test environment for the `inventory` service container to consume. The [hotspot=KafkaProducerClient file=0]`@KafkaProducerClient` annotation configures the producer to use the custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class. The [hotspot=KafkaProducerClient file=0]`@KafkaProducerClient` annotation doesn't include a topic that the client produces messages to because it has the flexibility to produce messages to any topic. In this example, it is configured to produce messages to the [hotspot=systemLoadTopic file=0]`system.load` topic.
