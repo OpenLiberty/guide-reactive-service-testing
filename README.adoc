@@ -104,34 +104,6 @@ include::finish/system/pom.xml[]
 ----
 
 //File 1
-AppContainerConfig.java
-[source, Java, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/system/src/test/java/it/io/openliberty/guides/system/AppContainerConfig.java[]
-----
-
-//File 2
-SystemServiceIT.java
-[source, Java, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/system/src/test/java/it/io/openliberty/guides/system/SystemServiceIT.java[]
-----
-
-//File 3
-SystemLoad.java
-[source, Java, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/models/src/main/java/io/openliberty/guides/models/SystemLoad.java[]
-----
-
-//File 4
-SystemService.java
-[source, Java, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
-----
-
-//File 5
 inventory/pom.xml
 [source, XML, linenums, role='code_column']
 ----
@@ -146,7 +118,7 @@ cd /home/project/guide-reactive-service-testing/start
 ```
 endif::[]
 
-The example reactive application consists of the `system` and `inventory` microservices. The `system` microservice produces messages to the Kafka message broker, and the `inventory` microservice consumes messages from the Kafka message broker. You will write integration tests to see how you can use the Kafka consumer and producer client APIs to test each service. MicroShed Testing and Kafka Testcontainers have already been included as required test dependencies in your Maven `pom.xml` files for the [hotspot=dependencies file=0]`system` and [hotspot=dependencies file=5]`inventory` services.
+The example reactive application consists of the `system` and `inventory` microservices. The `system` microservice produces messages to the Kafka message broker, and the `inventory` microservice consumes messages from the Kafka message broker. You will write integration tests to see how you can use the Kafka consumer and producer client APIs to test each service. MicroShed Testing and Kafka Testcontainers have already been included as required test dependencies in your Maven `pom.xml` files for the [hotspot=dependencies file=0]`system` and [hotspot=dependencies file=1]`inventory` services.
 
 The `start` directory contains three directories: the `system` service directory, the `inventory` service directory, and the `models` directory. The `models` directory contains the model class that defines the structure of the system load data that is used in the application. Run the following Maven goal to install the packaged `models` artifact to the local Maven repository so it can be used later by the `system` and `inventory` services:
 
@@ -182,34 +154,62 @@ The running `system` service searches for a Kafka topic to push its messages to.
 
 Create a class to externalize your container configurations.
 
-[role="code_command hotspot file=1", subs="quotes"]
+[role="code_command hotspot file=2", subs="quotes"]
 ----
 #Create the `AppContainerConfig` class.#
 `system/src/test/java/it/io/openliberty/guides/system/AppContainerConfig.java`
 ----
 
-The [hotspot=AppContainerConfig file=1]`AppContainerConfig` class externalizes test container setup and configuration, so you can use the same application containers across multiple tests.The [hotspot=container hotspot=container2 file=1]`@Container` annotation denotes an application container that is started up and used in the tests.
+//File 2
+AppContainerConfig.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/system/src/test/java/it/io/openliberty/guides/system/AppContainerConfig.java[]
+----
 
-Two containers are used for testing the `system` service: the [hotspot=system file=1]`system` container, which you built, and the [hotspot=kafka file=1]`kafka` container, which receives messages from the `system` service.
+The [hotspot=AppContainerConfig file=2]`AppContainerConfig` class externalizes test container setup and configuration, so you can use the same application containers across multiple tests.The [hotspot=container hotspot=container2 file=2]`@Container` annotation denotes an application container that is started up and used in the tests.
 
-The [hotspot=dependsOn file=1]`dependsOn()` method specifies that the `system` service container must wait until the `kafka` container is ready before it can start.
+Two containers are used for testing the `system` service: the [hotspot=system file=2]`system` container, which you built, and the [hotspot=kafka file=2]`kafka` container, which receives messages from the `system` service.
+
+The [hotspot=dependsOn file=2]`dependsOn()` method specifies that the `system` service container must wait until the `kafka` container is ready before it can start.
 
 === Testing your containers
 
 Now you can start writing the test that uses the configured containers.
 
 
-[role="code_command hotspot file=2", subs="quotes"]
+[role="code_command hotspot file=3", subs="quotes"]
 ----
 #Create the `SystemServiceIT` class.#
 `system/src/test/java/it/io/openliberty/guides/system/SystemServiceIT.java`
 ----
 
-The test uses the [hotspot=KafkaConsumer hotspot=KafkaConsumer2 file=2]`KafkaConsumer` client API and is configured by using the [hotspot=KafkaConsumerClient file=2]`@KafkaConsumerClient` annotation. The consumer client is configured to consume messages from the [hotspot=systemLoadTopic file=2]`system.load` topic in the `kafka` container. To learn more about Kafka APIs and how to use them, check out the https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
+//File 3
+SystemServiceIT.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/system/src/test/java/it/io/openliberty/guides/system/SystemServiceIT.java[]
+----
 
-To consume messages from a stream, the messages need to be deserialized from bytes. Kafka has its own default deserializer, but a custom deserializer is provided for you. The deserializer is configured to the consumer’s [hotspot=valueDeserializer file=2]`valueDeserializer` and is implemented in the [hotspot=SystemLoadDeserializer file=3]`SystemLoad` class.
+//File 4
+SystemLoad.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/models/src/main/java/io/openliberty/guides/models/SystemLoad.java[]
+----
 
-The running `system` service container produces messages to the [hotspot=systemLoad file=4]`systemLoad` Kafka topic, as denoted by the [hotspot=Outgoing file=4]`@Outgoing` annotation. The [hotspot=testCpuStatus file=2]`testCpuStatus()` test method [hotspot=poll file=2]`polls` a record from Kafka every 3 seconds until the timeout limit. It then [hotspot=assert file=2]`verifies` that the record polled matches the expected record.
+//File 5
+SystemService.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
+----
+
+The test uses the [hotspot=KafkaConsumer hotspot=KafkaConsumer2 file=3]`KafkaConsumer` client API and is configured by using the [hotspot=KafkaConsumerClient file=3]`@KafkaConsumerClient` annotation. The consumer client is configured to consume messages from the [hotspot=systemLoadTopic file=3]`system.load` topic in the `kafka` container. To learn more about Kafka APIs and how to use them, check out the https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
+
+To consume messages from a stream, the messages need to be deserialized from bytes. Kafka has its own default deserializer, but a custom deserializer is provided for you. The deserializer is configured to the consumer’s [hotspot=valueDeserializer file=3]`valueDeserializer` and is implemented in the [hotspot=SystemLoadDeserializer file=4]`SystemLoad` class.
+
+The running `system` service container produces messages to the [hotspot=systemLoad file=5]`systemLoad` Kafka topic, as denoted by the [hotspot=Outgoing file=5]`@Outgoing` annotation. The [hotspot=testCpuStatus file=3]`testCpuStatus()` test method [hotspot=poll file=3]`polls` a record from Kafka every 3 seconds until the timeout limit. It then [hotspot=assert file=3]`verifies` that the record polled matches the expected record.
 
 [role='command']
 include::{common-includes}/devmode-test.adoc[]
