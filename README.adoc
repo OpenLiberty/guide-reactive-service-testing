@@ -29,6 +29,7 @@ NOTE: This repository contains the guide documentation source. To view the guide
 
 Learn how to test reactive Java microservices in true-to-production environments using MicroShed Testing.
 
+
 == What you'll learn
 
 You will learn how to write integration tests for reactive Java microservices and to run the tests in true-to-production environments by using containers with https://microshed.org/microshed-testing/[MicroShed Testing^]. MicroShed Testing tests your containerized application from outside the container so that you are testing the exact same image that runs in production. The reactive application in this guide sends and receives messages between services by using an external message broker, https://kafka.apache.org/[Apache Kafka^]. Using an external message broker enables asynchronous communications between services so that requests are non-blocking and decoupled from responses. You can learn more about reactive Java  services that use an external message broker to manage communications in the https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating reactive Java microservices^] guide.
@@ -38,6 +39,7 @@ image::reactive-messaging-system-inventory.png[Reactive system inventory applica
 *True-to-production integration testing with MicroShed Testing*
 
 Tests sometimes pass during the development and testing stages of an application's lifecycle but then fail in production because of differences between your development and production environments. While you can create mock objects and custom setups to minimize differences between environments, it is difficult to mimic a production system for an application that uses an external messaging system. MicroShed Testing addresses this problem by enabling the testing of applications in the same Docker containers that you’ll use in production. As a result, your environment remains the same throughout the application’s lifecycle – from development, through testing, and into production. You can learn more about MicroShed Testing in the https://openliberty.io/guides/microshed-testing.html[Testing a MicroProfile or Jakarta EE application^] guide.
+
 
 == Additional prerequisites
 
@@ -91,6 +93,7 @@ You will see the following output:
 This command might take some time to run the first time because the dependencies and the Docker image for Open Liberty must download. If you run the same command again, it will be faster.
 
 You can also try out the `inventory` integration tests by repeating the same commands in the `finish/inventory` directory.
+
 
 == Testing with the Kafka consumer client
 
@@ -174,7 +177,6 @@ SystemServiceIT.java
 include::finish/system/src/test/java/it/io/openliberty/guides/system/SystemServiceIT.java[]
 ----
 
-
 The test uses the [hotspot=KafkaConsumer hotspot=KafkaConsumer2 file=2]`KafkaConsumer` client API and is configured by using the [hotspot=KafkaConsumerClient file=2]`@KafkaConsumerClient` annotation. The consumer client is configured to consume messages from the [hotspot=systemLoadTopic file=2]`system.load` topic in the `kafka` container. To learn more about Kafka APIs and how to use them, check out the https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
 
 To consume messages from a stream, the messages need to be deserialized from bytes. Kafka has its own default deserializer, but a custom deserializer is provided for you. The deserializer is configured to the consumer’s [hotspot=valueDeserializer file=2]`valueDeserializer` and is implemented in the [hotspot=SystemLoadDeserializer file=3]`SystemLoad` class.
@@ -225,6 +227,7 @@ You will see the following output:
  Finished at: 2020-03-13T16:28:55-04:00
  ------------------------------------------------------------------------
 ```
+
 
 == Testing with the Kafka producer client
 
@@ -316,6 +319,7 @@ You will see the following output:
  Finished at: 2020-03-13T16:43:34-04:00
  ------------------------------------------------------------------------
 ```
+
 
 == Great work! You're done!
 
