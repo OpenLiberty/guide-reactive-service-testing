@@ -29,6 +29,7 @@ NOTE: This repository contains the guide documentation source. To view the guide
 
 Learn how to test reactive Java microservices in true-to-production environments using MicroShed Testing.
 
+
 == What you'll learn
 
 You will learn how to write integration tests for reactive Java microservices and to run the tests in true-to-production environments by using containers with https://microshed.org/microshed-testing/[MicroShed Testing^]. MicroShed Testing tests your containerized application from outside the container so that you are testing the exact same image that runs in production. The reactive application in this guide sends and receives messages between services by using an external message broker, https://kafka.apache.org/[Apache Kafka^]. Using an external message broker enables asynchronous communications between services so that requests are non-blocking and decoupled from responses. You can learn more about reactive Java services that use an external message broker to manage communications in the https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating reactive Java microservices^] guide.
@@ -256,6 +257,7 @@ You will see the following output:
  ------------------------------------------------------------------------
 ```
 
+
 == Testing with the Kafka producer client
 
 The `inventory` service is tested in the same way as the `system` service. The only difference is that the `inventory` service consumes messages, which means that tests are written to use the Kafka producer client.
@@ -360,6 +362,7 @@ You will see the following output:
  Finished at: 2020-03-13T16:43:34-04:00
  ------------------------------------------------------------------------
 ```
+
 
 == Great work! You're done!
 
