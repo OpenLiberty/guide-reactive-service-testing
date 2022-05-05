@@ -32,7 +32,7 @@ Learn how to test reactive Java microservices in true-to-production environments
 
 == What you'll learn
 
-You will learn how to write integration tests for reactive Java microservices and to run the tests in true-to-production environments by using containers with https://microshed.org/microshed-testing/[MicroShed Testing^]. MicroShed Testing tests your containerized application from outside the container so that you are testing the exact same image that runs in production. The reactive application in this guide sends and receives messages between services by using an external message broker, https://kafka.apache.org/[Apache Kafka^]. Using an external message broker enables asynchronous communications between services so that requests are non-blocking and decoupled from responses. You can learn more about reactive Java  services that use an external message broker to manage communications in the https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating reactive Java microservices^] guide.
+You will learn how to write integration tests for reactive Java microservices and to run the tests in true-to-production environments by using containers with https://microshed.org/microshed-testing/[MicroShed Testing^]. MicroShed Testing tests your containerized application from outside the container so that you are testing the exact same image that runs in production. The reactive application in this guide sends and receives messages between services by using an external message broker, https://kafka.apache.org/[Apache Kafka^]. Using an external message broker enables asynchronous communications between services so that requests are non-blocking and decoupled from responses. You can learn more about reactive Java services that use an external message broker to manage communications in the https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating reactive Java microservices^] guide.
 
 image::reactive-messaging-system-inventory.png[Reactive system inventory application,align="center"]
 
@@ -136,6 +136,7 @@ docker pull icr.io/appcafe/open-liberty:full-java11-openj9-ubi
 ```
 
 With Open Liberty development mode, known as dev mode, you can use MicroShed Testing to run tests on an already running Open Liberty server. Navigate to the `start/system` directory.
+
 // cloud hosted instruction
 ifdef::cloud-hosted[]
 ```bash
@@ -209,7 +210,7 @@ The test uses the [hotspot=KafkaConsumer hotspot=KafkaConsumer2 file=0]`KafkaCon
 
 To consume messages from a stream, the messages need to be deserialized from bytes. Kafka has its own default deserializer, but a custom deserializer is provided for you. The deserializer is configured to the consumer’s [hotspot=valueDeserializer file=0]`valueDeserializer` and is implemented in the [hotspot=SystemLoadDeserializer file=1]`SystemLoad` class.
 
-The running `system` service container produces messages to the [hotspot=systemLoad file=4]`systemLoad` Kafka topic, as denoted by the [hotspot=Outgoing file=2]`@Outgoing` annotation. The [hotspot=testCpuStatus file=0]`testCpuStatus()` test method [hotspot=poll file=0]`polls` a record from Kafka every 3 seconds until the timeout limit. It then [hotspot=assert file=0]`verifies` that the record polled matches the expected record.
+The running `system` service container produces messages to the [hotspot=systemLoad file=2]`systemLoad` Kafka topic, as denoted by the [hotspot=Outgoing file=2]`@Outgoing` annotation. The [hotspot=testCpuStatus file=0]`testCpuStatus()` test method [hotspot=poll file=0]`polls` a record from Kafka every 3 seconds until the timeout limit. It then [hotspot=assert file=0]`verifies` that the record polled matches the expected record.
 
 [role='command']
 include::{common-includes}/devmode-test.adoc[]
@@ -295,6 +296,20 @@ InventoryServiceIT.java
 [source, Java, linenums, role='code_column hide_tags=copyright']
 ----
 include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java[]
+----
+
+//File 1
+SystemLoad.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/models/src/main/java/io/openliberty/guides/models/SystemLoad.java[]
+----
+
+//File 2
+InventoryResource.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/inventory/src/main/java/io/openliberty/guides/inventory/InventoryResource.java[]
 ----
 
 The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class uses the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer` client API to produce messages in the test environment for the `inventory` service container to consume. The [hotspot=KafkaProducerClient file=0]`@KafkaProducerClient` annotation configures the producer to use the custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class. The [hotspot=KafkaProducerClient file=0]`@KafkaProducerClient` annotation doesn't include a topic that the client produces messages to because it has the flexibility to produce messages to any topic. In this example, it is configured to produce messages to the [hotspot=systemLoadTopic file=0]`system.load` topic.
