@@ -1,4 +1,4 @@
-//  Copyright (c) 2020, 2022 IBM Corporation and others.
+//  Copyright (c) 2020, 2023 IBM Corporation and others.
 // Licensed under Creative Commons Attribution-NoDerivatives
 // 4.0 International (CC BY-ND 4.0)
 //   https://creativecommons.org/licenses/by-nd/4.0/
@@ -60,7 +60,7 @@ cd finish
 mvn -pl models install
 ```
 
-include::{common-includes}/ol-icr-full-docker-pull.adoc[]
+
 
 Next, navigate to the `finish/system` directory and run the following Maven goal to build the `system` service and run the integration tests on an Open Liberty server in a container:
 
@@ -132,7 +132,7 @@ If you don't have the latest Docker image, pull it by running the following comm
 
 [role='command']
 ```
-docker pull icr.io/appcafe/open-liberty:full-java11-openj9-ubi
+docker pull icr.io/appcafe/open-liberty:kernel-slim-java11-openj9-ubi
 ```
 
 With Open Liberty development mode, known as dev mode, you can use MicroShed Testing to run tests on an already running Open Liberty server. Navigate to the `start/system` directory.
