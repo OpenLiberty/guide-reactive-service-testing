@@ -128,13 +128,6 @@ The `start` directory contains three directories: the `system` service directory
 mvn -pl models install
 ```
 
-If you don't have the latest Docker image, pull it by running the following command:
-
-[role='command']
-```
-docker pull icr.io/appcafe/open-liberty:kernel-slim-java11-openj9-ubi
-```
-
 With Open Liberty dev mode, you can use MicroShed Testing to run tests on an already running Open Liberty server. Navigate to the `start/system` directory.
 
 // cloud hosted instruction
