@@ -221,7 +221,8 @@ You will see the following output:
  Integration tests finished.
 ```
 
-After you are finished running tests, stop the Open Liberty server by typing `q` in the command-line session where you ran the server, and then press the `enter/return` key.
+After you are finished running tests, stop the Open Liberty server by pressing `CTRL+C` in the command-line sessions where you ran the server.
+
 
 If you aren't running in dev mode, you can run the tests by running the following command:
 
@@ -327,7 +328,7 @@ You will see the following output:
  Integration tests finished.
 ```
 
-After you are finished running tests, stop the Open Liberty server by typing `q` in the command-line session where you ran the server, and then press the `enter/return` key.
+After you are finished running tests, stop the Open Liberty server by pressing `CTRL+C` in the command-line sessions where you ran the server.
 
 If you aren't running in dev mode, you can run the tests by running the following command:
 
