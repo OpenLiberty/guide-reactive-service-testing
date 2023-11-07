@@ -11,63 +11,137 @@
 // end::copyright[]
 package it.io.openliberty.guides.inventory;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.time.Duration;
+import java.math.BigDecimal;
+import java.nio.file.Paths;
 import java.util.Properties;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.client.ClientBuilder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
+import org.testcontainers.containers.Network;
+import org.testcontainers.utility.DockerImageName;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.ProducerConfig;
 // tag::KafkaProducer[]
 import org.apache.kafka.clients.producer.KafkaProducer;
 // end::KafkaProducer[]
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.microshed.testing.SharedContainerConfig;
-import org.microshed.testing.jaxrs.RESTClient;
-import org.microshed.testing.jupiter.MicroShedTest;
-import org.microshed.testing.kafka.KafkaProducerClient;
+import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 
-import io.openliberty.guides.inventory.InventoryResource;
 import io.openliberty.guides.models.SystemLoad;
 import io.openliberty.guides.models.SystemLoad.SystemLoadSerializer;
 
-@MicroShedTest
-@SharedContainerConfig(AppContainerConfig.class)
-@TestMethodOrder(OrderAnnotation.class)
+
+@Testcontainers
 // tag::InventoryServiceIT[]
 public class InventoryServiceIT {
 
-    // tag::RESTClient[]
-    @RESTClient
-    public static InventoryResource inventoryResource;
-    // end::RESTClient[]
+    private static Logger logger = LoggerFactory.getLogger(InventoryServiceIT.class);
 
+    public static InventoryResourceCleint client;
+
+    private static Network network = Network.newNetwork();
     // tag::KafkaProducer2[]
-    // tag::KafkaProducerClient[]
-    @KafkaProducerClient(valueSerializer = SystemLoadSerializer.class)
-    // end::KafkaProducerClient[]
     public static KafkaProducer<String, SystemLoad> producer;
     // end::KafkaProducer2[]
+    private static ImageFromDockerfile inventoryImage
+        = new ImageFromDockerfile("inventory:1.0-SNAPSHOT")
+            .withDockerfile(Paths.get("./Dockerfile"));
+
+    private static KafkaContainer kafkaContainer = new KafkaContainer(
+        DockerImageName.parse("confluentinc/cp-kafka:latest"))
+            .withListener(() -> "kafka:19092")
+            .withNetwork(network);
+
+    private static GenericContainer<?> inventoryContainer =
+        new GenericContainer(inventoryImage)
+            .withNetwork(network)
+            .withExposedPorts(9085)
+            .waitingFor(Wait.forHttp("/health/ready").forPort(9085))
+            .withStartupTimeout(Duration.ofMinutes(2))
+            .withLogConsumer(new Slf4jLogConsumer(logger))
+            .dependsOn(kafkaContainer);
+
+    // tag::RESTClient[]
+    private static InventoryResourceCleint createRestClient(String urlPath) {
+        ClientBuilder builder = ResteasyClientBuilder.newBuilder();
+        ResteasyClient client = (ResteasyClient) builder.build();
+        ResteasyWebTarget target = client.target(UriBuilder.fromPath(urlPath));
+        return target.proxy(InventoryResourceCleint.class);
+    }
+    // end::RESTClient[]
+
+    @BeforeAll
+    public static void startContainers() {
+        kafkaContainer.start();
+        inventoryContainer.withEnv(
+            "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
+        inventoryContainer.start();
+        client = createRestClient("http://"
+            + inventoryContainer.getHost()
+            + ":" + inventoryContainer.getFirstMappedPort());
+    }
+
+    @BeforeEach
+    public void setUp() {
+        // tag::KafkaProducerProps[]
+        Properties producerProps = new Properties();
+        producerProps.put(
+            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                kafkaContainer.getBootstrapServers());
+        producerProps.put(
+            ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+                StringSerializer.class.getName());
+        producerProps.put(
+            ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+                SystemLoadSerializer.class.getName());
+
+        producer = new KafkaProducer<String, SystemLoad>(producerProps);
+        // end::KafkaProducerProps[]
+    }
 
     @AfterAll
-    public static void cleanup() {
-        inventoryResource.resetSystems();
+    public static void stopContainers() {
+        inventoryContainer.stop();
+        kafkaContainer.stop();
+        network.close();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        producer.close();
     }
 
     // tag::testCpuUsage[]
     @Test
     public void testCpuUsage() throws InterruptedException {
+
         SystemLoad sl = new SystemLoad("localhost", 1.1);
         // tag::systemLoadTopic[]
         producer.send(new ProducerRecord<String, SystemLoad>("system.load", sl));
         // end::systemLoadTopic[]
         Thread.sleep(5000);
-        Response response = inventoryResource.getSystems();
+        Response response = client.getSystems();
         List<Properties> systems =
                 response.readEntity(new GenericType<List<Properties>>() { });
         // tag::assert[]

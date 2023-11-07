@@ -1,6 +1,6 @@
 // tag::copyright[]
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,12 +9,20 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 // end::copyright[]
-package io.openliberty.guides.inventory;
+package it.io.openliberty.guides.inventory;
 
-import jakarta.ws.rs.core.Application;
-import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
-@ApplicationPath("/")
-public class InventoryApplication extends Application {
+@Path("/inventory")
+public interface InventoryResourceCleint {
+
+    @GET
+    @Path("/systems")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response getSystems();
 
 }
