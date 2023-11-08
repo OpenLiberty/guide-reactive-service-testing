@@ -63,7 +63,7 @@ public class SystemLoad {
             return JSONB.toJson(data).getBytes();
         }
     }
-      
+
     public static class SystemLoadDeserializer implements Deserializer<SystemLoad> {
         @Override
         public SystemLoad deserialize(String topic, byte[] data) {

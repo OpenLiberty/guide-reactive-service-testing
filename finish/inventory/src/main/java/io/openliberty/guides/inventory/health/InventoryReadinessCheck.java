@@ -33,7 +33,7 @@ public class InventoryReadinessCheck implements HealthCheck {
 
     private static Logger logger = Logger.getLogger(
         InventoryReadinessCheck.class.getName());
-    
+
     @Inject
     @ConfigProperty(name = "mp.messaging.connector.liberty-kafka.bootstrap.servers")
     String kafkaServer;
@@ -68,7 +68,7 @@ public class InventoryReadinessCheck implements HealthCheck {
         try {
             Collection<ConsumerGroupListing> consumerGroups =
                 consumerGroupsFuture.get();
-            for (ConsumerGroupListing g : consumerGroups){
+            for (ConsumerGroupListing g : consumerGroups) {
                 logger.info("groupId: " + g.groupId());
             }
             return consumerGroups.stream().anyMatch(

@@ -41,7 +41,7 @@ public class InventoryReadinessCheck implements HealthCheck {
     @Inject
     @ConfigProperty(name = "mp.messaging.incoming.systemLoad.group.id")
     String groupId;
-    
+
     @Override
     public HealthCheckResponse call() {
         boolean up = isReady();
@@ -68,7 +68,7 @@ public class InventoryReadinessCheck implements HealthCheck {
         try {
             Collection<ConsumerGroupListing> consumerGroups =
                 consumerGroupsFuture.get();
-            for (ConsumerGroupListing g : consumerGroups){
+            for (ConsumerGroupListing g : consumerGroups) {
                 logger.info("groupId: " + g.groupId());
             }
             return consumerGroups.stream().anyMatch(
