@@ -54,21 +54,29 @@ public class SystemServiceIT {
 
     public static KafkaConsumer<String, SystemLoad> consumer;
 
+    // tag::buildSystemImage[]
     private static ImageFromDockerfile systemImage
         = new ImageFromDockerfile("system:1.0-SNAPSHOT")
               .withDockerfile(Paths.get("./Dockerfile"));
+    // end::buildSystemImage[]
 
     // tag::kafkaContainer[]
     private static KafkaContainer kafkaContainer = new KafkaContainer(
         DockerImageName.parse("confluentinc/cp-kafka:latest"))
+            // tag::withListener[]
             .withListener(() -> "kafka:19092")
+            // end::withListener[]
+            // tag::network1[]
             .withNetwork(network);
+            // end::network1[]
     // end::kafkaContainer[]
 
     // tag::systemContainer[]
     private static GenericContainer<?> systemContainer =
         new GenericContainer(systemImage)
+            // tag::network2[]
             .withNetwork(network)
+            // end::network2[]
             .withExposedPorts(9083)
             .waitingFor(Wait.forHttp("/health/ready").forPort(9083))
             .withStartupTimeout(Duration.ofMinutes(2))
@@ -81,8 +89,10 @@ public class SystemServiceIT {
     @BeforeAll
     public static void startContainers() {
         kafkaContainer.start();
+        // tag::bootstrapServerSetup[]
         systemContainer.withEnv(
             "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
+        // end::bootstrapServerSetup[]
         systemContainer.start();
     }
 
@@ -110,7 +120,9 @@ public class SystemServiceIT {
                 "earliest");
         // end::KafkaConsumerProps[]
         consumer = new KafkaConsumer<String, SystemLoad>(consumerProps);
+        // tag::systemLoadTopic[]
         consumer.subscribe(Collections.singletonList("system.load"));
+        // end::systemLoadTopic[]
         // end::KafkaConsumer2[]
     }
 

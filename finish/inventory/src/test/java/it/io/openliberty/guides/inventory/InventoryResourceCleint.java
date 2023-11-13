@@ -19,10 +19,10 @@ import jakarta.ws.rs.core.Response;
 
 @Path("/inventory")
 public interface InventoryResourceCleint {
-
+    // tag::getSystems[]
     @GET
     @Path("/systems")
     @Produces(MediaType.APPLICATION_JSON)
     Response getSystems();
-
+    // end::getSystems[]
 }

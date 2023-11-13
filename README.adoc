@@ -27,18 +27,18 @@
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website].
 
-Learn how to test reactive Java microservices in true-to-production environments using MicroShed Testing.
+Learn how to test reactive Java microservices in true-to-production environments using Testcontainers.
 
 
 == What you'll learn
 
-You will learn how to write integration tests for reactive Java microservices and to run the tests in true-to-production environments by using containers with https://microshed.org/microshed-testing/[MicroShed Testing^]. MicroShed Testing tests your containerized application from outside the container so that you are testing the exact same image that runs in production. The reactive application in this guide sends and receives messages between services by using an external message broker, https://kafka.apache.org/[Apache Kafka^]. Using an external message broker enables asynchronous communications between services so that requests are non-blocking and decoupled from responses. You can learn more about reactive Java services that use an external message broker to manage communications in the https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating reactive Java microservices^] guide.
+You will learn how to write integration tests for reactive Java microservices and to run the tests in true-to-production environments by using containers with https://java.testcontainers.org/[Testcontainers^] and JUnit. Testcontainers tests your containerized application from outside the container so that you are testing the exact same image that runs in production. The reactive application in this guide sends and receives messages between services by using an external message broker, https://kafka.apache.org/[Apache Kafka^]. Using an external message broker enables asynchronous communications between services so that requests are non-blocking and decoupled from responses. You can learn more about reactive Java services that use an external message broker to manage communications in the https://openliberty.io/guides/microprofile-reactive-messaging.html[Creating reactive Java microservices^] guide.
 
 image::reactive-messaging-system-inventory.png[Reactive system inventory application,align="center"]
 
-*True-to-production integration testing with MicroShed Testing*
+*True-to-production integration testing with Testcontainers*
 
-Tests sometimes pass during the development and testing stages of an application's lifecycle but then fail in production because of differences between your development and production environments. While you can create mock objects and custom setups to minimize differences between environments, it is difficult to mimic a production system for an application that uses an external messaging system. MicroShed Testing addresses this problem by enabling the testing of applications in the same Docker containers that you’ll use in production. As a result, your environment remains the same throughout the application’s lifecycle – from development, through testing, and into production. You can learn more about MicroShed Testing in the https://openliberty.io/guides/microshed-testing.html[Testing a MicroProfile or Jakarta EE application^] guide.
+Tests sometimes pass during the development and testing stages of an application's lifecycle but then fail in production because of differences between your development and production environments. While you can create mock objects and custom setups to minimize differences between environments, it is difficult to mimic a production system for an application that uses an external messaging system. Testcontainers addresses this problem by enabling the testing of applications in the same Docker containers that you’ll use in production. As a result, your environment remains the same throughout the application’s lifecycle – from development, through testing, and into production. You can learn more about Testcontainers in the https://openliberty.io/guides/testcontainers.html[Building true-to-production integration tests with Testcontainers^] guide.
 
 
 == Additional prerequisites
@@ -119,7 +119,7 @@ cd /home/project/guide-reactive-service-testing/start
 ```
 endif::[]
 
-The example reactive application consists of the `system` and `inventory` microservices. The `system` microservice produces messages to the Kafka message broker, and the `inventory` microservice consumes messages from the Kafka message broker. You will write integration tests to see how you can use the Kafka consumer and producer client APIs to test each service. MicroShed Testing and Kafka Testcontainers have already been included as required test dependencies in your Maven `pom.xml` files for the [hotspot=dependencies file=0]`system` and [hotspot=dependencies file=1]`inventory` services.
+The example reactive application consists of the `system` and `inventory` microservices. The `system` microservice produces messages to the Kafka message broker, and the `inventory` microservice consumes messages from the Kafka message broker. You will write integration tests to see how you can use the Kafka consumer and producer client APIs to test each service. Kafka Testcontainers and JUnit have already been included as required test dependencies in your Maven `pom.xml` files for the [hotspot=dependencies file=0]`system` and [hotspot=dependencies file=1]`inventory` services.
 
 The `start` directory contains three directories: the `system` service directory, the `inventory` service directory, and the `models` directory. The `models` directory contains the model class that defines the structure of the system load data that is used in the application. Run the following Maven goal to install the packaged `models` artifact to the local Maven repository so it can be used later by the `system` and `inventory` services:
 
@@ -128,7 +128,7 @@ The `start` directory contains three directories: the `system` service directory
 mvn -pl models install
 ```
 
-With Open Liberty dev mode, you can use MicroShed Testing to run tests on an already running Open Liberty server. Navigate to the `start/system` directory.
+With Open Liberty dev mode, you can use Testcontainers to run tests on an already running Open Liberty server. Navigate to the `start/system` directory.
 
 // cloud hosted instruction
 ifdef::cloud-hosted[]
@@ -144,33 +144,8 @@ Now you can add your test files.
 
 The running `system` service searches for a Kafka topic to push its messages to. Because there are not yet any running Kafka services, the `system` service throws errors. Later in the guide, you will write and run tests that start a Kafka Testcontainer that can communicate with the `system` service. This will resolve the errors that you see now.
 
-=== Configuring your containers
 
-Create a class to externalize your container configurations.
-
-[role="code_command hotspot file=0", subs="quotes"]
-----
-#Create the `AppContainerConfig` class.#
-`system/src/test/java/it/io/openliberty/guides/system/AppContainerConfig.java`
-----
-
-//File 0
-AppContainerConfig.java
-[source, Java, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/system/src/test/java/it/io/openliberty/guides/system/AppContainerConfig.java[]
-----
-
-The [hotspot=AppContainerConfig file=0]`AppContainerConfig` class externalizes test container setup and configuration, so you can use the same application containers across multiple tests.The [hotspot=container hotspot=container2 file=0]`@Container` annotation denotes an application container that is started up and used in the tests.
-
-Two containers are used for testing the `system` service: the [hotspot=system file=0]`system` container, which you built, and the [hotspot=kafka file=0]`kafka` container, which receives messages from the `system` service.
-
-The [hotspot=dependsOn file=0]`dependsOn()` method specifies that the `system` service container must wait until the `kafka` container is ready before it can start.
-
-=== Testing your containers
-
-Now you can start writing the test that uses the configured containers.
-
+=== Testing your system service with Testcontainer
 
 [role="code_command hotspot file=0", subs="quotes"]
 ----
@@ -199,7 +174,17 @@ SystemService.java
 include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
 ----
 
-The test uses the [hotspot=KafkaConsumer hotspot=KafkaConsumer2 file=0]`KafkaConsumer` client API and is configured by using the [hotspot=KafkaConsumerClient file=0]`@KafkaConsumerClient` annotation. The consumer client is configured to consume messages from the [hotspot=systemLoadTopic file=0]`system.load` topic in the `kafka` container. To learn more about Kafka APIs and how to use them, check out the https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
+Construct the [hotspot=buildSystemImage file=0] systemImage using the `ImageFromDockerfile class`, which allows Testcontainers to build Docker images from a Dockerfile during the test runtime. For instance, the provided Dockerfiles at the specified paths ./Dockerfile is used to generate the system:1.0-SNAPSHOT images.
+
+Use the kafkaContainer class to create the `kafkaContainer` test container to start up the `confluentinc/cp-kafka:latest` Docker image, and use GenericContainer class to create the `systemContainer` test container to start up the `system:1.0-SNAPSHOT` Docker image,  
+
+Two containers are used for testing the `system` service: the [hotspot=kafkaContainer file=0]`kafkaContainer` container, which receives messages from the `system` service, and the [hotspot=system file=0]`systemContainer` container. Note that [hotspot=withListener file=0] `withListener()` has been set to `kafka:19092` because the system service will be used as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For more information of using additional consumer or producer with Kafka container please visit https://java.testcontainers.org/modules/kafka/[official Kafka Test Container Documentation^]
+
+Since containers are isolated by default, placing both the `kafkaContainer` and the `systemContainer` on the same [hotspot=network1 hotspot=network2 file=0] `network` allows them to communicate. 
+
+The [hotspot=dependsOn file=0]`dependsOn()` method specifies that the `system` service container must wait until the `kafka` container is ready before it can start. In addition, before starting the systemContainer, as the listener has been set up for the Kafka container to handle an additional producer, the `mp.messaging.connector.liberty-kafka.bootstrap.servers` property needs to be overridden with `kafka:19092` using [hotspot=bootstrapServerSetup file=0]`withEnv()` method.
+
+The test uses the [hotspot=KafkaConsumer hotspot=KafkaConsumer2 file=0]`KafkaConsumer` client API. The consumer client is configured to consume messages from the [hotspot=systemLoadTopic file=0]`system.load` topic in the `kafka` container. To learn more about Kafka APIs and how to use them, check out the https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
 
 To consume messages from a stream, the messages need to be deserialized from bytes. Kafka has its own default deserializer, but a custom deserializer is provided for you. The deserializer is configured to the consumer’s [hotspot=valueDeserializer file=0]`valueDeserializer` and is implemented in the [hotspot=SystemLoadDeserializer file=1]`SystemLoad` class.
 
@@ -266,9 +251,7 @@ cd /home/project/guide-reactive-service-testing/start/inventory
 ```
 endif::[]
 
-The `AppContainerConfig` class is provided, and it is configured in the same way as it was for the `system` service. The two containers that are configured for use in the `inventory` service integration test are the `kafka` and `inventory` containers.
-
-=== Testing your containers
+=== Testing your inventory service with Testcontainer
 
 As you did with the `system` service, run Open Liberty in dev mode to listen for file changes:
 
@@ -276,6 +259,16 @@ As you did with the `system` service, run Open Liberty in dev mode to listen for
 ```
 mvn liberty:dev
 ```
+
+=== Writing the RESTful client interface
+
+Create a RESTful client interface for the inventory microservice in the system microservice. This interface declares `getSystems()` method for accessing system status in the integration test. 
+
+[role="code_command hotspot file=3", subs="quotes"]
+----
+#Create the `InventoryResourceClient` class.#
+`finish/inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryResourceClient.java`
+----
 
 Now you can create your integrated test.
 
@@ -306,11 +299,22 @@ InventoryResource.java
 include::finish/inventory/src/main/java/io/openliberty/guides/inventory/InventoryResource.java[]
 ----
 
-The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class uses the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer` client API to produce messages in the test environment for the `inventory` service container to consume. The [hotspot=KafkaProducerClient file=0]`@KafkaProducerClient` annotation configures the producer to use the custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class. The [hotspot=KafkaProducerClient file=0]`@KafkaProducerClient` annotation doesn't include a topic that the client produces messages to because it has the flexibility to produce messages to any topic. In this example, it is configured to produce messages to the [hotspot=systemLoadTopic file=0]`system.load` topic.
+//File 3
+InventoryResourceClient.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryResourceClient.java[]
+----
+
+
+
+The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class uses the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer` client API to produce messages in the test environment for the `inventory` service container to consume. 
+
+The producer client is configured to use the kafkaContainer's [hotspot=BootstrapServerConfig file=0] `bootstrapServer`, and custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
+
+After start the container, in order to invoke the [hotspot=getSystems file=3]`getSystems` method declared in the `InventoryResourceClient`. An `ResteasyClient` has been introduced to build an REST client, which allows HTTP requests to be made to the running application.
 
 The [hotspot=testCpuUsage file=0]`testCpuUsage` test method produces a message to Kafka and then [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`verifies` that the response from the `inventory` service matches what is expected.
-
-The [hotspot=RESTClient file=0]`@RESTClient` annotation injects a REST client proxy of the [hotspot=InventoryResource file=2]`InventoryResource` class, which allows HTTP requests to be made to the running application. To learn more about REST clients, check out the https://openliberty.io/guides/microprofile-rest-client.html[Consuming RESTful services with template interfaces^] guide.
 
 [role='command']
 include::{common-includes}/devmode-test.adoc[]
@@ -360,12 +364,12 @@ You will see the following output:
 
 == Great work! You're done!
 
-You just tested two reactive Java microservices using MicroShed Testing.
+You just tested two reactive Java microservices using Testcontainers.
 
 == Related Links
 
-Learn more about MicroShed Testing.
+Learn more about Testcontainers.
 
-https://microshed.org/microshed-testing/[Visit the official MicroShed Testing website^]
+https://testcontainers.com/[Visit the official Testcontainers website^]
 
 include::{common-includes}/attribution.adoc[subs="attributes"]
