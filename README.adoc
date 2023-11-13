@@ -147,6 +147,7 @@ The running `system` service searches for a Kafka topic to push its messages to.
 
 === Testing your system service with Testcontainer
 
+You will create an integration test to test the basic functionality of the system microservice. If a test failure occurs, then you might have introduced a bug into the code.
 
 [role="code_command hotspot file=0", subs="quotes"]
 ----
