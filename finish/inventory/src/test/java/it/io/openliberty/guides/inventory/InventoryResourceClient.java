@@ -18,7 +18,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/inventory")
-public interface InventoryResourceCleint {
+public interface InventoryResourceClient {
     // tag::getSystems[]
     @GET
     @Path("/systems")

@@ -305,7 +305,7 @@ include::finish/inventory/src/main/java/io/openliberty/guides/inventory/Inventor
 InventoryResourceClient.java
 [source, Java, linenums, role='code_column hide_tags=copyright']
 ----
-include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryResourceCleint.java[]
+include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryResourceClient.java[]
 ----
 
 
