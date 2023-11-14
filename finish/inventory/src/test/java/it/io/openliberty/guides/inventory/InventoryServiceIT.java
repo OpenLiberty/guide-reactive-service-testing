@@ -85,7 +85,9 @@ public class InventoryServiceIT {
     // tag::RESTClient[]
     private static InventoryResourceCleint createRestClient(String urlPath) {
         ClientBuilder builder = ResteasyClientBuilder.newBuilder();
+        // tag::ResteasyClient[]
         ResteasyClient client = (ResteasyClient) builder.build();
+        // end::ResteasyClient[]
         ResteasyWebTarget target = client.target(UriBuilder.fromPath(urlPath));
         return target.proxy(InventoryResourceCleint.class);
     }
