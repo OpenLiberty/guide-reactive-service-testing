@@ -83,13 +83,13 @@ public class InventoryServiceIT {
             .dependsOn(kafkaContainer);
 
     // tag::RESTClient[]
-    private static InventoryResourceCleint createRestClient(String urlPath) {
+    private static InventoryResourceClient createRestClient(String urlPath) {
         ClientBuilder builder = ResteasyClientBuilder.newBuilder();
         // tag::ResteasyClient[]
         ResteasyClient client = (ResteasyClient) builder.build();
         // end::ResteasyClient[]
         ResteasyWebTarget target = client.target(UriBuilder.fromPath(urlPath));
-        return target.proxy(InventoryResourceCleint.class);
+        return target.proxy(InventoryResourceClient.class);
     }
     // end::RESTClient[]
 
