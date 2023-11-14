@@ -176,17 +176,17 @@ SystemService.java
 include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
 ----
 
-Construct the [hotspot=buildSystemImage file=0] `systemImage` using the `ImageFromDockerfile class`, which allows Testcontainers to build Docker images from a Dockerfile during the test runtime. For instance, the provided Dockerfiles at the specified paths `./Dockerfile` is used to generate the system:1.0-SNAPSHOT images.
+Construct the [hotspot=buildSystemImage file=0]`systemImage` using the `ImageFromDockerfile` class, which allows Testcontainers to build the Docker image from a Dockerfile during the test runtime. For instance, the provided Dockerfile at the specified paths `./Dockerfile` is used to generate the `system:1.0-SNAPSHOT` image.
 
-Use the kafkaContainer class to create the `kafkaContainer` test container to start up the `confluentinc/cp-kafka:latest` Docker image, and use GenericContainer class to create the `systemContainer` test container to start up the `system:1.0-SNAPSHOT` Docker image,  
+Utilize the `kafkaContainer` class to instantiate the `kafkaContainer` test container, initiating the `confluentinc/cp-kafka:latest` Docker image. Similarly, employ the `GenericContainer` class to create the systemContainer test container, starting the `system:1.0-SNAPSHOT Docker` image.
 
-Two containers are used for testing the `system` service: the [hotspot=kafkaContainer file=0]`kafkaContainer` container, which receives messages from the `system` service, and the [hotspot=system file=0]`systemContainer` container. Note that [hotspot=withListener file=0]`withListener()` has been set to `kafka:19092` because the system service will be used as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For more information of using additional consumer or producer with Kafka container please visit https://java.testcontainers.org/modules/kafka/[official Kafka Test Container Documentation^]
+Two containers are implemented for testing the `system` service: the [hotspot=kafkaContainer file=0]`kafkaContainer` container is responsible for receiving messages from the system service, which is hosted in the [hotspot=systemContainer file=0]`systemContainer` container. It's important to note that [hotspot=withListener file=0]`withListener()` has been configured to `kafka:19092` since the system service will function as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For further details on utilizing additional consumer or producer with Kafka container, please visit https://java.testcontainers.org/modules/kafka/[official Kafka Test Container Documentation^]
 
-Since containers are isolated by default, placing both the `kafkaContainer` and the `systemContainer` on the same [hotspot=network1 hotspot=network2 file=0]`network` allows them to communicate. 
+Since containers are isolated by default, facilitating communication between the `kafkaContainer` and the `systemContainer` requires placing them on the same [hotspot=network1 hotspot=network2 file=0]`network`.
 
-The [hotspot=dependsOn file=0]`dependsOn()` method specifies that the `system` service container must wait until the `kafka` container is ready before it can start. In addition, before starting the systemContainer, as the listener has been set up for the Kafka container to handle an additional producer, the `mp.messaging.connector.liberty-kafka.bootstrap.servers` property needs to be overridden with `kafka:19092` using [hotspot=bootstrapServerSetup file=0]`withEnv()` method.
+The [hotspot=dependsOn file=0]`dependsOn()` method is utilized to indicate that the `system` service container should commence only after ensuring the readiness of the kafka container. Prior to initiating the systemContainer, it is imperative to override the `mp.messaging.connector.liberty-kafka.bootstrap.servers` property with `kafka:19092` using the [hotspot=bootstrapServerSetup file=0]`withEnv()` method. This step is necessary due to the establishment of a listener in the Kafka container, configured to handle an additional producer.
 
-The test uses the [hotspot=KafkaConsumer hotspot=KafkaConsumer2 file=0]`KafkaConsumer` client API. The consumer client is configured to consume messages from the [hotspot=systemLoadTopic file=0]`system.load` topic in the `kafka` container. To learn more about Kafka APIs and how to use them, check out the https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
+The test utilizes the [hotspot=KafkaConsumer hotspot=KafkaConsumer2 file=0]`KafkaConsumer` client API, with the consumer client configured to consume messages from the [hotspot=systemLoadTopic file=0]`system.load` topic within the `kafka` container. To learn more about Kafka APIs and their usage, please refer to the https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
 
 To consume messages from a stream, the messages need to be deserialized from bytes. Kafka has its own default deserializer, but a custom deserializer is provided for you. The deserializer is configured to the consumer’s [hotspot=valueDeserializer file=0]`valueDeserializer` and is implemented in the [hotspot=SystemLoadDeserializer file=1]`SystemLoad` class.
 
@@ -310,11 +310,11 @@ include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/Inven
 
 
 
-The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class uses the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer` client API to produce messages in the test environment for the `inventory` service container to consume. 
+The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer` client API to generate messages in the test environment, which are then consumed by the inventory service container.
 
-The producer client is configured to use the kafkaContainer's [hotspot=BootstrapServerConfig file=0]`bootstrapServer`, and custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
+The producer client is configured to utilize the [hotspot=BootstrapServerConfig file=0]`bootstrapServer` of the `kafkaContainer` and a custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
 
-After start the container, in order to invoke the [hotspot=getSystems file=3]`getSystems` method declared in the `InventoryResourceClient`. An `ResteasyClient` has been introduced to build an REST client, which allows HTTP requests to be made to the running application.
+Upon starting the container, the [hotspot=getSystems file=3]`getSystems` method declared in the `InventoryResourceClient` is invoked. To facilitate this, a `ResteasyClient` has been introduced to construct a REST client, enabling HTTP requests to be made to the running application.
 
 The [hotspot=testCpuUsage file=0]`testCpuUsage` test method produces a message to Kafka and then [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`verifies` that the response from the `inventory` service matches what is expected.
 
