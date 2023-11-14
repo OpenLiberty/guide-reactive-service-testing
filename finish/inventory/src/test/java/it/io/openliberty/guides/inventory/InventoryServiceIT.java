@@ -58,7 +58,7 @@ public class InventoryServiceIT {
 
     private static Logger logger = LoggerFactory.getLogger(InventoryServiceIT.class);
 
-    public static InventoryResourceCleint client;
+    public static InventoryResourceClient client;
 
     private static Network network = Network.newNetwork();
     // tag::KafkaProducer2[]
