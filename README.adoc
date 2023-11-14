@@ -264,12 +264,12 @@ mvn liberty:dev
 
 === Writing the RESTful client interface
 
-Create a RESTful client interface for the inventory microservice in the system microservice. This interface declares `getSystems()` method for accessing system status in the integration test. 
+Create a RESTful client interface for the inventory microservice in the system microservice. This interface declares [hotspot=getSystems file=3]`getSystems()` method for accessing system status in the integration test. 
 
 [role="code_command hotspot file=3", subs="quotes"]
 ----
 #Create the `InventoryResourceClient` class.#
-`finish/inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryResourceClient.java`
+`inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryResourceClient.java`
 ----
 
 Now you can create your integrated test.
