@@ -314,7 +314,7 @@ The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [
 
 The producer client is configured to utilize the [hotspot=BootstrapServerConfig file=0]`bootstrapServer` of the `kafkaContainer` and a custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
 
-Upon starting the container, the [hotspot=getSystems file=3]`getSystems` method declared in the `InventoryResourceClient` is invoked. To facilitate this, a [hotspot=ResteasyClient file=3]`ResteasyClient` has been introduced to construct a REST client, enabling HTTP requests to be made to the running application.
+Upon starting the container, the [hotspot=getSystems file=3]`getSystems` method declared in the `InventoryResourceClient` is invoked. To facilitate this, a [hotspot=ResteasyClient file=0]`ResteasyClient` has been introduced to construct a REST client, enabling HTTP requests to be made to the running application.
 
 The [hotspot=testCpuUsage file=0]`testCpuUsage` test method produces a message to Kafka and then [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`verifies` that the response from the `inventory` service matches what is expected.
 
