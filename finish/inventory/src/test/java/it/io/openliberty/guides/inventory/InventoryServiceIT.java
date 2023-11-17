@@ -12,6 +12,7 @@
 package it.io.openliberty.guides.inventory;
 
 import java.util.List;
+import java.net.Socket;
 import java.time.Duration;
 import java.math.BigDecimal;
 import java.nio.file.Paths;
@@ -47,6 +48,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import io.openliberty.guides.models.SystemLoad;
 import io.openliberty.guides.models.SystemLoad.SystemLoadSerializer;
@@ -93,15 +95,37 @@ public class InventoryServiceIT {
     }
     // end::RESTClient[]
 
+    // tag::isServiceRunning[]
+    private static boolean isServiceRunning(String host, int port) {
+        try {
+            Socket socket = new Socket(host, port);
+            socket.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    // end::isServiceRunning[]
+
     @BeforeAll
     public static void startContainers() {
         kafkaContainer.start();
-        inventoryContainer.withEnv(
-            "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
-        inventoryContainer.start();
-        client = createRestClient("http://"
-            + inventoryContainer.getHost()
-            + ":" + inventoryContainer.getFirstMappedPort());
+
+        String urlPath;
+        if (isServiceRunning("localhost", 9085)) {
+            logger.info("Testing by dev mode or local Liberty...");
+            urlPath = "http://localhost:" + 9085;
+        } else {
+            logger.info("Testing by Testscontainers...");
+            inventoryContainer.withEnv(
+                "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
+            inventoryContainer.start();
+            urlPath = "http://"
+                + inventoryContainer.getHost()
+                + ":" + inventoryContainer.getFirstMappedPort();
+        }
+        System.out.println("TEST: " + urlPath);
+        client = createRestClient(urlPath);
     }
 
     @BeforeEach
@@ -140,29 +164,48 @@ public class InventoryServiceIT {
     @Test
     public void testCpuUsage() throws InterruptedException {
 
-        SystemLoad sl = new SystemLoad("localhost", 1.1);
-        // tag::systemLoadTopic[]
-        producer.send(new ProducerRecord<String, SystemLoad>("system.load", sl));
-        // end::systemLoadTopic[]
-        Thread.sleep(5000);
-        Response response = client.getSystems();
-        List<Properties> systems =
-                response.readEntity(new GenericType<List<Properties>>() { });
-        // tag::assert[]
-        Assertions.assertEquals(200, response.getStatus(),
-                "Response should be 200");
-        Assertions.assertEquals(systems.size(), 1);
-        // end::assert[]
-        for (Properties system : systems) {
-            // tag::assert2[]
-            Assertions.assertEquals(sl.hostname, system.get("hostname"),
-                    "Hostname doesn't match!");
-            // end::assert2[]
-            BigDecimal systemLoad = (BigDecimal) system.get("systemLoad");
-            // tag::assert3[]
-            Assertions.assertEquals(sl.loadAverage, systemLoad.doubleValue(),
-                    "CPU load doesn't match!");
-            // end::assert3[]
+        if (isServiceRunning("localhost", 9085)) {
+            Response response = client.getSystems();
+            Assertions.assertEquals(200, response.getStatus(),
+                    "Response should be 200");
+            List<Properties> systems =
+                    response.readEntity(new GenericType<List<Properties>>() { });
+            // tag::assert4[]
+            Assertions.assertEquals(systems.size(), 1);
+            // end::assert4[]
+            for (Properties system : systems) {
+                // tag::assert5[]
+                assertNotNull(system.get("hostname"));
+                // end::assert5[]
+                // tag::assert6[]
+                assertNotNull(system.get("systemLoad"));
+                // end::assert6[]
+            }
+        }else{
+            SystemLoad sl = new SystemLoad("localhost", 1.1);
+            // tag::systemLoadTopic[]
+            producer.send(new ProducerRecord<String, SystemLoad>("system.load", sl));
+            // end::systemLoadTopic[]
+            Thread.sleep(5000);
+            Response response = client.getSystems();
+            Assertions.assertEquals(200, response.getStatus(),
+                    "Response should be 200");
+            List<Properties> systems =
+                    response.readEntity(new GenericType<List<Properties>>() { });
+            // tag::assert[]
+            Assertions.assertEquals(systems.size(), 1);
+            // end::assert[]
+            for (Properties system : systems) {
+                // tag::assert2[]
+                Assertions.assertEquals(sl.hostname, system.get("hostname"),
+                        "Hostname doesn't match!");
+                // end::assert2[]
+                BigDecimal systemLoad = (BigDecimal) system.get("systemLoad");
+                // tag::assert3[]
+                Assertions.assertEquals(sl.loadAverage, systemLoad.doubleValue(),
+                        "CPU load doesn't match!");
+                // end::assert3[]
+            }
         }
     }
     // end::testCpuUsage[]
