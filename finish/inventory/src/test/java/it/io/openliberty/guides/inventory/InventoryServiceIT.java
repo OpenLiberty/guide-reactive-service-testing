@@ -118,7 +118,8 @@ public class InventoryServiceIT {
         } else {
             logger.info("Testing by Testscontainers...");
             inventoryContainer.withEnv(
-                "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
+                "mp.messaging.connector.liberty-kafka.bootstrap.servers",
+                "kafka:19092");
             inventoryContainer.start();
             urlPath = "http://"
                 + inventoryContainer.getHost()
@@ -181,7 +182,7 @@ public class InventoryServiceIT {
                 assertNotNull(system.get("systemLoad"));
                 // end::assert6[]
             }
-        }else{
+        } else {
             SystemLoad sl = new SystemLoad("localhost", 1.1);
             // tag::systemLoadTopic[]
             producer.send(new ProducerRecord<String, SystemLoad>("system.load", sl));
