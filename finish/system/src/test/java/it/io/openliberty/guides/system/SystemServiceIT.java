@@ -101,14 +101,14 @@ public class SystemServiceIT {
 
     @BeforeAll
     public static void startContainers() {
-        if (isServiceRunning("localhost", 9083)){
+        if (isServiceRunning("localhost", 9083)) {
             systemContainer.withNetworkMode("reactive-app");
             // tag::bootstrapServerSetup[]
             systemContainer.withEnv(
             "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:9092");
             // end::bootstrapServerSetup[]
             System.out.println("Testing with mvn liberty:devc");
-        }else{
+        } else {
             kafkaContainer.start();
             // tag::bootstrapServerSetup[]
             systemContainer.withEnv(
@@ -155,7 +155,7 @@ public class SystemServiceIT {
     public static void stopContainers() {
         systemContainer.stop();
         kafkaContainer.stop();
-        if (network != null){
+        if (network != null) {
             network.close();
         }
     }

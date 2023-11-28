@@ -108,12 +108,12 @@ public class InventoryServiceIT {
 
     @BeforeAll
     public static void startContainers() {
-        if (isServiceRunning("localhost", 9085)){
+        if (isServiceRunning("localhost", 9085)) {
             inventoryContainer.withNetworkMode("reactive-app");
             inventoryContainer.withEnv(
             "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:9092");
             System.out.println("Testing with mvn liberty:devc");
-        }else{
+        } else {
             kafkaContainer.start();
             inventoryContainer.withEnv(
             "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
@@ -154,7 +154,7 @@ public class InventoryServiceIT {
         client.resetSystems();
         inventoryContainer.stop();
         kafkaContainer.stop();
-        if (network != null){
+        if (network != null) {
             network.close();
         }
     }
