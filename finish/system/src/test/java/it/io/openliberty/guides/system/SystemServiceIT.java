@@ -11,6 +11,7 @@
 // end::copyright[]
 package it.io.openliberty.guides.system;
 
+import java.net.Socket;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
@@ -86,13 +87,36 @@ public class SystemServiceIT {
             // end::dependsOn[]
     // end::systemContainer[]
 
+    // tag::isServiceRunning[]
+    private static boolean isServiceRunning(String host, int port) {
+        try {
+            Socket socket = new Socket(host, port);
+            socket.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    // end::isServiceRunning[]
+
     @BeforeAll
     public static void startContainers() {
-        kafkaContainer.start();
-        // tag::bootstrapServerSetup[]
-        systemContainer.withEnv(
+        if (isServiceRunning("localhost", 9083)){
+            systemContainer.withNetworkMode("reactive-app");
+            // tag::bootstrapServerSetup[]
+            systemContainer.withEnv(
+            "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:9092");
+            // end::bootstrapServerSetup[]
+            System.out.println("Testing with mvn liberty:devc");
+        }else{
+            kafkaContainer.start();
+            // tag::bootstrapServerSetup[]
+            systemContainer.withEnv(
             "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
-        // end::bootstrapServerSetup[]
+            // end::bootstrapServerSetup[]
+            System.out.println("Testing with mvn verify");
+        }
+
         systemContainer.start();
     }
 
@@ -131,7 +155,9 @@ public class SystemServiceIT {
     public static void stopContainers() {
         systemContainer.stop();
         kafkaContainer.stop();
-        network.close();
+        if (network != null){
+            network.close();
+        }
     }
 
     @AfterEach
