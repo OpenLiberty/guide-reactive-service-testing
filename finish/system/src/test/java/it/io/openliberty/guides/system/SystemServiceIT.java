@@ -102,11 +102,6 @@ public class SystemServiceIT {
     @BeforeAll
     public static void startContainers() {
         if (isServiceRunning("localhost", 9083)) {
-            systemContainer.withNetworkMode("reactive-app");
-            // tag::bootstrapServerSetup[]
-            systemContainer.withEnv(
-            "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:9092");
-            // end::bootstrapServerSetup[]
             System.out.println("Testing with mvn liberty:devc");
         } else {
             kafkaContainer.start();
@@ -114,10 +109,9 @@ public class SystemServiceIT {
             systemContainer.withEnv(
             "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
             // end::bootstrapServerSetup[]
+            systemContainer.start();
             System.out.println("Testing with mvn verify");
         }
-
-        systemContainer.start();
     }
 
     @BeforeEach
@@ -125,9 +119,15 @@ public class SystemServiceIT {
         // tag::KafkaConsumer2[]
         // tag::KafkaConsumerProps[]
         Properties consumerProps = new Properties();
-        consumerProps.put(
+        if (isServiceRunning("localhost", 9083)) {
+            consumerProps.put(
+            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                "localhost:9092");
+        } else {
+            consumerProps.put(
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 kafkaContainer.getBootstrapServers());
+        }
         consumerProps.put(
             ConsumerConfig.GROUP_ID_CONFIG,
                 "system-load-status");
@@ -155,7 +155,7 @@ public class SystemServiceIT {
     public static void stopContainers() {
         systemContainer.stop();
         kafkaContainer.stop();
-        if (network != null) {
+        if (network != null){
             network.close();
         }
     }

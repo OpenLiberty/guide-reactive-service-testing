@@ -70,9 +70,9 @@ public class InventoryServiceIT {
             .withDockerfile(Paths.get("./Dockerfile"));
 
     private static KafkaContainer kafkaContainer = new KafkaContainer(
-        DockerImageName.parse("confluentinc/cp-kafka:latest"))
-            .withListener(() -> "kafka:19092")
-            .withNetwork(network);
+            DockerImageName.parse("confluentinc/cp-kafka:latest"))
+                .withListener(() -> "kafka:19092")
+                .withNetwork(network);
 
     private static GenericContainer<?> inventoryContainer =
         new GenericContainer(inventoryImage)
@@ -108,25 +108,25 @@ public class InventoryServiceIT {
 
     @BeforeAll
     public static void startContainers() {
+
+        String urlPath;
         if (isServiceRunning("localhost", 9085)) {
-            inventoryContainer.withNetworkMode("reactive-app");
-            inventoryContainer.withEnv(
-            "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:9092");
             System.out.println("Testing with mvn liberty:devc");
+            urlPath = "http://localhost:9085";
         } else {
             kafkaContainer.start();
+            inventoryContainer.withNetwork(network);
             inventoryContainer.withEnv(
             "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
             System.out.println("Testing with mvn verify");
+            inventoryContainer.start();  
+            urlPath = "http://"
+                + inventoryContainer.getHost()
+                + ":" + inventoryContainer.getFirstMappedPort();
         }
 
-        kafkaContainer.start();
-        inventoryContainer.withEnv(
-            "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
-        inventoryContainer.start();
-        client = createRestClient("http://"
-            + inventoryContainer.getHost()
-            + ":" + inventoryContainer.getFirstMappedPort());
+        System.out.println("Creating REST client with: " + urlPath);
+        client = createRestClient(urlPath);
     }
 
     @BeforeEach
@@ -134,9 +134,15 @@ public class InventoryServiceIT {
         // tag::KafkaProducerProps[]
         Properties producerProps = new Properties();
         // tag::BootstrapServerConfig[]
-        producerProps.put(
+        if (isServiceRunning("localhost", 9085)) {
+            producerProps.put(
+            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                "localhost:9092");
+        } else {
+            producerProps.put(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 kafkaContainer.getBootstrapServers());
+        }
         // end::BootstrapServerConfig[]
         producerProps.put(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
