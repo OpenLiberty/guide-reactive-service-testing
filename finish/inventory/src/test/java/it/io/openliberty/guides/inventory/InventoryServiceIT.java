@@ -70,9 +70,9 @@ public class InventoryServiceIT {
             .withDockerfile(Paths.get("./Dockerfile"));
 
     private static KafkaContainer kafkaContainer = new KafkaContainer(
-            DockerImageName.parse("confluentinc/cp-kafka:latest"))
-                .withListener(() -> "kafka:19092")
-                .withNetwork(network);
+        DockerImageName.parse("confluentinc/cp-kafka:latest"))
+            .withListener(() -> "kafka:19092")
+            .withNetwork(network);
 
     private static GenericContainer<?> inventoryContainer =
         new GenericContainer(inventoryImage)

@@ -155,7 +155,7 @@ public class SystemServiceIT {
     public static void stopContainers() {
         systemContainer.stop();
         kafkaContainer.stop();
-        if (network != null){
+        if (network != null) {
             network.close();
         }
     }
