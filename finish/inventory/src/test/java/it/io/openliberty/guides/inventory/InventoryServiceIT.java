@@ -119,7 +119,7 @@ public class InventoryServiceIT {
             inventoryContainer.withEnv(
             "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
             System.out.println("Testing with mvn verify");
-            inventoryContainer.start();  
+            inventoryContainer.start();
             urlPath = "http://"
                 + inventoryContainer.getHost()
                 + ":" + inventoryContainer.getFirstMappedPort();
