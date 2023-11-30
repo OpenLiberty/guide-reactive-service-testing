@@ -12,7 +12,7 @@ docker run -d ^
     -e KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093 ^
     -e KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093 ^
     -e KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER ^
-    -p 9092:9092 \ ^
+    -p 9092:9092 ^
     --hostname=kafka ^
     --network=%NETWORK% ^
     --name=kafka ^
