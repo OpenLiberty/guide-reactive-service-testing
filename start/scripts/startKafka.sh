@@ -17,3 +17,5 @@ docker run -d \
     --name=kafka \
     --rm \
     bitnami/kafka:latest &
+
+wait
