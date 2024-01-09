@@ -158,7 +158,7 @@ Dev mode holds your command-line session to listen for file changes. Open anothe
 
 Now you can add your test files.
 
-The active "system" service actively seeks a Kafka topic for message push operations. Upon the successful initialization of a Kafka service, the "system" service establishes connectivity by utilizing the identical broker address. Additionally, the running "system" exposes its service on port 9083 for testing purposes in "devc" mode.
+The active `system` service actively seeks a Kafka topic for message push operations. Upon the successful initialization of a Kafka service, the `system` service establishes connectivity by utilizing the identical broker address. Additionally, the running `system` exposes its service on port `9083` for testing purposes in `devc` mode.
 
 
 === Testing your system service with Testcontainer
@@ -336,7 +336,7 @@ The producer client is configured to utilize the [hotspot=BootstrapServerConfig 
 
 Upon starting the container, the [hotspot=getSystems file=3]`getSystems` method declared in the `InventoryResourceClient` is invoked. To facilitate this, a [hotspot=ResteasyClient file=0]`ResteasyClient` has been introduced to construct a REST client, enabling HTTP requests to be made to the running application.
 
-When configuring a REST client that accepts a URL path as input, the URL settings will adapt depending on the identification of a local inventory service. if a service container is detected, the [hotspot=urlPathSetup1 file=0]`urlPath` will be set to the local service address "http://localhost:9085". Conversely, in the absence of a detected local service container, the [hotspot=urlPathSetup2 file=0]`urlPath` will be configured to employ the inventory service port from the inventory container.  
+When configuring a REST client that accepts a URL path as input, the URL settings will adapt depending on the identification of a local inventory service. if a service container is detected, the [hotspot=urlPathSetup1 file=0]`urlPath` will be set to the local service address `http://localhost:9085`. Conversely, in the absence of a detected local service container, the [hotspot=urlPathSetup2 file=0]`urlPath` will be configured to employ the inventory service port from the inventory container.  
 
 The [hotspot=testCpuUsage file=0]`testCpuUsage` test method produces a message to Kafka and then [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`verifies` that the response from the `inventory` service matches what is expected.
 

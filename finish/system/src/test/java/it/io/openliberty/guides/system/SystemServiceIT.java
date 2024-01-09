@@ -130,7 +130,7 @@ public class SystemServiceIT {
             // tag::BootstrapSetting2[]
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 kafkaContainer.getBootstrapServers());
-            // tag::BootstrapSetting2[]
+            // end::BootstrapSetting2[]
         }
         consumerProps.put(
             ConsumerConfig.GROUP_ID_CONFIG,
