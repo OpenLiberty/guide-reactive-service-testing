@@ -128,14 +128,20 @@ The `start` directory contains three directories: the `system` service directory
 mvn -pl models install
 ```
 
-With Open Liberty dev mode, you can use Testcontainers to run tests on an already running Open Liberty server. Navigate to the `start/system` directory.
+With Open Liberty devc mode, you can use Testcontainers to run tests on an already running Open Liberty server. Navigate to the `start/system` directory.
 
-// cloud hosted instruction
-ifdef::cloud-hosted[]
-```bash
-cd /home/project/guide-reactive-service-testing/start/system
+The Open Liberty Maven plug-in includes a `devc` goal that builds a Docker image, mounts the required directories, binds the required ports, and then runs the application inside of a container. This https://openliberty.io/docs/latest/development-mode.html[dev mode^], also listens for any changes in the application source code or configuration and rebuilds the image and restarts the container as necessary.
+
+Build and run the container by running the `devc` goal from the `start` directory:
+
+[role='command']
 ```
-endif::[]
+mvn liberty:devc
+```
+
+After you see the following message, your Liberty instance is ready in dev mode:
+[role="no_copy"]
+----
 
 [role='command']
 include::{common-includes}/devmode-lmp33-start.adoc[]
@@ -255,11 +261,11 @@ endif::[]
 
 === Testing your inventory service with Testcontainer
 
-As you did with the `system` service, run Open Liberty in dev mode to listen for file changes:
+As you did with the `system` service, run Open Liberty in devc mode to listen for file changes:
 
 [role='command']
 ```
-mvn liberty:dev
+mvn liberty:devc
 ```
 
 === Writing the RESTful client interface
