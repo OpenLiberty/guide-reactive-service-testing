@@ -112,7 +112,9 @@ public class InventoryServiceIT {
         String urlPath;
         if (isServiceRunning("localhost", 9085)) {
             System.out.println("Testing with mvn liberty:devc");
+            // tag::urlPathSetup1[]
             urlPath = "http://localhost:9085";
+            // end::urlPathSetup1[]
         } else {
             kafkaContainer.start();
             inventoryContainer.withNetwork(network);
@@ -120,9 +122,11 @@ public class InventoryServiceIT {
             "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
             System.out.println("Testing with mvn verify");
             inventoryContainer.start();
+            // tag::urlPathSetup2[]
             urlPath = "http://"
                 + inventoryContainer.getHost()
                 + ":" + inventoryContainer.getFirstMappedPort();
+            // end::urlPathSetup2[]
         }
 
         System.out.println("Creating REST client with: " + urlPath);
