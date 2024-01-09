@@ -140,8 +140,7 @@ mvn liberty:devc
 ```
 
 After you see the following message, your Liberty instance is ready in dev mode:
-[role="no_copy"]
-----
+
 
 [role='command']
 include::{common-includes}/devmode-lmp33-start.adoc[]
