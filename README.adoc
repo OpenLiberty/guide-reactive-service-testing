@@ -194,7 +194,7 @@ include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.
 
 Construct the [hotspot=buildSystemImage file=0]`systemImage` using the `ImageFromDockerfile` class, which allows Testcontainers to build the Docker image from a Dockerfile during the test runtime. For instance, the provided Dockerfile at the specified paths `./Dockerfile` is used to generate the `system:1.0-SNAPSHOT` image.
 
-Utilize the `kafkaContainer` class to instantiate the `kafkaContainer` test container, initiating the `confluentinc/cp-kafka:latest` Docker image. Similarly, employ the `GenericContainer` class to create the systemContainer test container, starting the `system:1.0-SNAPSHOT Docker` image.
+Utilize the `kafkaContainer` class to instantiate the `kafkaContainer` test container, initiating the `confluentinc/cp-kafka:latest` Docker image. Similarly, employ the `GenericContainer` class to create the systemContainer test container, starting the `system:1.0-SNAPSHOT` Docker image.
 
 Two containers are implemented for testing the `system` service: the [hotspot=kafkaContainer file=0]`kafkaContainer` container is responsible for receiving messages from the system service, which is hosted in the [hotspot=systemContainer file=0]`systemContainer` container. It's important to note that [hotspot=withListener file=0]`withListener()` has been configured to `kafka:19092`, as the system service will function as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For further details on utilizing additional consumer or producer with Kafka container, please visit https://java.testcontainers.org/modules/kafka/[official Kafka Test Container Documentation^]
 
@@ -383,6 +383,14 @@ You will see the following output:
  Total time:  48.213 s
  Finished at: 2020-03-13T16:43:34-04:00
  ------------------------------------------------------------------------
+```
+
+=== Tearing down the environment 
+
+When you're finished trying out the microservice, you can stop the local Kafka container by running the following command:
+[role='command']
+```
+./script/stopKafka.sh
 ```
 
 
