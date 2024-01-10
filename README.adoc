@@ -129,8 +129,10 @@ mvn -pl models install
 ```
 
 With Open Liberty devc mode, you can use Testcontainers to run tests on an already running Open Liberty server. Navigate to the `start/system` directory.
- 
-To replicate the testing environment in production, Testcontainers are employed to execute tests within an identical Kafka environment. Use the following command to initiate the Kafka service within a container:
+
+The test will cover scenarios involving both a running local service and a scenario where the local service is not running. In the case of a running local service, a local Kafka instance will be established to facilitate the required broker connection from the development mode container. In the absence of a running local service, a Kafka Testcontainer will be initiated to serve as the broker for the system and inventory services. 
+
+To start the test with a running local service, execute the following command to start the local Kafka instance, replicating the same Kafka environment setup as production:
 [role='command']
 ```
 ./script/startKafka.sh
