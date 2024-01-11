@@ -334,7 +334,7 @@ include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/Inven
 
 The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer` client API to generate messages in the test environment, which are then consumed by the inventory service container.
 
-Similar to system service testing, the configuration of the producer client's `BOOTSTRAP_SERVERS_CONFIG` depends on whether a local inventory service container is detected. In this scenario, it will utilize the [hotspot=BootstrapServerConfig file=0]`BOOTSTRAP_SERVERS_CONFIG` exported from the local Kafka  container or the [hotspot=BootstrapServerConfig2 file=0]`BOOTSTRAP_SERVERS_CONFIG` of the kafka Testcontainer. In addition, the producer is configured with a custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
+Similar to system service testing, the configuration of the producer client's `BOOTSTRAP_SERVERS_CONFIG` depends on whether a local inventory service container is detected. In this scenario, it will utilize the [hotspot=BootstrapServerConfig file=0]`broker address` exported from the local Kafka container or the [hotspot=BootstrapServerConfig2 file=0]`broker address` from the kafka Testcontainer. In addition, the producer is configured with a custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
 
 Upon starting the container, the [hotspot=getSystems file=3]`getSystems` method declared in the `InventoryResourceClient` is invoked. To facilitate this, a [hotspot=ResteasyClient file=0]`ResteasyClient` has been introduced to construct a REST client, enabling HTTP requests to be made to the running application.
 
