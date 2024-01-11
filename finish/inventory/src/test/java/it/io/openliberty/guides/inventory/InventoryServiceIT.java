@@ -137,17 +137,20 @@ public class InventoryServiceIT {
     public void setUp() {
         // tag::KafkaProducerProps[]
         Properties producerProps = new Properties();
-        // tag::BootstrapServerConfig[]
         if (isServiceRunning("localhost", 9085)) {
+            // tag::BootstrapServerConfig[]
             producerProps.put(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 "localhost:9094");
+            // end::BootstrapServerConfig[]
         } else {
+            // tag::BootstrapServerConfig2[]
             producerProps.put(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 kafkaContainer.getBootstrapServers());
+            // end::BootstrapServerConfig2[]
         }
-        // end::BootstrapServerConfig[]
+        
         producerProps.put(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                 StringSerializer.class.getName());
