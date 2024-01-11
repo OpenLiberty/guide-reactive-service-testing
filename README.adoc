@@ -133,7 +133,7 @@ The test will cover scenarios involving both a running local `system/inventory` 
 To start the test with a running local service, execute the following command to start the local Kafka instance, replicating the same Kafka environment setup as production:
 [role='command']
 ```
-./script/startKafka.sh
+./scripts/startKafka.sh
 ```
 
 With Open Liberty devc mode, you can use Testcontainers to run tests on an operational Open Liberty server. Navigate to the `start/system` directory.
@@ -392,7 +392,7 @@ You will see the following output:
 When you're finished trying out the microservice, you can stop the local Kafka container by running the following command:
 [role='command']
 ```
-./script/stopKafka.sh
+./scripts/stopKafka.sh
 ```
 
 
