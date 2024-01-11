@@ -128,8 +128,6 @@ The `start` directory contains three directories: the `system` service directory
 mvn -pl models install
 ```
 
-With Open Liberty devc mode, you can use Testcontainers to run tests on an operational Open Liberty server. Navigate to the `start/system` directory.
-
 The test will cover scenarios involving both a running local `system/inventory` service and a scenario where the local service is not running. In the case of a running local service, a local Kafka instance will be established to facilitate the required broker connection from the development mode container. In the absence of a running local service, a Kafka Testcontainer will be initiated to serve as the broker for the system and inventory services. 
 
 To start the test with a running local service, execute the following command to start the local Kafka instance, replicating the same Kafka environment setup as production:
@@ -137,6 +135,8 @@ To start the test with a running local service, execute the following command to
 ```
 ./script/startKafka.sh
 ```
+
+With Open Liberty devc mode, you can use Testcontainers to run tests on an operational Open Liberty server. Navigate to the `start/system` directory.
 
 The Open Liberty Maven plug-in includes a `devc` goal that builds a Docker image, mounts the required directories, binds the required ports, and then runs the application inside of a container. This https://openliberty.io/docs/latest/development-mode.html[dev mode^], also listens for any changes in the application source code or configuration and rebuilds the image and restarts the container as necessary.
 
