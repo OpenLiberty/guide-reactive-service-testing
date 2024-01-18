@@ -106,12 +106,13 @@
                 <artifactId>liberty-maven-plugin</artifactId>
                 <version>3.10</version>
                 <configuration>
-                    <!-- devc config -->
+                    <!-- tag::devc config[] -->
                     <containerRunOpts>
                                     -e WLP_LOGGING_CONSOLE_LOGLEVEL=info 
                                     -p 9083:9083
                                     --network=reactive-app
                     </containerRunOpts>
+                    <!-- end::devc config[] -->
                 </configuration>
             </plugin>
 

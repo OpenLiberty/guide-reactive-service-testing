@@ -128,15 +128,20 @@ The `start` directory contains three directories: the `system` service directory
 mvn -pl models install
 ```
 
-The test will cover scenarios involving both a running local `system/inventory` service and a scenario where the local service is not running. In the case of a running local service, a local Kafka instance will be established to facilitate the required broker connection from the development mode container. In the absence of a running local service, a Kafka Testcontainer will be initiated to serve as the broker for the system and inventory services. 
+// The test will cover scenarios involving both a running local `system/inventory` service and a scenario where the local service is not running. In the case of a running local service, a local Kafka instance will be established to facilitate the required broker connection from the development mode container. In the absence of a running local service, a Kafka Testcontainer will be initiated to serve as the broker for the system and inventory services. 
 
-To start the test with a running local service, execute the following command to start the local Kafka instance, replicating the same Kafka environment setup as production:
+=== Launching system service in dev mode with container
+
+Initiate local testing by executing the following command to start a Kafka instance replicating the production environment. The `startKafka` script will launch a local Kafka container, enabling the `system/inventory` service to run in development mode with container goals. The script also establishes a `reactive-app` docker network, allowing the local `system/inventory` service to connect to the Kafka service's `bootstrap server`:
 [role='command']
 ```
 ./scripts/startKafka.sh
 ```
 
-With Open Liberty devc mode, you can use Testcontainers to run tests on an operational Open Liberty server. Navigate to the `start/system` directory.
+// With Open Liberty devc mode, you can use Testcontainers to run tests on an operational Open Liberty server. 
+To execute the system service with the `devc` goal, configure the container by specifying the options within [hotspot=devc config file=0]`<containerRunOpts>`. The development mode container is configured to connect to the `reactive-app` Docker network.
+
+Navigate to the `start/system` directory.
 
 The Open Liberty Maven plug-in includes a `devc` goal that builds a Docker image, mounts the required directories, binds the required ports, and then runs the application inside of a container. This https://openliberty.io/docs/latest/development-mode.html[dev mode^], also listens for any changes in the application source code or configuration and rebuilds the image and restarts the container as necessary.
 
@@ -163,7 +168,7 @@ Now you can add your test files.
 The active `system` service actively seeks a Kafka topic for message push operations. Upon the successful initialization of a Kafka service, the `system` service establishes connectivity by utilizing the identical broker address. Additionally, the running `system` exposes its service on port `9083` for testing purposes in `devc` mode.
 
 
-=== Testing your system service with Testcontainer
+=== Implementing tests for the System service
 
 You will create an integration test to test the basic functionality of the system microservice. If a test failure occurs, then you might have introduced a bug into the code.
 
@@ -196,9 +201,9 @@ include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.
 
 Construct the [hotspot=buildSystemImage file=0]`systemImage` using the `ImageFromDockerfile` class, which allows Testcontainers to build the Docker image from a Dockerfile during the test runtime. For instance, the provided Dockerfile at the specified paths `./Dockerfile` is used to generate the `system:1.0-SNAPSHOT` image.
 
-Utilize the `kafkaContainer` class to instantiate the `kafkaContainer` test container, initiating the `confluentinc/cp-kafka:latest` Docker image. Similarly, employ the `GenericContainer` class to create the systemContainer test container, starting the `system:1.0-SNAPSHOT` Docker image.
+Utilize the [hotspot=kafkaContainer file=0]`kafkaContainer` class to instantiate the `kafkaContainer` test container, initiating the `confluentinc/cp-kafka:latest` Docker image. Similarly, employ the `GenericContainer` class to create the [hotspot=systemContainer file=0]`systemContainer` test container, starting the `system:1.0-SNAPSHOT` Docker image.
 
-Two containers are implemented for testing the `system` service: the [hotspot=kafkaContainer file=0]`kafkaContainer` container is responsible for receiving messages from the system service, which is hosted in the [hotspot=systemContainer file=0]`systemContainer`. It's important to note that [hotspot=withListener file=0]`withListener()` has been configured to `kafka:19092`, as the system service will function as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For further details on utilizing additional consumer or producer with Kafka container, please visit https://java.testcontainers.org/modules/kafka/[official Kafka Test Container Documentation^]
+Two containers are implemented for testing the `system` service: the `kafkaContainer` container is responsible for receiving messages from the system service, which is hosted in the `systemContainer`. It's important to note that [hotspot=withListener file=0]`withListener()` has been configured to `kafka:19092`, as the system service will function as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For further details on utilizing additional consumer or producer with Kafka container, please visit https://java.testcontainers.org/modules/kafka/[official Kafka Test Container Documentation^]
 
 Since containers are isolated by default, facilitating communication between the `kafkaContainer` and the `systemContainer` requires placing them on the same [hotspot=network1 hotspot=network2 file=0]`network`.
 
@@ -275,7 +280,7 @@ cd /home/project/guide-reactive-service-testing/start/inventory
 ```
 endif::[]
 
-=== Testing your inventory service with Testcontainer
+=== Implementing tests for the Inventory service
 
 Build and run the container by running the `devc` goal from the `start/inventory` directory.
 
