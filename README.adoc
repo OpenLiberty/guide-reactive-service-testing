@@ -139,11 +139,9 @@ Initiate local testing by executing the following command to start a Kafka insta
 ```
 
 // With Open Liberty devc mode, you can use Testcontainers to run tests on an operational Open Liberty server. 
-To execute the system service with the `devc` goal, configure the container by specifying the options within [hotspot=devc config file=0]`<containerRunOpts>`. The development mode container is configured to connect to the `reactive-app` Docker network.
+To execute the system service with the `devc` goal, configure the container by specifying the options within [hotspot=devc_config file=0]`<containerRunOpts>`. The development mode container is configured to connect to the `reactive-app` Docker network.
 
 Navigate to the `start/system` directory.
-
-The Open Liberty Maven plug-in includes a `devc` goal that builds a Docker image, mounts the required directories, binds the required ports, and then runs the application inside of a container. This https://openliberty.io/docs/latest/development-mode.html[dev mode^], also listens for any changes in the application source code or configuration and rebuilds the image and restarts the container as necessary.
 
 Build and run the container by running the `devc` goal from the `start/system` directory:
 
@@ -161,11 +159,11 @@ After you see the following message, your Liberty instance is ready in dev mode:
 *    Liberty is running in dev mode.
 ----
 
-Dev mode holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
+https://openliberty.io/docs/latest/development-mode.html[Dev mode^] holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
 
 Now you can add your test files.
 
-The active `system` service actively seeks a Kafka topic for message push operations. Upon the successful initialization of a Kafka service, the `system` service establishes connectivity by utilizing the identical broker address. Additionally, the running `system` exposes its service on port `9083` for testing purposes in `devc` mode.
+The active `system` service actively seeks a Kafka topic for message push operations. Upon the successful initialization of a Kafka service, the `system` service establishes connectivity by utilizing the identical `bootstrap server` address. Additionally, the running `system` exposes its service on port `9083` for testing purposes in dev mode with container.
 
 
 === Implementing tests for the System service
@@ -211,7 +209,7 @@ The [hotspot=dependsOn file=0]`dependsOn()` method is utilized to indicate that 
 
 Upon detection of a local system service container, the initiation of the test container is bypassed. In this scenario, the testing is directed towards the service exported by the system service container operating in devc mode. In the event that a local service container is not detected, the testing framework proceeds to initiate the test container. Prior to initiating the systemContainer, it is imperative to override the `mp.messaging.connector.liberty-kafka.bootstrap.servers` property with `kafka:19092` using the [hotspot=bootstrapServerSetup file=0]`withEnv()` method. This step is necessary due to the establishment of a listener in the Kafka container, configured to handle an additional producer.
 
-The test utilizes the [hotspot=KafkaConsumer hotspot=KafkaConsumer2 file=0]`KafkaConsumer` client API, with the consumer client configured to consume messages from the [hotspot=systemLoadTopic file=0]`system.load` topic within the `kafka` container. If a local system service container is detected, the [hotspot=BootstrapSetting1 file=0]`BOOTSTRAP_SERVERS_CONFIG` will be configured to utilize the broker address of the Kafka service running within the local container. Alternatively, if a local service container is not detected, the [hotspot=BootstrapSetting2 file=0]`BOOTSTRAP_SERVERS_CONFIG` will be configured to use the broker address from the Kafka Testcontainer.
+The test utilizes the [hotspot=KafkaConsumer hotspot=KafkaConsumer2 file=0]`KafkaConsumer` client API, with the consumer client configured to consume messages from the [hotspot=systemLoadTopic file=0]`system.load` topic within the `kafka` container. If a local system service container is detected, the [hotspot=BootstrapSetting1 file=0]`BOOTSTRAP_SERVERS_CONFIG` will be configured to utilize the `bootstrap server` address of the Kafka service running within the local container. Alternatively, if a local service container is not detected, the [hotspot=BootstrapSetting2 file=0]`BOOTSTRAP_SERVERS_CONFIG` will be configured to use the `bootstrap server` address from the Kafka Testcontainer.
 
 To learn more about Kafka APIs and their usage, please refer to the https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
 
