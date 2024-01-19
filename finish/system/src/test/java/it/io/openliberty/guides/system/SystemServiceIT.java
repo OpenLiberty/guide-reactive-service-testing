@@ -127,8 +127,8 @@ public class SystemServiceIT {
             // end::BootstrapSetting1[]
         } else {
             consumerProps.put(
-            // tag::BootstrapSetting2[]
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
+            // tag::BootstrapSetting2[]
                 kafkaContainer.getBootstrapServers());
             // end::BootstrapSetting2[]
         }
