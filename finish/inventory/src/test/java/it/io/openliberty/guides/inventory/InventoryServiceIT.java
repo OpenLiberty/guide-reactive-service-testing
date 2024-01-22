@@ -149,7 +149,7 @@ public class InventoryServiceIT {
                 kafkaContainer.getBootstrapServers());
             // end::BootstrapServerConfig2[]
         }
-        
+
         producerProps.put(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                 StringSerializer.class.getName());
