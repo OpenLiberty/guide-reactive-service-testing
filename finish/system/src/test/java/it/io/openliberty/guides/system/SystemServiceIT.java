@@ -120,13 +120,17 @@ public class SystemServiceIT {
         // tag::KafkaConsumerProps[]
         Properties consumerProps = new Properties();
         if (isServiceRunning("localhost", 9083)) {
+            // tag::BootstrapSetting1[]
             consumerProps.put(
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                "localhost:9092");
+                "localhost:9094");
+            // end::BootstrapSetting1[]
         } else {
             consumerProps.put(
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
+            // tag::BootstrapSetting2[]
                 kafkaContainer.getBootstrapServers());
+            // end::BootstrapSetting2[]
         }
         consumerProps.put(
             ConsumerConfig.GROUP_ID_CONFIG,

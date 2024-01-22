@@ -1,6 +1,5 @@
 #!/bin/bash
 
-KAFKA_SERVER=kafka:9092
 NETWORK=reactive-app
 
 docker network create $NETWORK
@@ -23,7 +22,6 @@ echo "Waiting until Kafka is ready..."
 sleep 15
 
 docker run -d \
-  -e MP_MESSAGING_CONNECTOR_LIBERTY_KAFKA_BOOTSTRAP_SERVERS=$KAFKA_SERVER \
   -p 9083:9083 \
   --network=$NETWORK \
   --name=system \
@@ -31,7 +29,6 @@ docker run -d \
   system:1.0-SNAPSHOT &
  
 docker run -d \
-  -e MP_MESSAGING_CONNECTOR_LIBERTY_KAFKA_BOOTSTRAP_SERVERS=$KAFKA_SERVER \
   -p 9085:9085 \
   --network=$NETWORK \
   --name=inventory \

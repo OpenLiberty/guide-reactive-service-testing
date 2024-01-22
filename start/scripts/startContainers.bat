@@ -1,5 +1,5 @@
 @ECHO OFF
-set KAFKA_SERVER=kafka:9092
+
 set NETWORK=reactive-app
 
 docker network create %NETWORK%
@@ -19,7 +19,6 @@ docker run -d ^
     bitnami/kafka:latest
 
 start /b docker run -d ^
-  -e MP_MESSAGING_CONNECTOR_LIBERTY_KAFKA_BOOTSTRAP_SERVERS=%KAFKA_SERVER% ^
   -p 9083:9083 ^
   --network=%NETWORK% ^
   --name=system ^
@@ -27,7 +26,6 @@ start /b docker run -d ^
   system:1.0-SNAPSHOT
 
 start /b docker run -d ^
-  -e MP_MESSAGING_CONNECTOR_LIBERTY_KAFKA_BOOTSTRAP_SERVERS=%KAFKA_SERVER% ^
   -p 9085:9085 ^
   --network=%NETWORK% ^
   --name=inventory ^

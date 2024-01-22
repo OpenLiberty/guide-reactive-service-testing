@@ -112,17 +112,20 @@ public class InventoryServiceIT {
         String urlPath;
         if (isServiceRunning("localhost", 9085)) {
             System.out.println("Testing with mvn liberty:devc");
+            // tag::urlPathSetup1[]
             urlPath = "http://localhost:9085";
+            // end::urlPathSetup1[]
         } else {
             kafkaContainer.start();
-            inventoryContainer.withNetwork(network);
             inventoryContainer.withEnv(
             "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
             System.out.println("Testing with mvn verify");
             inventoryContainer.start();
+            // tag::urlPathSetup2[]
             urlPath = "http://"
                 + inventoryContainer.getHost()
                 + ":" + inventoryContainer.getFirstMappedPort();
+            // end::urlPathSetup2[]
         }
 
         System.out.println("Creating REST client with: " + urlPath);
@@ -133,17 +136,20 @@ public class InventoryServiceIT {
     public void setUp() {
         // tag::KafkaProducerProps[]
         Properties producerProps = new Properties();
-        // tag::BootstrapServerConfig[]
         if (isServiceRunning("localhost", 9085)) {
+            // tag::BootstrapServerConfig[]
             producerProps.put(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                "localhost:9092");
+                "localhost:9094");
+            // end::BootstrapServerConfig[]
         } else {
+            // tag::BootstrapServerConfig2[]
             producerProps.put(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 kafkaContainer.getBootstrapServers());
+            // end::BootstrapServerConfig2[]
         }
-        // end::BootstrapServerConfig[]
+        
         producerProps.put(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                 StringSerializer.class.getName());

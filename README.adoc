@@ -128,24 +128,44 @@ The `start` directory contains three directories: the `system` service directory
 mvn -pl models install
 ```
 
-With Open Liberty dev mode, you can use Testcontainers to run tests on an already running Open Liberty server. Navigate to the `start/system` directory.
+// The test will cover scenarios involving both a running local `system/inventory` service and a scenario where the local service is not running. In the case of a running local service, a local Kafka instance will be established to facilitate the required broker connection from the development mode container. In the absence of a running local service, a Kafka Testcontainer will be initiated to serve as the broker for the system and inventory services. 
 
-// cloud hosted instruction
-ifdef::cloud-hosted[]
-```bash
-cd /home/project/guide-reactive-service-testing/start/system
+=== Launching system service in dev mode with container
+
+Initiate local testing by executing the following command to start a Kafka instance replicating the production environment. The `startKafka` script will launch a local Kafka container, enabling the `system/inventory` service to run in development mode with container goals. The script also establishes a `reactive-app` docker network, allowing the local `system/inventory` service to connect to the Kafka message broker:
+[role='command']
 ```
-endif::[]
+./scripts/startKafka.sh
+```
+
+// With Open Liberty devc mode, you can use Testcontainers to run tests on an operational Open Liberty server. 
+To execute the system service with the `devc` goal, configure the container by specifying the options within [hotspot=devc_config file=0]`<containerRunOpts>`. The dev mode container is configured to connect to the `reactive-app` Docker network.
+
+Navigate to the `start/system` directory.
+
+Build and run the container by running the `devc` goal from the `start/system` directory:
 
 [role='command']
-include::{common-includes}/devmode-lmp33-start.adoc[]
+```
+mvn liberty:devc
+```
+
+After you see the following message, your Liberty instance is ready in dev mode:
+
+
+[role="no_copy"]
+----
+**************************************************************
+*    Liberty is running in dev mode.
+----
+
+https://openliberty.io/docs/latest/development-mode.html[Dev mode^] holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
 
 Now you can add your test files.
 
-The running `system` service searches for a Kafka topic to push its messages to. Because there are not yet any running Kafka services, the `system` service throws errors. Later in the guide, you will write and run tests that start a Kafka Testcontainer that can communicate with the `system` service. This will resolve the errors that you see now.
+The active `system` service actively seeks a Kafka topic for message push operations. Upon the successful initialization of a Kafka service, the `system` service establishes connectivity to Kafka message broker by utilizing the `bootstrap server` address. Additionally, the running `system` exposes its service on port `9083` for testing purposes in dev mode with container.
 
-
-=== Testing your system service with Testcontainer
+=== Implementing tests for the System service
 
 You will create an integration test to test the basic functionality of the system microservice. If a test failure occurs, then you might have introduced a bug into the code.
 
@@ -178,15 +198,21 @@ include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.
 
 Construct the [hotspot=buildSystemImage file=0]`systemImage` using the `ImageFromDockerfile` class, which allows Testcontainers to build the Docker image from a Dockerfile during the test runtime. For instance, the provided Dockerfile at the specified paths `./Dockerfile` is used to generate the `system:1.0-SNAPSHOT` image.
 
-Utilize the `kafkaContainer` class to instantiate the `kafkaContainer` test container, initiating the `confluentinc/cp-kafka:latest` Docker image. Similarly, employ the `GenericContainer` class to create the systemContainer test container, starting the `system:1.0-SNAPSHOT Docker` image.
+Utilize the [hotspot=kafkaContainer file=0]`kafkaContainer` class to instantiate the `kafkaContainer` test container, initiating the `confluentinc/cp-kafka:latest` Docker image. Similarly, employ the `GenericContainer` class to create the [hotspot=systemContainer file=0]`systemContainer` test container, starting the `system:1.0-SNAPSHOT` Docker image.
 
-Two containers are implemented for testing the `system` service: the [hotspot=kafkaContainer file=0]`kafkaContainer` container is responsible for receiving messages from the system service, which is hosted in the [hotspot=systemContainer file=0]`systemContainer` container. It's important to note that [hotspot=withListener file=0]`withListener()` has been configured to `kafka:19092`, as the system service will function as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For further details on utilizing additional consumer or producer with Kafka container, please visit https://java.testcontainers.org/modules/kafka/[official Kafka Test Container Documentation^]
+Two containers are implemented for testing the `system` service: the `kafkaContainer` container is responsible for receiving messages from the system service hosted in the `systemContainer`. It's important to note that [hotspot=withListener file=0]`withListener()` has been configured to `kafka:19092`, as the system service will function as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For further details on utilizing additional consumer or producer with Kafka container, please visit https://java.testcontainers.org/modules/kafka/[official Kafka Test Container Documentation^]
 
 Since containers are isolated by default, facilitating communication between the `kafkaContainer` and the `systemContainer` requires placing them on the same [hotspot=network1 hotspot=network2 file=0]`network`.
 
-The [hotspot=dependsOn file=0]`dependsOn()` method is utilized to indicate that the `system` service container should commence only after ensuring the readiness of the kafka container. Prior to initiating the systemContainer, it is imperative to override the `mp.messaging.connector.liberty-kafka.bootstrap.servers` property with `kafka:19092` using the [hotspot=bootstrapServerSetup file=0]`withEnv()` method. This step is necessary due to the establishment of a listener in the Kafka container, configured to handle an additional producer.
+The [hotspot=dependsOn file=0]`dependsOn()` method is utilized to indicate that the `system` service container should commence only after ensuring the readiness of the kafka container. During the testing procedures encompassing both `mvn liberty:devc` and `mvn verify` integration tests, a method named [hotspot=isServiceRunning file=0]`isServiceRunning` has been introduced. This method serves the purpose of verifying the presence of a local container hosting the system service. 
 
-The test utilizes the [hotspot=KafkaConsumer hotspot=KafkaConsumer2 file=0]`KafkaConsumer` client API, with the consumer client configured to consume messages from the [hotspot=systemLoadTopic file=0]`system.load` topic within the `kafka` container. To learn more about Kafka APIs and their usage, please refer to the https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
+Upon detection of a local system service container, the initiation of the test container is bypassed. In this scenario, the testing is directed towards the service exported by the system service container operating in devc mode. In the event that a local service container is not detected, the testing framework proceeds to initiate the test container. Prior to initiating the systemContainer, it is imperative to override the `mp.messaging.connector.liberty-kafka.bootstrap.servers` property with `kafka:19092` using the [hotspot=bootstrapServerSetup file=0]`withEnv()` method. This step is necessary due to the establishment of a listener in the Kafka container, configured to handle an additional producer.
+
+The test utilizes the [hotspot=KafkaConsumer hotspot=KafkaConsumer2 file=0]`KafkaConsumer` client API, with the consumer client configured to consume messages from the [hotspot=systemLoadTopic file=0]`system.load` topic within the `kafka` container. 
+
+If a local system service container is detected, the [hotspot=BootstrapSetting1 file=0]`BOOTSTRAP_SERVERS_CONFIG` will be configured to utilize the broker address of the Kafka service running within the local container. Alternatively, if a local service container is not detected, it will be configured to use the [hotspot=BootstrapSetting2 file=0]`getBootstrapServers()` method to acquire the broker address from the Kafka Testcontainer.
+
+To learn more about Kafka APIs and their usage, please refer to the https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
 
 To consume messages from a stream, the messages need to be deserialized from bytes. Kafka has its own default deserializer, but a custom deserializer is provided for you. The deserializer is configured to the consumer’s [hotspot=valueDeserializer file=0]`valueDeserializer` and is implemented in the [hotspot=SystemLoadDeserializer file=1]`SystemLoad` class.
 
@@ -253,13 +279,13 @@ cd /home/project/guide-reactive-service-testing/start/inventory
 ```
 endif::[]
 
-=== Testing your inventory service with Testcontainer
+=== Implementing tests for the Inventory service
 
-As you did with the `system` service, run Open Liberty in dev mode to listen for file changes:
+Build and run the container by running the `devc` goal from the `start/inventory` directory.
 
 [role='command']
 ```
-mvn liberty:dev
+mvn liberty:devc
 ```
 
 === Writing the RESTful client interface
@@ -312,9 +338,11 @@ include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/Inven
 
 The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer` client API to generate messages in the test environment, which are then consumed by the inventory service container.
 
-The producer client is configured to utilize the [hotspot=BootstrapServerConfig file=0]`bootstrapServer` of the `kafkaContainer` and a custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
+Similar to system service testing, the configuration of the producer client's `BOOTSTRAP_SERVERS_CONFIG` depends on whether a local inventory service container is detected.  In addition, the producer is configured with a custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
 
 Upon starting the container, the [hotspot=getSystems file=3]`getSystems` method declared in the `InventoryResourceClient` is invoked. To facilitate this, a [hotspot=ResteasyClient file=0]`ResteasyClient` has been introduced to construct a REST client, enabling HTTP requests to be made to the running application.
+
+When configuring a REST client that accepts a URL path as input, the URL settings will adapt depending on the identification of a local inventory service. if a service container is detected, the [hotspot=urlPathSetup1 file=0]`urlPath` will be set to the local service address `http://localhost:9085`. Conversely, in the absence of a detected local service container, the [hotspot=urlPathSetup2 file=0]`urlPath` will be configured to employ the inventory service port from the inventory container.  
 
 The [hotspot=testCpuUsage file=0]`testCpuUsage` test method produces a message to Kafka and then [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`verifies` that the response from the `inventory` service matches what is expected.
 
@@ -361,6 +389,14 @@ You will see the following output:
  Total time:  48.213 s
  Finished at: 2020-03-13T16:43:34-04:00
  ------------------------------------------------------------------------
+```
+
+=== Tearing down the environment 
+
+When you're finished trying out the microservice, you can stop the local Kafka container by running the following command in `start/inventory` directory:
+[role='command']
+```
+./scripts/stopKafka.sh
 ```
 
 
