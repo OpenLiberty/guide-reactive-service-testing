@@ -136,7 +136,6 @@ Initiate the services in dev mode by executing the following command to launch a
 ./scripts/startKafka.sh
 ```
 
-// With Open Liberty devc mode, you can use Testcontainers to run tests on an operational Open Liberty server. 
 To execute the system service with the `devc` goal, configure the container by specifying the options within [hotspot=devc_config file=0]`<containerRunOpts>`. The dev mode container is configured to connect to the `reactive-app` Docker network.
 
 Navigate to the `start/system` directory.
@@ -204,7 +203,7 @@ Since containers are isolated by default, facilitating communication between the
 
 During the testing phase, covering both dev mode and Testcontainers integration tests, a method named [hotspot=isServiceRunning file=0]`isServiceRunning` has been introduced. This method serves the purpose of verifying the presence of a local container hosting the system service. 
 
-Upon detection of a local system service container, the initiation of the test container is bypassed. In this scenario, the testing is directed towards the service exported by the system service container operating in devc mode. In the event that a local service container is not detected, the testing framework proceeds to initiate the test container. 
+Upon detection of a local system service container, the initiation of the test container is bypassed. In this scenario, the testing is directed towards the service exported by the system service container operating in dev mode. In the event that a local service container is not detected, the testing framework proceeds to initiate the test container. 
 
 Prior to initiating the systemContainer, it is imperative to override the `mp.messaging.connector.liberty-kafka.bootstrap.servers` property with `kafka:19092` using the [hotspot=bootstrapServerSetup file=0]`withEnv()` method. This step is necessary due to the establishment of a listener in the Kafka container, configured to handle an additional producer.
 
