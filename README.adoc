@@ -286,10 +286,6 @@ Create a RESTful client interface for the inventory microservice in the system m
 
 Now you can create your integrated test.
 
-=== Implementing tests for the Inventory service
-
-Create an integration test to assess the fundamental functionality of the inventory microservice.
-
 [role="code_command hotspot file=0", subs="quotes"]
 ----
 #Create the `InventoryServiceIT` class.#
