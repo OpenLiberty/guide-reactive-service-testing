@@ -165,7 +165,7 @@ The active `system` service actively seeks a Kafka topic for message push operat
 
 === Implementing tests for the System service
 
-Create an integration test to assess the fundamental functionality of the System microservice. If a test failure occurs, then you might have introduced a bug into the code.
+Create an integration test to assess the fundamental functionality of the system microservice. If a test failure occurs, then you might have introduced a bug into the code.
 
 [role="code_command hotspot file=0", subs="quotes"]
 ----
@@ -265,19 +265,7 @@ You will see the following output:
 
 The `inventory` service is tested in the same way as the `system` service. The only difference is that the `inventory` service consumes messages, which means that tests are written to use the Kafka producer client.
 
-=== Configuring your containers
-
-Navigate to the `start/inventory` directory.
-// cloud hosted instruction
-ifdef::cloud-hosted[]
-```bash
-cd /home/project/guide-reactive-service-testing/start/inventory
-```
-endif::[]
-
-=== Implementing tests for the Inventory service
-
-Create an integration test to assess the fundamental functionality of the Inventory microservice.
+=== Launching inventory service in dev mode with container
 
 Build and run the container by running the `devc` goal from the `start/inventory` directory.
 
@@ -298,6 +286,9 @@ Create a RESTful client interface for the inventory microservice in the system m
 
 Now you can create your integrated test.
 
+=== Implementing tests for the Inventory service
+
+Create an integration test to assess the fundamental functionality of the inventory microservice.
 
 [role="code_command hotspot file=0", subs="quotes"]
 ----
