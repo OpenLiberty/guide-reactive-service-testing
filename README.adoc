@@ -128,8 +128,6 @@ The `start` directory contains three directories: the `system` service directory
 mvn -pl models install
 ```
 
-// The test will cover scenarios involving both a running local `system/inventory` service and a scenario where the local service is not running. In the case of a running local service, a local Kafka instance will be established to facilitate the required broker connection from the development mode container. In the absence of a running local service, a Kafka Testcontainer will be initiated to serve as the broker for the system and inventory services. 
-
 === Launching system service in dev mode with container
 
 Initiate the services in dev mode by executing the following command to launch a Kafka instance replicating the production environment. The `startKafka` script will launch a local Kafka container, enabling the `system/inventory` service to run in development mode with container goals. The script also establishes a `reactive-app` docker network, allowing the local `system/inventory` service to connect to the Kafka message broker:
@@ -277,6 +275,9 @@ cd /home/project/guide-reactive-service-testing/start/inventory
 ```
 endif::[]
 
+=== Implementing tests for the Inventory service
+
+Create an integration test to assess the fundamental functionality of the Inventory microservice.
 
 Build and run the container by running the `devc` goal from the `start/inventory` directory.
 
@@ -297,9 +298,6 @@ Create a RESTful client interface for the inventory microservice in the system m
 
 Now you can create your integrated test.
 
-=== Implementing tests for the Inventory service
-
-Create an integration test to assess the fundamental functionality of the Inventory microservice.
 
 [role="code_command hotspot file=0", subs="quotes"]
 ----
