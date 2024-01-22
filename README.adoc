@@ -286,17 +286,6 @@ Create a RESTful client interface for the inventory microservice in the system m
 
 Now you can create your integrated test.
 
-
-=== Implementing tests for the Inventory service
-
-Create an integration test to assess the fundamental functionality of the inventory microservice.
-
-[role="code_command hotspot file=0", subs="quotes"]
-----
-#Create the `InventoryServiceIT` class.#
-`inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java`
-----
-
 //File 0
 InventoryServiceIT.java
 [source, Java, linenums, role='code_column hide_tags=copyright']
@@ -325,7 +314,15 @@ InventoryResourceClient.java
 include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryResourceClient.java[]
 ----
 
+=== Implementing tests for the Inventory service
 
+Create an integration test to assess the fundamental functionality of the inventory microservice.
+
+[role="code_command hotspot file=0", subs="quotes"]
+----
+#Create the `InventoryServiceIT` class.#
+`inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java`
+----
 
 The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer` client API to generate messages in the test environment, which are then consumed by the inventory service container.
 
