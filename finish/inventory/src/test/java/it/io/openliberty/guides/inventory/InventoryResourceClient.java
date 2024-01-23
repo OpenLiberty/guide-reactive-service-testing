@@ -20,15 +20,18 @@ import jakarta.ws.rs.core.Response;
 
 @Path("/inventory")
 public interface InventoryResourceClient {
+
     // tag::getSystems[]
     @GET
     @Path("/systems")
     @Produces(MediaType.APPLICATION_JSON)
     Response getSystems();
     // end::getSystems[]
+
     // tag::resetSystems[]
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     Response resetSystems();
     // end::resetSystems[]
+    
 }

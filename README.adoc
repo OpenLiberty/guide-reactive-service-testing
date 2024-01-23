@@ -128,19 +128,20 @@ The `start` directory contains three directories: the `system` service directory
 mvn -pl models install
 ```
 
-=== Launching system service in dev mode with container
+=== Launching the system service in dev mode with container
 
-Initiate the services in dev mode by executing the following command to launch a Kafka instance replicating the production environment. The `startKafka` script will launch a local Kafka container, enabling the `system/inventory` service to run in development mode with container goals. The script also establishes a `reactive-app` docker network, allowing the local `system/inventory` service to connect to the Kafka message broker:
+Initiate the services in dev mode by executing the following command to launch a Kafka instance replicating the production environment. The `startKafka` script will launch a local Kafka container and establish a `reactive-app` docker network that allows the `system` and `inventory` microservices to connect to the Kafka message broker.
+
 [role='command']
 ```
 ./scripts/startKafka.sh
 ```
 
-To execute the system service with the `devc` goal, configure the container by specifying the options within [hotspot=devc_config file=0]`<containerRunOpts>`. The dev mode container is configured to connect to the `reactive-app` Docker network.
+To launch the `system` microservice in dev mode with container, configure the container by specifying the options within [hotspot=devc_config file=0]`<containerRunOpts>` configuration for connecting to the `reactive-app` Docker network and exposing the container port.
 
 Navigate to the `start/system` directory.
 
-Build and run the container by running the `devc` goal from the `start/system` directory:
+Run the following goal to start the `system` microservice in dev mode with container:
 
 [role='command']
 ```
@@ -158,13 +159,11 @@ After you see the following message, your Liberty instance is ready in dev mode:
 
 https://openliberty.io/docs/latest/development-mode.html[Dev mode^] holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
 
-Now you can add your test files.
+The `system` service actively seeks a Kafka topic for message push operations. Upon the successful initialization of a Kafka service, the `system` service establishes connectivity to Kafka message broker by utilizing the `bootstrap-server` configuration. Additionally, the running `system` exposes its service on port `9083` for testing purposes in dev mode with container.
 
-The active `system` service actively seeks a Kafka topic for message push operations. Upon the successful initialization of a Kafka service, the `system` service establishes connectivity to Kafka message broker by utilizing the `bootstrap-server` configuration. Additionally, the running `system` exposes its service on port `9083` for testing purposes in dev mode with container.
+=== Implementing tests for the system service
 
-=== Implementing tests for the System service
-
-Create an integration test to assess the fundamental functionality of the system microservice. If a test failure occurs, then you might have introduced a bug into the code.
+Now you can start writing the test by using Testcontainers.
 
 [role="code_command hotspot file=0", subs="quotes"]
 ----
@@ -197,17 +196,13 @@ Construct the [hotspot=buildSystemImage file=0]`systemImage` using the `ImageFro
 
 Utilize the [hotspot=kafkaContainer file=0]`kafkaContainer` class to instantiate the `kafkaContainer` test container, initiating the `confluentinc/cp-kafka:latest` Docker image. Similarly, employ the `GenericContainer` class to create the [hotspot=systemContainer file=0]`systemContainer` test container, starting the `system:1.0-SNAPSHOT` Docker image.
  
-It's important to note that [hotspot=withListener file=0]`withListener()` has been configured to `kafka:19092`, as the containerized system service will function as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For further details on utilizing additional consumer or producer with Kafka container, please visit https://java.testcontainers.org/modules/kafka/[official Kafka Test Container Documentation^]
+It's important to note that [hotspot=withListener file=0]`withListener()` has been configured to `kafka:19092`, as the containerized `system` service will function as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For further details on utilizing additional consumer or producer with Kafka container, please visit https://java.testcontainers.org/modules/kafka/[official Kafka Test Container Documentation^]
 
-Since containers are isolated by default, facilitating communication between the `kafkaContainer` and the `systemContainer` requires placing them on the same [hotspot=network1 hotspot=network2 file=0]`network`. The [hotspot=dependsOn file=0]`dependsOn()` method is utilized to indicate that the `system` service container should commence only after ensuring the readiness of the kafka container. 
+Given that containers are isolated by default, facilitating communication between the `kafkaContainer` and the `systemContainer` requires placing them on the same [hotspot=network1 hotspot=network2 file=0]`network`. The [hotspot=dependsOn file=0]`dependsOn()` method is utilized to indicate that the `system` service container should commence only after ensuring the readiness of the kafka container. 
 
-During the testing phase, covering both dev mode and Testcontainers integration tests, a method named [hotspot=isServiceRunning file=0]`isServiceRunning` has been introduced. This method serves the purpose of verifying the presence of a local container hosting the system service. 
+Prior to initiating the `systemContainer`, it is imperative to override the `mp.messaging.connector.liberty-kafka.bootstrap.servers` property with `kafka:19092` using the [hotspot=bootstrapServerSetup file=0]`withEnv()` method. This step is necessary due to the establishment of a listener in the Kafka container, configured to handle an additional producer.
 
-Upon detection of a local system service container, the initiation of the test container is bypassed. In this scenario, the testing is directed towards the service exported by the system service container operating in dev mode. In the event that a local service container is not detected, the testing framework proceeds to initiate the test container. 
-
-Prior to initiating the systemContainer, it is imperative to override the `mp.messaging.connector.liberty-kafka.bootstrap.servers` property with `kafka:19092` using the [hotspot=bootstrapServerSetup file=0]`withEnv()` method. This step is necessary due to the establishment of a listener in the Kafka container, configured to handle an additional producer.
-
-The test employs the [hotspot=KafkaConsumer file=0]`KafkaConsumer` client API, configuring the consumer client to use the [hotspot=BootstrapSetting1 file=0]`BOOTSTRAP_SERVERS_CONFIG` with the Kafka broker address if a local system service container is present. In the absence of a local service container, it utilizes the [hotspot=BootstrapSetting2 file=0]`getBootstrapServers()` method to obtain the broker address from the Kafka Testcontainer. Subsequently, the consumer is set up to consume messages from the [hotspot=systemLoadTopic file=0]`system.load` topic within the `Kafka` container.
+The test employs the [hotspot=KafkaConsumer file=0]`KafkaConsumer` client API, configuring the consumer client to use the [hotspot=BootstrapSetting1 file=0]`BOOTSTRAP_SERVERS_CONFIG` with the Kafka broker address if a local `system` service container is present. In the absence of a local service container, it utilizes the [hotspot=BootstrapSetting2 file=0]`getBootstrapServers()` method to obtain the broker address from the Kafka Testcontainer. Subsequently, the consumer is set up to consume messages from the [hotspot=systemLoadTopic file=0]`system.load` topic within the `Kafka` container.
 
 To consume messages from a stream, the messages need to be deserialized from bytes. Kafka has its own default deserializer, but a custom deserializer is provided for you. The deserializer is configured to the consumer’s [hotspot=valueDeserializer file=0]`valueDeserializer` and is implemented in the [hotspot=SystemLoadDeserializer file=1]`SystemLoad` class. To learn more about Kafka APIs and their usage, please refer to the https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
 
@@ -264,18 +259,22 @@ You will see the following output:
 
 The `inventory` service is tested in the same way as the `system` service. The only difference is that the `inventory` service consumes messages, which means that tests are written to use the Kafka producer client.
 
-=== Launching inventory service in dev mode with container
+=== Launching the inventory microservice in dev mode with container
 
-Build and run the container by running the `devc` goal from the `start/inventory` directory.
+Navigate to the `start/inventory` directory.
+
+Run the following goal to start the `inventory` microservice in dev mode with container:
 
 [role='command']
 ```
 mvn liberty:devc
 ```
 
-=== Writing the RESTful client interface
+=== Building test REST client
 
-Create a RESTful client interface for the inventory microservice in the system microservice. This interface declares [hotspot=getSystems file=3]`getSystems()` method for accessing system status in the integration test. 
+Create a REST client interface to access the `inventory` microservice.
+
+The `InventoryResourceClient` interface declares the [hotspot=getSystems file=3]`getSystems()` and [hotspot=resetSystems file=3]`resetSystems()` methods for accessing the corresponding endpoints within the `inventory` microservice.
 
 [role="code_command hotspot file=3", subs="quotes"]
 ----
@@ -313,9 +312,9 @@ InventoryResourceClient.java
 include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryResourceClient.java[]
 ----
 
-=== Implementing tests for the Inventory service
+=== Implementing tests for the Inventory microservice
 
-Create an integration test to assess the fundamental functionality of the inventory microservice.
+Now you can start writing the test by using Testcontainers.
 
 [role="code_command hotspot file=0", subs="quotes"]
 ----
@@ -323,15 +322,15 @@ Create an integration test to assess the fundamental functionality of the invent
 `inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java`
 ----
 
-The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer` client API to generate messages in the test environment, which are then consumed by the inventory service container.
+The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer` client API to generate messages in the test environment, which are then consumed by the `inventory` service container.
 
-Similar to system service testing, the configuration of the producer client's `BOOTSTRAP_SERVERS_CONFIG` depends on whether a local inventory service container is detected.  In addition, the producer is configured with a custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
+Similar to `system` service testing, the configuration of the producer client's `BOOTSTRAP_SERVERS_CONFIG` depends on whether a local `inventory` service container is detected.  In addition, the producer is configured with a custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
 
-Upon starting the container, the [hotspot=getSystems file=3]`getSystems` method declared in the `InventoryResourceClient` is invoked. To facilitate this, a [hotspot=ResteasyClient file=0]`ResteasyClient` has been introduced to construct a REST client, enabling HTTP requests to be made to the running application.
+// Upon starting the container, the [hotspot=getSystems file=3]`getSystems` method declared in the `InventoryResourceClient` is invoked. To facilitate this, a [hotspot=ResteasyClient file=0]`ResteasyClient` has been introduced to construct a REST client, enabling HTTP requests to be made to the running application.
 
-When configuring a REST client that accepts a URL path as input, the URL settings will adapt depending on the identification of a local inventory service. if a service container is detected, the [hotspot=urlPathSetup1 file=0]`urlPath` will be set to the local service address `http://localhost:9085`. Conversely, in the absence of a detected local service container, the [hotspot=urlPathSetup2 file=0]`urlPath` will be configured to employ the inventory service port from the inventory container.  
+// When configuring a REST client that accepts a URL path as input, the URL settings will adapt depending on the identification of a local `inventory` service. if a service container is detected, the [hotspot=urlPathSetup1 file=0]`urlPath` will be set to the local service address `http://localhost:9085`. Conversely, in the absence of a detected local service container, the [hotspot=urlPathSetup2 file=0]`urlPath` will be configured to employ the `inventory` service port from the inventory container.  
 
-The [hotspot=testCpuUsage file=0]`testCpuUsage` test method produces a message to Kafka and then [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`verifies` that the response from the `inventory` service matches what is expected.
+The [hotspot=testCpuUsage file=0]`testCpuUsage` test method employs the [hotspot=systemLoadMsg file=0]`producer.send()` method, utilizing the KafkaProducer client API, to generate the `Systemload` message. Subsequently, it employs [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`Assertions` to verify that the response from the `inventory` service aligns with the expected outcome.
 
 [role='command']
 include::{common-includes}/devmode-test.adoc[]
@@ -378,7 +377,7 @@ You will see the following output:
  ------------------------------------------------------------------------
 ```
 
-=== Tearing down the environment 
+// === Tearing down the environment
 
 When you're finished trying out the microservice, you can stop the local Kafka container by running the following command in `start/inventory` directory:
 [role='command']

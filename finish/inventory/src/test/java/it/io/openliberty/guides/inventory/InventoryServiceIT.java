@@ -180,9 +180,9 @@ public class InventoryServiceIT {
     @Test
     public void testCpuUsage() throws InterruptedException {
         SystemLoad sl = new SystemLoad("localhost", 1.1);
-        // tag::systemLoadTopic[]
+        // tag::systemLoadMsg[]
         producer.send(new ProducerRecord<String, SystemLoad>("system.load", sl));
-        // end::systemLoadTopic[]
+        // end::systemLoadMsg[]
         Thread.sleep(5000);
         Response response = client.getSystems();
         Assertions.assertEquals(200, response.getStatus(),
