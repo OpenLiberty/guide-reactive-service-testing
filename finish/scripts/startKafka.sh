@@ -1,8 +1,9 @@
 #!/bin/bash
 
+# tag::dockerNetworkSetup[]
 NETWORK=reactive-app
-
 docker network create $NETWORK
+# end::dockerNetworkSetup[]
 
 docker run -d \
     -e ALLOW_PLAINTEXT_LISTENER=yes \

@@ -111,6 +111,20 @@ inventory/pom.xml
 include::finish/inventory/pom.xml[]
 ----
 
+//File 2
+system/microprofile-config.properties
+[source, XML, linenums, role='code_column']
+----
+include::finish/system/src/main/resources/META-INF/microprofile-config.properties[]
+----
+
+//File 3
+startKafka.sh
+[source, XML, linenums, role='code_column']
+----
+include::finish/scripts/startKafka.sh[]
+----
+
 Navigate to the `start` directory to begin.
 // cloud hosted instruction
 ifdef::cloud-hosted[]
@@ -130,14 +144,14 @@ mvn -pl models install
 
 === Launching the system service in dev mode with container
 
-Initiate the services in dev mode by executing the following command to launch a Kafka instance replicating the production environment. The `startKafka` script will launch a local Kafka container and establish a `reactive-app` docker network that allows the `system` and `inventory` microservices to connect to the Kafka message broker.
+Initiate the services in dev mode by executing the following command to launch a Kafka instance replicating the production environment. The `startKafka` script will launch a local Kafka container and establish a [hotspot=dockerNetworkSetup file=3]`reactive-app` docker network that allows the `system` and `inventory` microservices to connect to the Kafka message broker.
 
 [role='command']
 ```
 ./scripts/startKafka.sh
 ```
 
-To launch the `system` microservice in dev mode with container, configure the container by specifying the options within [hotspot=devc_config file=0]`<containerRunOpts>` configuration for connecting to the `reactive-app` Docker network and exposing the container port.
+To launch the `system` microservice in dev mode with container, configure the container by specifying the options within [hotspot=devc_config file=0]`<containerRunOpts>` configuration for connecting to the [hotspot=reactive-app file=0]`reactive-app` Docker network and exposing the container port.
 
 Navigate to the `start/system` directory.
 
@@ -159,7 +173,7 @@ After you see the following message, your Liberty instance is ready in dev mode:
 
 https://openliberty.io/docs/latest/development-mode.html[Dev mode^] holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
 
-The `system` service actively seeks a Kafka topic for message push operations. Upon the successful initialization of a Kafka service, the `system` service establishes connectivity to Kafka message broker by utilizing the `bootstrap-server` configuration. Additionally, the running `system` exposes its service on port `9083` for testing purposes in dev mode with container.
+The `system` service actively seeks a Kafka topic for message push operations. Upon the successful initialization of a Kafka service, the `system` service establishes connectivity to Kafka message broker by utilizing the [hotspot=libertyKafkaConnector file=2]`mp.messaging.connector.liberty-kafka.bootstrap.servers` configuration. Additionally, the running `system` exposes its service on port `9083` for testing purposes in dev mode with container.
 
 === Implementing tests for the system service
 

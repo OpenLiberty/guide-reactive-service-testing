@@ -114,7 +114,9 @@
                     <containerRunOpts>
                                     -e WLP_LOGGING_CONSOLE_LOGLEVEL=info 
                                     -p 9083:9083
+                                    <!-- tag::reactive-app[] -->
                                     --network=reactive-app
+                                    <!-- end::reactive-app[] -->
                     </containerRunOpts>
                     <!-- end::devc_config[] -->
                 </configuration>
