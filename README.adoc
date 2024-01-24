@@ -113,7 +113,7 @@ include::finish/inventory/pom.xml[]
 
 //File 2
 system/microprofile-config.properties
-[source, XML, linenums, role='code_column']
+[source, Text, linenums, role='code_column hide_tags=copyright']
 ----
 include::finish/system/src/main/resources/META-INF/microprofile-config.properties[]
 ----
