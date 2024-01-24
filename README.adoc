@@ -336,13 +336,9 @@ Now you can start writing the test by using Testcontainers.
 `inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java`
 ----
 
-The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [hotspot=KafkaProducer hotspot=KafkaProducer file=0]`KafkaProducer` client API to generate messages in the test environment, which are then consumed by the `inventory` service container.
+The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [hotspot=KafkaProducer hotspot=KafkaProducer2 file=0]`KafkaProducer` client API to generate messages in the test environment, which are then consumed by the `inventory` service container.
 
-Similar to `system` service testing, the configuration of the producer client's `BOOTSTRAP_SERVERS_CONFIG` depends on whether a local `inventory` service container is detected.  In addition, the producer is configured with a custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
-
-// Upon starting the container, the [hotspot=getSystems file=3]`getSystems` method declared in the `InventoryResourceClient` is invoked. To facilitate this, a [hotspot=ResteasyClient file=0]`ResteasyClient` has been introduced to construct a REST client, enabling HTTP requests to be made to the running application.
-
-// When configuring a REST client that accepts a URL path as input, the URL settings will adapt depending on the identification of a local `inventory` service. if a service container is detected, the [hotspot=urlPathSetup1 file=0]`urlPath` will be set to the local service address `http://localhost:9085`. Conversely, in the absence of a detected local service container, the [hotspot=urlPathSetup2 file=0]`urlPath` will be configured to employ the `inventory` service port from the inventory container.  
+Similar to `system` service testing, the configuration of the producer client's [hotspot=BootstrapServerConfig hotspot=BootstrapServerConfig2 file=0]`BOOTSTRAP_SERVERS_CONFIG` depends on whether a local `inventory` service container is detected.  In addition, the producer is configured with a custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
 
 The [hotspot=testCpuUsage file=0]`testCpuUsage` test method employs the [hotspot=systemLoadMsg file=0]`producer.send()` method, utilizing the KafkaProducer client API, to generate the `Systemload` message. Subsequently, it employs [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`Assertions` to verify that the response from the `inventory` service aligns with the expected outcome.
 

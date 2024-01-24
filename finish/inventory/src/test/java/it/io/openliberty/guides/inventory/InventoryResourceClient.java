@@ -33,5 +33,5 @@ public interface InventoryResourceClient {
     @Produces(MediaType.APPLICATION_JSON)
     Response resetSystems();
     // end::resetSystems[]
-    
+
 }
