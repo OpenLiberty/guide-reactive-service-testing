@@ -186,7 +186,7 @@ After you see the following message, your Liberty instance is ready in dev mode:
 
 https://openliberty.io/docs/latest/development-mode.html[Dev mode^] holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
 
-The `system` microservice actively seeks a Kafka topic for message push operations. Upon the successful initialization of a Kafka service, the `system` microservice establishes connectivity to Kafka message broker by utilizing the [hotspot=libertyKafkaConnector file=2]`mp.messaging.connector.liberty-kafka.bootstrap.servers` configuration. Additionally, the running `system` exposes its service on port `9083` for testing purposes in dev mode with container.
+The `system` microservice actively seeks a Kafka topic for message push operations. Upon the successful initialization of a Kafka service, the `system` microservice establishes connectivity to Kafka message broker by utilizing the [hotspot=kafkaConfig file=2]`mp.messaging.connector.liberty-kafka.bootstrap.servers` property. Additionally, the running `system` exposes its service on port `9083` for testing purposes in dev mode with container.
 
 === Implementing tests for the system microservice
 
@@ -233,7 +233,9 @@ The test employs the [hotspot=KafkaConsumer file=0]`KafkaConsumer` client API, c
 
 To consume messages from a stream, the messages need to be deserialized from bytes. Kafka has its own default deserializer, but a custom deserializer is provided for you. The deserializer is configured to the consumer’s [hotspot=valueDeserializer file=0]`valueDeserializer` and is implemented in the [hotspot=SystemLoadDeserializer file=1]`SystemLoad` class. To learn more about Kafka APIs and their usage, please refer to the https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
 
-The running `system` microservice container produces messages to the [hotspot=systemLoad file=2]`systemLoad` Kafka topic, as denoted by the [hotspot=Outgoing file=2]`@Outgoing` annotation. The [hotspot=testCpuStatus file=0]`testCpuStatus()` test method [hotspot=poll file=0]`polls` a record from Kafka every 3 seconds until the timeout limit. It then [hotspot=assert file=0]`verifies` that the record polled matches the expected record.
+The running `system` microservice container produces messages to the [hotspot=systemLoad file=2]`systemLoad` Kafka topic, as denoted by the [hotspot=Outgoing file=2]`@Outgoing` annotation. 
+
+The [hotspot=testCpuStatus file=0]`testCpuStatus()` test method employs the [hotspot=poll file=0]`consumer.poll()` method from the KafkaConsumer client API to retrieve a record from Kafka every 3 seconds within a specified timeout limit. It then utilizes [hotspot=assert file=0]`Assertions` to verify that the polled record aligns with the expected record.
 
 [role='command']
 include::{common-includes}/devmode-test.adoc[]
