@@ -235,7 +235,7 @@ To consume messages from a stream, the messages need to be deserialized from byt
 
 The running `system` microservice container produces messages to the [hotspot=systemLoad file=2]`systemLoad` Kafka topic, as denoted by the [hotspot=Outgoing file=2]`@Outgoing` annotation. 
 
-The [hotspot=testCpuStatus file=0]`testCpuStatus()` test method employs the [hotspot=poll file=0]`consumer.poll()` method from the KafkaConsumer client API to retrieve a record from Kafka every 3 seconds within a specified timeout limit. It then utilizes [hotspot=assert file=0]`Assertions` to verify that the polled record aligns with the expected record.
+The [hotspot=testCpuStatus file=0]`testCpuStatus()` test method employs the [hotspot=poll file=0]`consumer.poll()` method from the `KafkaConsumer` client API to retrieve a record from Kafka every 3 seconds within a specified timeout limit. It then utilizes [hotspot=assert file=0]`Assertions` to verify that the polled record aligns with the expected record.
 
 [role='command']
 include::{common-includes}/devmode-test.adoc[]
@@ -353,7 +353,7 @@ The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [
 
 Similar to `system` microservice testing, the configuration of the producer client's [hotspot=BootstrapServerConfig hotspot=BootstrapServerConfig2 file=0]`BOOTSTRAP_SERVERS_CONFIG` depends on whether a local `inventory` microservice container is detected.  In addition, the producer is configured with a custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
 
-The [hotspot=testCpuUsage file=0]`testCpuUsage` test method employs the [hotspot=systemLoadMsg file=0]`producer.send()` method, utilizing the KafkaProducer client API, to generate the `Systemload` message. Subsequently, it employs [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`Assertions` to verify that the response from the `inventory` microservice aligns with the expected outcome.
+The [hotspot=testCpuUsage file=0]`testCpuUsage` test method employs the [hotspot=systemLoadMsg file=0]`producer.send()` method, utilizing the `KafkaProducer` client API, to generate the `Systemload` message. Subsequently, it employs [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`Assertions` to verify that the response from the `inventory` microservice aligns with the expected outcome.
 
 [role='command']
 include::{common-includes}/devmode-test.adoc[]
