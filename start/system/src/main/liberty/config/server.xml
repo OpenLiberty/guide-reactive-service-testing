@@ -14,6 +14,7 @@
 
   <httpEndpoint host="*" httpPort="${http.port}"
                 httpsPort="${https.port}" id="defaultHttpEndpoint"/>
-
+                
+  <logging consoleLogLevel="INFO"/>
   <webApplication location="system.war" contextRoot="/"/>
 </server>
