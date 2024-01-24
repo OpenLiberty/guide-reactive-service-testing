@@ -146,10 +146,23 @@ mvn -pl models install
 
 Initiate the microservices in dev mode by executing the following command to launch a Kafka instance replicating the production environment. The `startKafka` script will launch a local Kafka container and establish a [hotspot=dockerNetworkSetup file=3]`reactive-app` docker network that allows the `system` and `inventory` microservices to connect to the Kafka message broker.
 
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
+[role='command']
+```
+.\scripts\startKafka.bat
+```
+--
+
+[.tab_content.mac_section.linux_section]
+--
 [role='command']
 ```
 ./scripts/startKafka.sh
 ```
+--
 
 To launch the `system` microservice in dev mode with container, configure the container by specifying the options within [hotspot=devc_config file=0]`<containerRunOpts>` configuration for connecting to the [hotspot=reactive-app file=0]`reactive-app` Docker network and exposing the container port.
 
@@ -387,10 +400,24 @@ You will see the following output:
 
 
 When you're finished trying out the microservice, you can stop the local Kafka container by running the following command in `start/inventory` directory:
+
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
+[role='command']
+```
+.\scripts\stopKafka.bat
+```
+--
+
+[.tab_content.mac_section.linux_section]
+--
 [role='command']
 ```
 ./scripts/stopKafka.sh
 ```
+--
 
 
 == Great work! You're done!
