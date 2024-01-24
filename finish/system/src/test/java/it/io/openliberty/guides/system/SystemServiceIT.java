@@ -52,10 +52,10 @@ public class SystemServiceIT {
     private static Logger logger = LoggerFactory.getLogger(SystemServiceIT.class);
 
     private static Network network = Network.newNetwork();
-    
-    // tag::KafkaConsumer2[]
+
+    // tag::KafkaConsumerUsage[]
     public static KafkaConsumer<String, SystemLoad> consumer;
-    // end::KafkaConsumer2[]
+    // end::KafkaConsumerUsage[]
 
     // tag::buildSystemImage[]
     private static ImageFromDockerfile systemImage
