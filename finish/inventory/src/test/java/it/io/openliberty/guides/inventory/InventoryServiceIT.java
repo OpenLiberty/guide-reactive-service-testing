@@ -140,7 +140,7 @@ public class InventoryServiceIT {
             // tag::BootstrapServerConfig[]
             producerProps.put(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                "localhost:9094");
+            "localhost:9094");
             // end::BootstrapServerConfig[]
         } else {
             // tag::BootstrapServerConfig2[]

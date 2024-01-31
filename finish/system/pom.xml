@@ -112,10 +112,10 @@
                     <!-- tag::devc_config[] -->
                     <!-- devc config -->
                     <containerRunOpts>
-                                    -p 9083:9083
-                                    <!-- tag::reactive-app[] -->
-                                    --network=reactive-app
-                                    <!-- end::reactive-app[] -->
+                        -p 9083:9083
+                        <!-- tag::reactive-app[] -->
+                        --network=reactive-app
+                        <!-- end::reactive-app[] -->
                     </containerRunOpts>
                     <!-- end::devc_config[] -->
                 </configuration>

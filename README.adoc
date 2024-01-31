@@ -144,7 +144,7 @@ mvn -pl models install
 
 === Launching the system microservice in dev mode with container
 
-Initiate the microservices in dev mode by executing the following command to launch a Kafka instance replicating the production environment. The `startKafka` script will launch a local Kafka container and establish a [hotspot=dockerNetworkSetup file=3]`reactive-app` docker network that allows the `system` and `inventory` microservices to connect to the Kafka message broker.
+Initiate the microservices in dev mode by executing the following command to launch a Kafka instance replicating the production environment. The `startKafka` script will launch a local Kafka container and establish a [hotspot=dockerNetworkSetup file=3]`reactive-app` network that allows the `system` and `inventory` microservices to connect to the Kafka message broker.
 
 include::{common-includes}/os-tabs.adoc[]
 
@@ -164,7 +164,7 @@ include::{common-includes}/os-tabs.adoc[]
 ```
 --
 
-To launch the `system` microservice in dev mode with container, configure the container by specifying the options within [hotspot=devc_config file=0]`<containerRunOpts>` configuration for connecting to the [hotspot=reactive-app file=0]`reactive-app` Docker network and exposing the container port.
+To launch the `system` microservice in dev mode with container, configure the container by specifying the options within [hotspot=devc_config file=0]`<containerRunOpts>` configuration for connecting to the [hotspot=reactive-app file=0]`reactive-app` network and exposing the container port.
 
 Navigate to the `start/system` directory.
 
@@ -182,11 +182,15 @@ After you see the following message, your Liberty instance is ready in dev mode:
 ----
 **************************************************************
 *    Liberty is running in dev mode.
-----
+*    ...    
+*    Liberty container port information:
+*        Internal container HTTP port [ 9083 ] is mapped to container host port [ 9083 ] <
+*   ...     
+
 
 https://openliberty.io/docs/latest/development-mode.html[Dev mode^] holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
 
-The `system` microservice actively seeks a Kafka topic for message push operations. Upon the successful initialization of a Kafka service, the `system` microservice establishes connectivity to Kafka message broker by utilizing the [hotspot=kafkaConfig file=2]`mp.messaging.connector.liberty-kafka.bootstrap.servers` property. Additionally, the running `system` exposes its service on port `9083` for testing purposes in dev mode with container.
+The `system` microservice actively seeks a Kafka topic for message push operations. Upon the successful initialization of a Kafka service, the `system` microservice establishes connectivity to Kafka message broker by utilizing the [hotspot=kafkaConfig file=2]`mp.messaging.connector.liberty-kafka.bootstrap.servers` property. Additionally, the running `system` container exposes its service on the port `9083` for testing purposes in dev mode with container.
 
 === Implementing tests for the system microservice
 
@@ -225,17 +229,15 @@ Utilize the [hotspot=kafkaContainer file=0]`kafkaContainer` class to instantiate
  
 It's important to note that [hotspot=withListener file=0]`withListener()` has been configured to `kafka:19092`, as the containerized `system` microservice will function as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For further details on utilizing additional consumer or producer with Kafka container, please visit https://java.testcontainers.org/modules/kafka/[official Kafka Test Container Documentation^]
 
-Given that containers are isolated by default, facilitating communication between the `kafkaContainer` and the `systemContainer` requires placing them on the same [hotspot=network1 hotspot=network2 file=0]`network`. The [hotspot=dependsOn file=0]`dependsOn()` method is utilized to indicate that the `system` microservice container should commence only after ensuring the readiness of the kafka container. 
+Given that containers are isolated by default, facilitating communication between the `kafkaContainer` and the `systemContainer` requires placing them on the same [hotspot=network1 hotspot=network2 hotspot=network3 file=0]`network`. The [hotspot=dependsOn file=0]`dependsOn()` method is utilized to indicate that the `system` microservice container should commence only after ensuring the readiness of the kafka container. 
 
 Prior to initiating the `systemContainer`, it is imperative to override the `mp.messaging.connector.liberty-kafka.bootstrap.servers` property with `kafka:19092` using the [hotspot=bootstrapServerSetup file=0]`withEnv()` method. This step is necessary due to the establishment of a listener in the Kafka container, configured to handle an additional producer.
 
-The test employs the [hotspot=KafkaConsumer hotspot=KafkaConsumerUsage file=0]`KafkaConsumer` client API, configuring the consumer client to use the [hotspot=BootstrapSetting1 file=0]`BOOTSTRAP_SERVERS_CONFIG` with the Kafka broker address if a local `system` microservice container is present. In the absence of a local service container, it utilizes the [hotspot=BootstrapSetting2 file=0]`getBootstrapServers()` method to obtain the broker address from the Kafka Testcontainer. Subsequently, the consumer is set up to consume messages from the [hotspot=systemLoadTopic file=0]`system.load` topic within the `Kafka` container.
+The test employs the [hotspot=KafkaConsumer hotspot=KafkaConsumerUsage file=0]`KafkaConsumer` client API, configuring the consumer to use the [hotspot=BootstrapSetting1 file=0]`BOOTSTRAP_SERVERS_CONFIG` property with the Kafka broker address if a local `system` microservice container is present. In the absence of a local service container, it utilizes the [hotspot=BootstrapSetting2 file=0]`getBootstrapServers()` method to obtain the broker address from the Kafka Testcontainer. Subsequently, the consumer is set up to consume messages from the [hotspot=systemLoadTopic file=0]`system.load` topic within the `Kafka` container.
 
-To consume messages from a stream, the messages need to be deserialized from bytes. Kafka has its own default deserializer, but a custom deserializer is provided for you. The deserializer is configured to the consumer’s [hotspot=valueDeserializer file=0]`valueDeserializer` and is implemented in the [hotspot=SystemLoadDeserializer file=1]`SystemLoad` class. To learn more about Kafka APIs and their usage, please refer to the https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
+To consume messages from a stream, the messages need to be deserialized from bytes. Kafka has its own default deserializer, but a custom deserializer is provided for you. The deserializer is configured by the [hotspot=valueDeserializer file=0]`VALUE_DESERIALIZER_CLASS_CONFIG` property and is implemented in the [hotspot=SystemLoadDeserializer file=1]`SystemLoad` class. To learn more about Kafka APIs and their usage, please refer to the https://kafka.apache.org/documentation/#api[official Kafka Documentation^].
 
-The running `system` microservice container produces messages to the [hotspot=systemLoad file=2]`systemLoad` Kafka topic, as denoted by the [hotspot=Outgoing file=2]`@Outgoing` annotation. 
-
-The [hotspot=testCpuStatus file=0]`testCpuStatus()` test method employs the [hotspot=poll file=0]`consumer.poll()` method from the `KafkaConsumer` client API to retrieve a record from Kafka every 3 seconds within a specified timeout limit. It then utilizes [hotspot=assert file=0]`Assertions` to verify that the polled record aligns with the expected record.
+The running `system` microservice container produces messages to the [hotspot=systemLoad file=2]`systemLoad` Kafka topic, as denoted by the [hotspot=Outgoing file=2]`@Outgoing` annotation. The [hotspot=testCpuStatus file=0]`testCpuStatus()` test method employs the [hotspot=poll file=0]`consumer.poll()` method from the `KafkaConsumer` client API to retrieve a record from Kafka every 3 seconds within a specified timeout limit. This record is produced by the system service. Subsequently, the method utilizes [hotspot=assert file=0]`Assertions` to verify that the polled record aligns with the expected record.
 
 [role='command']
 include::{common-includes}/devmode-test.adoc[]
@@ -267,19 +269,19 @@ You will see the following output:
 
 [role='no_copy']
 ```
- Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.001 s - in it.io.openliberty.guides.system.SystemServiceIT
+ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 50.63 s - in it.io.openliberty.guides.system.SystemServiceIT
 
  Results:
 
  Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
 
- --- maven-failsafe-plugin:2.22.2:verify (verify) @ system ---
+ --- failsafe:3.2.5:verify (verify) @ system ---
  ------------------------------------------------------------------------
  BUILD SUCCESS
  ------------------------------------------------------------------------
- Total time:  52.817 s
- Finished at: 2020-03-13T16:28:55-04:00
+ Total time:  55.636 s
+ Finished at: 2024-01-31T11:33:40-08:00
  ------------------------------------------------------------------------
 ```
 
@@ -351,7 +353,7 @@ Now you can start writing the test by using Testcontainers.
 
 The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class utilizes the [hotspot=KafkaProducer hotspot=KafkaProducer2 file=0]`KafkaProducer` client API to generate messages in the test environment, which are then consumed by the `inventory` microservice container.
 
-Similar to `system` microservice testing, the configuration of the producer client's [hotspot=BootstrapServerConfig hotspot=BootstrapServerConfig2 file=0]`BOOTSTRAP_SERVERS_CONFIG` depends on whether a local `inventory` microservice container is detected.  In addition, the producer is configured with a custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
+Similar to `system` microservice testing, the configuration of the producer [hotspot=BootstrapServerConfig hotspot=BootstrapServerConfig2 file=0]`BOOTSTRAP_SERVERS_CONFIG` property depends on whether a local `inventory` microservice container is detected.  In addition, the producer is configured with a custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
 
 The [hotspot=testCpuUsage file=0]`testCpuUsage` test method employs the [hotspot=systemLoadMsg file=0]`producer.send()` method, utilizing the `KafkaProducer` client API, to generate the `Systemload` message. Subsequently, it employs [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`Assertions` to verify that the response from the `inventory` microservice aligns with the expected outcome.
 
@@ -384,24 +386,24 @@ You will see the following output:
 
 [role='no_copy']
 ```
- Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 42.345 s - in it.io.openliberty.guides.inventory.InventoryServiceIT
+ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 53.22 s - in it.io.openliberty.guides.inventory.InventoryServiceIT
 
  Results:
 
  Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
 
- --- maven-failsafe-plugin:2.22.2:verify (verify) @ inventory ---
+ --- failsafe:3.2.5:verify (verify) @ inventory ---
  ------------------------------------------------------------------------
  BUILD SUCCESS
  ------------------------------------------------------------------------
- Total time:  48.213 s
- Finished at: 2020-03-13T16:43:34-04:00
+ Total time:  58.789 s
+ Finished at: 2024-01-31T11:40:43-08:00
  ------------------------------------------------------------------------
 ```
 
 
-When you're finished trying out the microservice, you can stop the local Kafka container by running the following command in `start/inventory` directory:
+When you're finished trying out the microservice, you can stop the local Kafka container by running the following command in `start` directory:
 
 include::{common-includes}/os-tabs.adoc[]
 

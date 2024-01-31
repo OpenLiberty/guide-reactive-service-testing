@@ -50,8 +50,9 @@ import io.openliberty.guides.models.SystemLoad.SystemLoadDeserializer;
 public class SystemServiceIT {
 
     private static Logger logger = LoggerFactory.getLogger(SystemServiceIT.class);
-
+    // tag::network1[]
     private static Network network = Network.newNetwork();
+    // end::network1[]
 
     // tag::KafkaConsumerUsage[]
     public static KafkaConsumer<String, SystemLoad> consumer;
@@ -69,17 +70,17 @@ public class SystemServiceIT {
             // tag::withListener[]
             .withListener(() -> "kafka:19092")
             // end::withListener[]
-            // tag::network1[]
+            // tag::network2[]
             .withNetwork(network);
-            // end::network1[]
+            // end::network2[]
     // end::kafkaContainer[]
 
     // tag::systemContainer[]
     private static GenericContainer<?> systemContainer =
         new GenericContainer(systemImage)
-            // tag::network2[]
+            // tag::network3[]
             .withNetwork(network)
-            // end::network2[]
+            // end::network3[]
             .withExposedPorts(9083)
             .waitingFor(Wait.forHttp("/health/ready").forPort(9083))
             .withStartupTimeout(Duration.ofMinutes(2))
@@ -117,7 +118,7 @@ public class SystemServiceIT {
     }
 
     @BeforeEach
-    public void setUp() {
+    public void createKafkaConsumer() {
         // tag::KafkaConsumer2[]
         // tag::KafkaConsumerProps[]
         Properties consumerProps = new Properties();
@@ -125,7 +126,7 @@ public class SystemServiceIT {
             // tag::BootstrapSetting1[]
             consumerProps.put(
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                "localhost:9094");
+            "localhost:9094");
             // end::BootstrapSetting1[]
         } else {
             consumerProps.put(
@@ -167,7 +168,7 @@ public class SystemServiceIT {
     }
 
     @AfterEach
-    public void tearDown() {
+    public void closeKafkaConsumer() {
         consumer.close();
     }
 

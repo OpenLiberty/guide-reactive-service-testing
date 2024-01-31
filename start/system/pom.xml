@@ -108,8 +108,8 @@
                 <configuration>
                     <!-- devc config -->
                     <containerRunOpts>
-                                    -p 9083:9083
-                                    --network=reactive-app
+                        -p 9083:9083
+                        --network=reactive-app
                     </containerRunOpts>
                 </configuration>
             </plugin>
