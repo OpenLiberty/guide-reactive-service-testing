@@ -186,7 +186,7 @@ After you see the following message, your Liberty instance is ready in dev mode:
 *    Liberty container port information:
 *        Internal container HTTP port [ 9083 ] is mapped to container host port [ 9083 ] <
 *   ...     
-
+----
 
 https://openliberty.io/docs/latest/development-mode.html[Dev mode^] holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
 
