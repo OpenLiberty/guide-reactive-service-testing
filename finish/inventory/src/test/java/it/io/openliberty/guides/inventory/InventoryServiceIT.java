@@ -133,7 +133,7 @@ public class InventoryServiceIT {
     }
 
     @BeforeEach
-    public void setUp() {
+    public void createKafkaProducer() {
         // tag::KafkaProducerProps[]
         Properties producerProps = new Properties();
         if (isServiceRunning("localhost", 9085)) {
@@ -172,7 +172,7 @@ public class InventoryServiceIT {
     }
 
     @AfterEach
-    public void tearDown() {
+    public void closeKafkaProducer() {
         producer.close();
     }
 
