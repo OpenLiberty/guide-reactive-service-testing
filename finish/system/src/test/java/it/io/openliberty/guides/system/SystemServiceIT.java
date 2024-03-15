@@ -59,9 +59,9 @@ public class SystemServiceIT {
     // end::KafkaConsumerUsage[]
 
     // tag::buildSystemImage[]
-    private static ImageFromDockerfile systemImage
-        = new ImageFromDockerfile("system:1.0-SNAPSHOT")
-              .withDockerfile(Paths.get("./Dockerfile"));
+    private static ImageFromDockerfile systemImage =
+        new ImageFromDockerfile("system:1.0-SNAPSHOT")
+            .withDockerfile(Paths.get("./Dockerfile"));
     // end::buildSystemImage[]
 
     // tag::kafkaContainer[]

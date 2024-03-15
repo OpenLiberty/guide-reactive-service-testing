@@ -68,8 +68,8 @@ public class InventoryServiceIT {
     // tag::KafkaProducer2[]
     public static KafkaProducer<String, SystemLoad> producer;
     // end::KafkaProducer2[]
-    private static ImageFromDockerfile inventoryImage
-        = new ImageFromDockerfile("inventory:1.0-SNAPSHOT")
+    private static ImageFromDockerfile inventoryImage =
+        new ImageFromDockerfile("inventory:1.0-SNAPSHOT")
             .withDockerfile(Paths.get("./Dockerfile"));
 
     private static KafkaContainer kafkaContainer = new KafkaContainer(
