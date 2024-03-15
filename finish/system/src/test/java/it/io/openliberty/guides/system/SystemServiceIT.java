@@ -154,7 +154,6 @@ public class SystemServiceIT {
         // end::KafkaConsumer2[]
     }
 
-
     @AfterAll
     public static void stopContainers() {
         systemContainer.stop();
