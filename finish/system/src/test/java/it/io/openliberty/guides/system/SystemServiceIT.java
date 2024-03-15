@@ -110,7 +110,7 @@ public class SystemServiceIT {
             kafkaContainer.start();
             // tag::bootstrapServerSetup[]
             systemContainer.withEnv(
-            "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
+                "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
             // end::bootstrapServerSetup[]
             systemContainer.start();
             System.out.println("Testing with mvn verify");
@@ -124,31 +124,25 @@ public class SystemServiceIT {
         Properties consumerProps = new Properties();
         if (isServiceRunning("localhost", 9083)) {
             // tag::BootstrapSetting1[]
-            consumerProps.put(
-            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-            "localhost:9094");
+            consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9094");
             // end::BootstrapSetting1[]
         } else {
             consumerProps.put(
-            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-            // tag::BootstrapSetting2[]
+                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                // tag::BootstrapSetting2[]
                 kafkaContainer.getBootstrapServers());
-            // end::BootstrapSetting2[]
+                // end::BootstrapSetting2[]
         }
-        consumerProps.put(
-            ConsumerConfig.GROUP_ID_CONFIG,
-                "system-load-status");
+        consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, "system-load-status");
         consumerProps.put(
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-                StringDeserializer.class.getName());
+            StringDeserializer.class.getName());
         // tag::valueDeserializer[]
         consumerProps.put(
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                SystemLoadDeserializer.class.getName());
+            SystemLoadDeserializer.class.getName());
         // end::valueDeserializer[]
-        consumerProps.put(
-            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,
-                "earliest");
+        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         // end::KafkaConsumerProps[]
         consumer = new KafkaConsumer<String, SystemLoad>(consumerProps);
         // tag::systemLoadTopic[]
@@ -177,7 +171,7 @@ public class SystemServiceIT {
     public void testCpuStatus() {
         // tag::poll[]
         ConsumerRecords<String, SystemLoad> records =
-                consumer.poll(Duration.ofMillis(30 * 1000));
+            consumer.poll(Duration.ofMillis(30 * 1000));
         // end::poll[]
         System.out.println("Polled " + records.count() + " records from Kafka:");
 

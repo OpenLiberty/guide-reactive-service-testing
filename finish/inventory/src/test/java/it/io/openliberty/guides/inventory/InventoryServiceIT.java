@@ -14,6 +14,9 @@ package it.io.openliberty.guides.inventory;
 import java.util.List;
 import java.net.Socket;
 import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.math.BigDecimal;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -116,10 +119,10 @@ public class InventoryServiceIT {
             urlPath = "http://localhost:9085";
             // end::urlPathSetup1[]
         } else {
+            System.out.println("Testing with mvn verify");
             kafkaContainer.start();
             inventoryContainer.withEnv(
-            "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
-            System.out.println("Testing with mvn verify");
+                "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
             inventoryContainer.start();
             // tag::urlPathSetup2[]
             urlPath = "http://"
@@ -139,23 +142,23 @@ public class InventoryServiceIT {
         if (isServiceRunning("localhost", 9085)) {
             // tag::BootstrapServerConfig[]
             producerProps.put(
-            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-            "localhost:9094");
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                "localhost:9094");
             // end::BootstrapServerConfig[]
         } else {
             // tag::BootstrapServerConfig2[]
             producerProps.put(
-            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 kafkaContainer.getBootstrapServers());
             // end::BootstrapServerConfig2[]
         }
 
         producerProps.put(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class.getName());
+            StringSerializer.class.getName());
         producerProps.put(
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                SystemLoadSerializer.class.getName());
+            SystemLoadSerializer.class.getName());
 
         producer = new KafkaProducer<String, SystemLoad>(producerProps);
         // end::KafkaProducerProps[]
@@ -185,22 +188,20 @@ public class InventoryServiceIT {
         // end::systemLoadMsg[]
         Thread.sleep(5000);
         Response response = client.getSystems();
-        Assertions.assertEquals(200, response.getStatus(),
-                "Response should be 200");
+        Assertions.assertEquals(200, response.getStatus(), "Response should be 200");
         List<Properties> systems =
-                response.readEntity(new GenericType<List<Properties>>() { });
+            response.readEntity(new GenericType<List<Properties>>() { });
         // tag::assert[]
-        Assertions.assertEquals(systems.size(), 1);
+        assertEquals(systems.size(), 1);
         // end::assert[]
         for (Properties system : systems) {
             // tag::assert2[]
-            Assertions.assertEquals(sl.hostname, system.get("hostname"),
-                    "Hostname doesn't match!");
+            assertEquals(sl.hostname, system.get("hostname"), "Hostname doesn't match!");
             // end::assert2[]
             BigDecimal systemLoad = (BigDecimal) system.get("systemLoad");
             // tag::assert3[]
-            Assertions.assertEquals(sl.loadAverage, systemLoad.doubleValue(),
-                    "CPU load doesn't match!");
+            assertEquals(sl.loadAverage, systemLoad.doubleValue(),
+                "CPU load doesn't match!");
             // end::assert3[]
         }
     }
