@@ -122,7 +122,8 @@ public class InventoryServiceIT {
             System.out.println("Testing with mvn verify");
             kafkaContainer.start();
             inventoryContainer.withEnv(
-                "mp.messaging.connector.liberty-kafka.bootstrap.servers", "kafka:19092");
+                "mp.messaging.connector.liberty-kafka.bootstrap.servers",
+                "kafka:19092");
             inventoryContainer.start();
             // tag::urlPathSetup2[]
             urlPath = "http://"
@@ -196,7 +197,8 @@ public class InventoryServiceIT {
         // end::assert[]
         for (Properties system : systems) {
             // tag::assert2[]
-            assertEquals(sl.hostname, system.get("hostname"), "Hostname doesn't match!");
+            assertEquals(sl.hostname, system.get("hostname"),
+                "Hostname doesn't match!");
             // end::assert2[]
             BigDecimal systemLoad = (BigDecimal) system.get("systemLoad");
             // tag::assert3[]
