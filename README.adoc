@@ -171,10 +171,25 @@ Navigate to the `start/system` directory.
 
 Run the following goal to start the `system` microservice in dev mode with container:
 
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
 [role='command']
 ```
 mvn liberty:devc
 ```
+--
+
+[.tab_content.mac_section.linux_section]
+--
+[role='command']
+```
+export TESTCONTAINERS_RYUK_DISABLED=true
+mvn liberty:devc
+```
+--
+
 
 After you see the following message, your Liberty instance is ready in dev mode:
 
@@ -261,10 +276,25 @@ After you are finished running tests, stop the Open Liberty server by pressing `
 
 If you aren't running in dev mode, you can run the tests by running the following command:
 
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
 [role='command']
 ```
+mvn liberty:devc
+```
+--
+
+[.tab_content.mac_section.linux_section]
+--
+[role='command']
+```
+export TESTCONTAINERS_RYUK_DISABLED=true
 mvn verify
 ```
+--
+
 
 You will see the following output:
 
@@ -297,10 +327,24 @@ Navigate to the `start/inventory` directory.
 
 Run the following goal to start the `inventory` microservice in dev mode with container:
 
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
 [role='command']
 ```
 mvn liberty:devc
 ```
+--
+
+[.tab_content.mac_section.linux_section]
+--
+[role='command']
+```
+export TESTCONTAINERS_RYUK_DISABLED=true
+mvn liberty:devc
+```
+--
 
 === Building test REST client
 
@@ -378,10 +422,24 @@ After you are finished running tests, stop the Open Liberty server by pressing `
 
 If you aren't running in dev mode, you can run the tests by running the following command:
 
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
 [role='command']
 ```
+mvn liberty:devc
+```
+--
+
+[.tab_content.mac_section.linux_section]
+--
+[role='command']
+```
+export TESTCONTAINERS_RYUK_DISABLED=true
 mvn verify
 ```
+--
 
 You will see the following output:
 
