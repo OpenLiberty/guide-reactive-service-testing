@@ -82,7 +82,7 @@ public class InventoryServiceIT {
             .withNetwork(network)
             .withExposedPorts(9085)
             .waitingFor(Wait.forHttp("/health/ready").forPort(9085))
-            .withStartupTimeout(Duration.ofMinutes(2))
+            .withStartupTimeout(Duration.ofMinutes(3))
             .withLogConsumer(new Slf4jLogConsumer(logger))
             .dependsOn(kafkaContainer);
 

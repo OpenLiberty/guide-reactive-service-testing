@@ -81,9 +81,11 @@ public class SystemServiceIT {
             // tag::network3[]
             .withNetwork(network)
             // end::network3[]
+            // tag::systemPortExpose[]
             .withExposedPorts(9083)
+            // end::systemPortExpose[]
             .waitingFor(Wait.forHttp("/health/ready").forPort(9083))
-            .withStartupTimeout(Duration.ofMinutes(2))
+            .withStartupTimeout(Duration.ofMinutes(3))
             .withLogConsumer(new Slf4jLogConsumer(logger))
             // tag::dependsOn[]
             .dependsOn(kafkaContainer);
