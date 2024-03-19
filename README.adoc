@@ -264,7 +264,7 @@ endif::[]
 [role="code_command hotspot file=0", subs="quotes"]
 ----
 #Create the `SystemServiceIT` class.#
-`src/test/java/it/io/openliberty/guides/system/SystemServiceIT.java`
+`system/src/test/java/it/io/openliberty/guides/system/SystemServiceIT.java`
 ----
 
 //File 0
@@ -419,7 +419,7 @@ Create a REST client interface to access the `inventory` microservice.
 [role="code_command hotspot file=3", subs="quotes"]
 ----
 #Create the `InventoryResourceClient` class.#
-`src/test/java/it/io/openliberty/guides/inventory/InventoryResourceClient.java`
+`inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryResourceClient.java`
 ----
 
 The `InventoryResourceClient` interface declares the [hotspot=getSystems file=3]`getSystems()` and [hotspot=resetSystems file=3]`resetSystems()` methods for accessing the corresponding endpoints within the `inventory` microservice.
@@ -459,7 +459,7 @@ Now you can start writing the test by using Testcontainers.
 [role="code_command hotspot file=0", subs="quotes"]
 ----
 #Create the `InventoryServiceIT` class.#
-`src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java`
+`inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryServiceIT.java`
 ----
 
 The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class uses the [hotspot=KafkaProducer hotspot=KafkaProducer2 file=0]`KafkaProducer` client API to generate messages in the test environment, which are then consumed by the `inventory` microservice container.
