@@ -332,24 +332,10 @@ After you are finished running tests, stop the Open Liberty server by pressing `
 
 If you aren't running in dev mode, you can run the tests by running the following command:
 
-include::{common-includes}/os-tabs.adoc[]
-
-[.tab_content.windows_section]
---
 [role='command']
 ```
-mvn liberty:devc
+mvn clean verify
 ```
---
-
-[.tab_content.mac_section.linux_section]
---
-[role='command']
-```
-mvn verify
-```
---
-
 
 You will see the following output:
 
@@ -488,23 +474,10 @@ After you are finished running tests, stop the Open Liberty server by pressing `
 
 If you aren't running in dev mode, you can run the tests by running the following command:
 
-include::{common-includes}/os-tabs.adoc[]
-
-[.tab_content.windows_section]
---
 [role='command']
 ```
-mvn liberty:devc
+mvn clean verify
 ```
---
-
-[.tab_content.mac_section.linux_section]
---
-[role='command']
-```
-mvn verify
-```
---
 
 You will see the following output:
 
