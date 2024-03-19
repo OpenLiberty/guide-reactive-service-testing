@@ -50,14 +50,12 @@ You need to have Docker installed. For installation instructions, refer to the o
 include::{common-includes}/gitclone.adoc[]
 
 ifdef::cloud-hosted[]
-In this IBM Cloud environment, you need to change the user home to ***/home/project*** directory and pre-create the ***logs*** directory by running the following command:
+In this IBM Cloud environment, you need to change the user home to ***/home/project*** by running the following command:
 ```bash
 sudo usermod -d /home/project theia
-mkdir -p /home/project/guide-reactive-service-testing/start/target/liberty/wlp/usr/servers/defaultServer/logs
-chmod 777 /home/project/guide-reactive-service-testing/start/target/liberty/wlp/usr/servers/defaultServer/logs
 ```
-
 endif::[]
+
 
 === Try what you'll build
 
@@ -204,6 +202,12 @@ Navigate to the `start/system` directory.
 ifdef::cloud-hosted[]
 ```bash
 cd /home/project/guide-reactive-service-testing/start/system
+```
+
+In this IBM Cloud environment, you need to pre-create the ***logs*** directory by running the following commands:
+```bash
+mkdir -p /home/project/guide-reactive-service-testing/start/system/target/liberty/wlp/usr/servers/defaultServer/logs
+chmod 777 /home/project/guide-reactive-service-testing/start/system/target/liberty/wlp/usr/servers/defaultServer/logs
 ```
 endif::[]
 
@@ -375,6 +379,12 @@ Navigate to the `start/inventory` directory.
 ifdef::cloud-hosted[]
 ```bash
 cd /home/project/guide-reactive-service-testing/start/inventory
+```
+
+Pre-create the ***logs*** directory by running the following commands:
+```bash
+mkdir -p /home/project/guide-reactive-service-testing/start/inventory/target/liberty/wlp/usr/servers/defaultServer/logs
+chmod 777 /home/project/guide-reactive-service-testing/start/inventory/target/liberty/wlp/usr/servers/defaultServer/logs
 ```
 endif::[]
 
