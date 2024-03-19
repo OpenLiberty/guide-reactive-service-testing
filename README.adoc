@@ -257,6 +257,10 @@ The `system` microservice actively seeks a Kafka topic for message push operatio
 
 Now you can start writing the test by using Testcontainers.
 
+ifdef::cloud-hosted[]
+Open another command-line session by selecting **Terminal** > **New Terminal** from the menu of the IDE.
+endif::[]
+
 [role="code_command hotspot file=0", subs="quotes"]
 ----
 #Create the `SystemServiceIT` class.#
