@@ -195,7 +195,6 @@ include::{common-includes}/os-tabs.adoc[]
 ```
 --
 
-To launch the `system` microservice in dev mode with container, configure the container by specifying the options within [hotspot=devc_config file=0]`<containerRunOpts>` configuration for connecting to the [hotspot=reactive-app file=0]`reactive-app` network and exposing the container port.
 
 Navigate to the `start/system` directory.
 
@@ -210,6 +209,8 @@ mkdir -p /home/project/guide-reactive-service-testing/start/system/target/libert
 chmod 777 /home/project/guide-reactive-service-testing/start/system/target/liberty/wlp/usr/servers/defaultServer/logs
 ```
 endif::[]
+
+To launch the `system` microservice in dev mode with container, configure the container by specifying the options within [hotspot=devc_config file=0]`<containerRunOpts>` configuration for connecting to the [hotspot=reactive-app file=0]`reactive-app` network and exposing the container port.
 
 Run the following goal to start the `system` microservice in dev mode with container:
 
