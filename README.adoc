@@ -346,7 +346,6 @@ mvn liberty:devc
 --
 [role='command']
 ```
-export TESTCONTAINERS_RYUK_DISABLED=true
 mvn verify
 ```
 --
@@ -409,7 +408,6 @@ mvn liberty:devc
 --
 [role='command']
 ```
-export TESTCONTAINERS_RYUK_DISABLED=true
 mvn liberty:devc
 ```
 --
@@ -504,7 +502,6 @@ mvn liberty:devc
 --
 [role='command']
 ```
-export TESTCONTAINERS_RYUK_DISABLED=true
 mvn verify
 ```
 --
