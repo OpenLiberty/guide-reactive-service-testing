@@ -506,6 +506,7 @@ You will see the following output:
 
 When you're finished trying out the microservice, you can stop the local Kafka container by running the following command in `start` directory:
 
+ifndef::cloud-hosted[]
 include::{common-includes}/os-tabs.adoc[]
 
 [.tab_content.windows_section]
@@ -523,6 +524,14 @@ include::{common-includes}/os-tabs.adoc[]
 ./scripts/stopKafka.sh
 ```
 --
+endif::[]
+
+ifdef::cloud-hosted[]
+```bash
+cd /home/project/guide-reactive-service-testing/start
+./scripts/stopKafka.sh
+```
+endif::[]
 
 
 == Great work! You're done!
