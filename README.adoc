@@ -295,7 +295,7 @@ Dockerfile
 include::finish/system/Dockerfile[]
 ----
 
-Construct the [hotspot=buildSystemImage file=0]`systemImage` using the `ImageFromDockerfile` class, which allows Testcontainers to build the Docker image from a Dockerfile during the test runtime. For instance, the provided Dockerfile at the specified paths [hotspot file=3]`./Dockerfile` is used to generate the `system:1.0-SNAPSHOT` image.
+Construct the [hotspot=buildSystemImage file=0]`systemImage` by using the `ImageFromDockerfile` class, which allows Testcontainers to build the Docker image from a Dockerfile during the test run time. For instance, the provided Dockerfile at the specified [hotspot file=3]`./Dockerfile` paths is used to generate the `system:1.0-SNAPSHOT` image.
 
 Use the [hotspot=kafkaContainer file=0]`kafkaContainer` class to instantiate the `kafkaContainer` test container, initiating the `confluentinc/cp-kafka:latest` Docker image. Similarly, use the `GenericContainer` class to create the [hotspot=systemContainer file=0]`systemContainer` test container, starting the `system:1.0-SNAPSHOT` Docker image.
  
