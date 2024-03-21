@@ -232,7 +232,7 @@ export TESTCONTAINERS_RYUK_DISABLED=true
 mvn liberty:devc
 ```
 
-Read the https://java.testcontainers.org/features/configuration/#disabling-ryuk[Testcontainers custom configuration^] document for disabling Ryuk.
+For more information about disabling Ryuk, see the https://java.testcontainers.org/features/configuration/#disabling-ryuk[Testcontainers custom configuration^] document.
 --
 
 
