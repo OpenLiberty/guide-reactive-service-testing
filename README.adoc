@@ -253,7 +253,7 @@ https://openliberty.io/docs/latest/development-mode.html[Dev mode^] holds your c
 
 The `system` microservice actively seeks a Kafka topic for message push operations. After the Kafka service starts, the `system` microservice connects to the Kafka message broker by using the [hotspot=kafkaConfig file=2]`mp.messaging.connector.liberty-kafka.bootstrap.servers` property. When you run your app in dev mode with container support, the running `system` container exposes its service on the [hotspot=systemPortExpose file=4]`9083` port for testing purposes.
 
-=== Implementing tests for the system microservice
+=== Testing the system microservice
 
 Now you can start writing the test by using Testcontainers.
 
