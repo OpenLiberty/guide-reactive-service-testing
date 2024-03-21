@@ -378,7 +378,7 @@ chmod 777 /home/project/guide-reactive-service-testing/start/inventory/target/li
 ```
 endif::[]
 
-Run the following goal to start the `inventory` microservice in dev mode with container:
+Run the following goal to start the `inventory` microservice in dev mode with container support:
 
 include::{common-includes}/os-tabs.adoc[]
 
