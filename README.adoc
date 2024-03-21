@@ -398,7 +398,7 @@ mvn liberty:devc
 ```
 --
 
-=== Building test REST client
+=== Building a test REST client
 
 Create a REST client interface to access the `inventory` microservice.
 
