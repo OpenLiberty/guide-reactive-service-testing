@@ -456,7 +456,7 @@ The [hotspot=InventoryServiceIT file=0]`InventoryServiceIT` class uses the [hots
 
 Similar to `system` microservice testing, the configuration of the producer [hotspot=BootstrapServerConfig hotspot=BootstrapServerConfig2 file=0]`BOOTSTRAP_SERVERS_CONFIG` property depends on whether a local `inventory` microservice container is detected. In addition, the producer is configured with a custom serializer provided in the [hotspot=SystemLoadSerializer file=1]`SystemLoad` class.
 
-The [hotspot=testCpuUsage file=0]`testCpuUsage` test method uses the [hotspot=systemLoadMsg file=0]`producer.send()` method, using the `KafkaProducer` client API, to generate the `Systemload` message. Subsequently, it uses [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`Assertions` to verify that the response from the `inventory` microservice aligns with the expected outcome.
+The [hotspot=testCpuUsage file=0]`testCpuUsage` test method uses the [hotspot=systemLoadMsg file=0]`producer.send()` method, using the `KafkaProducer` client API, to generate the `Systemload` message. Then, it uses [hotspot=assert hotspot=assert2 hotspot=assert3 file=0]`Assertions` to verify that the response from the `inventory` microservice aligns with the expected outcome.
 
 [role='command']
 include::{common-includes}/devmode-test.adoc[]
