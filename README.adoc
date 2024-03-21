@@ -175,7 +175,7 @@ mvn -pl models install
 
 === Launching the system microservice in dev mode with container support
 
-Initiate the microservices in dev mode by executing the following command to launch a Kafka instance replicating the production environment. The `startKafka` script will launch a local Kafka container and establish a [hotspot=dockerNetworkSetup file=3]`reactive-app` network that allows the `system` and `inventory` microservices to connect to the Kafka message broker.
+Start the microservices in dev mode by running the following command to launch a Kafka instance that replicates the production environment. The `startKafka` script launches a local Kafka container. It also establishes a [hotspot=dockerNetworkSetup file=3]`reactive-app` network that allows the `system` and `inventory` microservices to connect to the Kafka message broker.
 
 include::{common-includes}/os-tabs.adoc[]
 
