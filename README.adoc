@@ -299,7 +299,7 @@ Construct the [hotspot=buildSystemImage file=0]`systemImage` by using the `Image
 
 Use the [hotspot=kafkaContainer file=0]`kafkaContainer` class to instantiate the `kafkaContainer` test container, initiating the `confluentinc/cp-kafka:latest` Docker image. Similarly, use the `GenericContainer` class to create the [hotspot=systemContainer file=0]`systemContainer` test container, starting the `system:1.0-SNAPSHOT` Docker image.
  
-The [hotspot=withListener file=0]`withListener()` is configured to `kafka:19092`, as the containerized `system` microservice functions as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For further details on using an additional consumer or producer with Kafka container, see the https://java.testcontainers.org/modules/kafka/[official Kafka test container documentation^]
+The [hotspot=withListener file=0]`withListener()` is configured to `kafka:19092`, as the containerized `system` microservice functions as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For more information about using an additional consumer or producer with a Kafka container, see the https://java.testcontainers.org/modules/kafka/[Testcontainers Kafka documentation^]
 
 Because containers are isolated by default, facilitating communication between the `kafkaContainer` and the `systemContainer` requires placing them on the same [hotspot=network1 hotspot=network2 hotspot=network3 file=0]`network`. The [hotspot=dependsOn file=0]`dependsOn()` method is used to indicate that the `system` microservice container starts only after ensuring the readiness of the Kafka container. 
 
