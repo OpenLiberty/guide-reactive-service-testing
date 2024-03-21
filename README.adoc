@@ -301,7 +301,7 @@ Use the [hotspot=kafkaContainer file=0]`kafkaContainer` class to instantiate the
  
 It's important to note that [hotspot=withListener file=0]`withListener()` has been configured to `kafka:19092`, as the containerized `system` microservice will function as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For further details on using additional consumer or producer with Kafka container, please visit https://java.testcontainers.org/modules/kafka/[official Kafka Test Container Documentation^]
 
-Given that containers are isolated by default, facilitating communication between the `kafkaContainer` and the `systemContainer` requires placing them on the same [hotspot=network1 hotspot=network2 hotspot=network3 file=0]`network`. The [hotspot=dependsOn file=0]`dependsOn()` method is used to indicate that the `system` microservice container should commence only after ensuring the readiness of the kafka container. 
+Because containers are isolated by default, facilitating communication between the `kafkaContainer` and the `systemContainer` requires placing them on the same [hotspot=network1 hotspot=network2 hotspot=network3 file=0]`network`. The [hotspot=dependsOn file=0]`dependsOn()` method is used to indicate that the `system` microservice container starts only after ensuring the readiness of the Kafka container. 
 
 Prior to initiating the `systemContainer`, it is imperative to override the `mp.messaging.connector.liberty-kafka.bootstrap.servers` property with `kafka:19092` using the [hotspot=bootstrapServerSetup file=0]`withEnv()` method. This step is necessary due to the establishment of a listener in the Kafka container, configured to handle an additional producer.
 
