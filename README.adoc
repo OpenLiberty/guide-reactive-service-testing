@@ -504,7 +504,7 @@ You will see the following output:
 ```
 
 
-When you're finished trying out the microservice, you can stop the local Kafka container by running the following command in `start` directory:
+When you're finished trying out the microservice, you can stop the local Kafka container by running the following command from the `start` directory:
 
 ifndef::cloud-hosted[]
 include::{common-includes}/os-tabs.adoc[]
