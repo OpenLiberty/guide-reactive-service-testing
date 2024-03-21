@@ -422,7 +422,7 @@ include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/Inven
 The `InventoryResourceClient` interface declares the [hotspot=getSystems file=0]`getSystems()` and [hotspot=resetSystems file=0]`resetSystems()` methods for accessing the corresponding endpoints within the `inventory` microservice.
 
 
-=== Implementing tests for the inventory microservice
+=== Testing the inventory microservice
 
 Now you can start writing the test by using Testcontainers.
 
