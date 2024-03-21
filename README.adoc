@@ -164,7 +164,7 @@ cd /home/project/guide-reactive-service-testing/start
 ```
 endif::[]
 
-The example reactive application consists of the `system` and `inventory` microservices. The `system` microservice produces messages to the Kafka message broker, and the `inventory` microservice consumes messages from the Kafka message broker. You will write integration tests to see how you can use the Kafka consumer and producer client APIs to test each service. Kafka Testcontainers and JUnit are already included as required test dependencies in your Maven `pom.xml` files for the [hotspot=dependencies file=0]`system` and [hotspot=dependencies file=1]`inventory` microservices.
+The example reactive application consists of the `system` and `inventory` microservices. The `system` microservice produces messages to the Kafka message broker, and the `inventory` microservice consumes messages from the Kafka message broker. You will write integration tests to see how you can use the Kafka consumer and producer client APIs to test each service. Kafka test containers, Testcontainers, and JUnit are already included as required test dependencies in your Maven `pom.xml` files for the [hotspot=dependencies file=0]`system` and [hotspot=dependencies file=1]`inventory` microservices.
 
 The `start` directory contains three directories: the `system` microservice directory, the `inventory` microservice directory, and the `models` directory. The `models` directory contains the model class that defines the structure of the system load data that is used in the application. Run the following Maven goal to install the packaged `models` artifact to the local Maven repository so it can be used later by the `system` and `inventory` microservices:
 
