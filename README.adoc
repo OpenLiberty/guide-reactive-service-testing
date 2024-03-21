@@ -212,7 +212,7 @@ endif::[]
 
 To launch the `system` microservice in dev mode with container support, configure the container by specifying the options within the [hotspot=devc_config file=0]`<containerRunOpts>` element to connect to the [hotspot=reactive-app file=0]`reactive-app` network and expose the container port.
 
-Run the following goal to start the `system` microservice in dev mode with container:
+Run the following goal to start the `system` microservice in dev mode with container support:
 
 include::{common-includes}/os-tabs.adoc[]
 
