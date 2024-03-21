@@ -210,7 +210,7 @@ chmod 777 /home/project/guide-reactive-service-testing/start/system/target/liber
 ```
 endif::[]
 
-To launch the `system` microservice in dev mode with container, configure the container by specifying the options within [hotspot=devc_config file=0]`<containerRunOpts>` configuration for connecting to the [hotspot=reactive-app file=0]`reactive-app` network and exposing the container port.
+To launch the `system` microservice in dev mode with container support, configure the container by specifying the options within the [hotspot=devc_config file=0]`<containerRunOpts>` element to connect to the [hotspot=reactive-app file=0]`reactive-app` network and expose the container port.
 
 Run the following goal to start the `system` microservice in dev mode with container:
 
