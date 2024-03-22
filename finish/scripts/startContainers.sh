@@ -16,7 +16,7 @@ docker run -d \
     --network=$NETWORK \
     --name=kafka \
     --rm \
-    bitnami/kafka:latest &
+    bitnami/kafka:latest
 
 echo "Waiting until Kafka is ready..."
 sleep 15
