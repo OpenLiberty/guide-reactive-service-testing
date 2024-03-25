@@ -1,20 +1,39 @@
 // tag::copyright[]
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - Initial implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 // end::copyright[]
 package it.io.openliberty.guides.system;
 
-import static org.junit.Assert.assertNotNull;
-
+import java.net.Socket;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.Properties;
+import java.nio.file.Paths;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.containers.Network;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.utility.DockerImageName;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -22,39 +41,141 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 // tag::KafkaConsumer[]
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 // end::KafkaConsumer[]
-import org.junit.jupiter.api.Test;
-import org.microshed.testing.SharedContainerConfig;
-import org.microshed.testing.jupiter.MicroShedTest;
-import org.microshed.testing.kafka.KafkaConsumerClient;
+import org.apache.kafka.common.serialization.StringDeserializer;
 
 import io.openliberty.guides.models.SystemLoad;
 import io.openliberty.guides.models.SystemLoad.SystemLoadDeserializer;
 
-@MicroShedTest
-@SharedContainerConfig(AppContainerConfig.class)
+@Testcontainers
 public class SystemServiceIT {
 
-    // tag::KafkaConsumer2[]
-    // tag::KafkaConsumerClient[]
-    // tag::valueDeserializer[]
-    @KafkaConsumerClient(valueDeserializer = SystemLoadDeserializer.class,
-    // end::valueDeserializer[]
-                         groupId = "system-load-status",
-                         // tag::systemLoadTopic[]
-                         topics = "system.load",
-                         // end::systemLoadTopic[]
-                         properties = ConsumerConfig.AUTO_OFFSET_RESET_CONFIG
-                                      + "=earliest")
-    // end::KafkaConsumerClient[]
+    private static Logger logger = LoggerFactory.getLogger(SystemServiceIT.class);
+    // tag::network1[]
+    private static Network network = Network.newNetwork();
+    // end::network1[]
+
+    // tag::KafkaConsumerUsage[]
     public static KafkaConsumer<String, SystemLoad> consumer;
-    // end::KafkaConsumer2[]
+    // end::KafkaConsumerUsage[]
+
+    // tag::buildSystemImage[]
+    private static ImageFromDockerfile systemImage =
+        new ImageFromDockerfile("system:1.0-SNAPSHOT")
+            .withDockerfile(Paths.get("./Dockerfile"));
+    // end::buildSystemImage[]
+
+    // tag::kafkaContainer[]
+    private static KafkaContainer kafkaContainer = new KafkaContainer(
+        DockerImageName.parse("confluentinc/cp-kafka:latest"))
+            // tag::withListener[]
+            .withListener(() -> "kafka:19092")
+            // end::withListener[]
+            // tag::network2[]
+            .withNetwork(network);
+            // end::network2[]
+    // end::kafkaContainer[]
+
+    // tag::systemContainer[]
+    private static GenericContainer<?> systemContainer =
+        new GenericContainer(systemImage)
+            // tag::network3[]
+            .withNetwork(network)
+            // end::network3[]
+            // tag::systemPortExpose[]
+            .withExposedPorts(9083)
+            // end::systemPortExpose[]
+            .waitingFor(Wait.forHttp("/health/ready").forPort(9083))
+            .withStartupTimeout(Duration.ofMinutes(3))
+            .withLogConsumer(new Slf4jLogConsumer(logger))
+            // tag::dependsOn[]
+            .dependsOn(kafkaContainer);
+            // end::dependsOn[]
+    // end::systemContainer[]
+
+    // tag::isServiceRunning[]
+    private static boolean isServiceRunning(String host, int port) {
+        try {
+            Socket socket = new Socket(host, port);
+            socket.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    // end::isServiceRunning[]
+
+    @BeforeAll
+    public static void startContainers() {
+        if (isServiceRunning("localhost", 9083)) {
+            System.out.println("Testing with mvn liberty:devc");
+        } else {
+            kafkaContainer.start();
+            // tag::bootstrapServerSetup[]
+            systemContainer.withEnv(
+                "mp.messaging.connector.liberty-kafka.bootstrap.servers",
+                "kafka:19092");
+            // end::bootstrapServerSetup[]
+            systemContainer.start();
+            System.out.println("Testing with mvn verify");
+        }
+    }
+
+    @BeforeEach
+    public void createKafkaConsumer() {
+        // tag::KafkaConsumer2[]
+        // tag::KafkaConsumerProps[]
+        Properties consumerProps = new Properties();
+        if (isServiceRunning("localhost", 9083)) {
+            // tag::BootstrapSetting1[]
+            consumerProps.put(
+                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                "localhost:9094");
+            // end::BootstrapSetting1[]
+        } else {
+            consumerProps.put(
+                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                // tag::BootstrapSetting2[]
+                kafkaContainer.getBootstrapServers());
+                // end::BootstrapSetting2[]
+        }
+        consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, "system-load-status");
+        consumerProps.put(
+            ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+            StringDeserializer.class.getName());
+        // tag::valueDeserializer[]
+        consumerProps.put(
+            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+            SystemLoadDeserializer.class.getName());
+        // end::valueDeserializer[]
+        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        // end::KafkaConsumerProps[]
+        consumer = new KafkaConsumer<String, SystemLoad>(consumerProps);
+        // tag::systemLoadTopic[]
+        consumer.subscribe(Collections.singletonList("system.load"));
+        // end::systemLoadTopic[]
+        // end::KafkaConsumer2[]
+    }
+
+    @AfterAll
+    public static void stopContainers() {
+        systemContainer.stop();
+        kafkaContainer.stop();
+        if (network != null) {
+            network.close();
+        }
+    }
+
+    @AfterEach
+    public void closeKafkaConsumer() {
+        consumer.close();
+    }
 
     // tag::testCpuStatus[]
     @Test
     public void testCpuStatus() {
         // tag::poll[]
         ConsumerRecords<String, SystemLoad> records =
-                consumer.poll(Duration.ofMillis(30 * 1000));
+            consumer.poll(Duration.ofMillis(30 * 1000));
         // end::poll[]
         System.out.println("Polled " + records.count() + " records from Kafka:");
 
@@ -66,7 +187,6 @@ public class SystemServiceIT {
             assertNotNull(sl.loadAverage);
             // end::assert[]
         }
-
         consumer.commitAsync();
     }
     // end::testCpuStatus[]
