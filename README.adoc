@@ -1,4 +1,4 @@
-//  Copyright (c) 2020, 2024 IBM Corporation and others.
+//  Copyright (c) 2020, 2025 IBM Corporation and others.
 // Licensed under Creative Commons Attribution-NoDerivatives
 // 4.0 International (CC BY-ND 4.0)
 //   https://creativecommons.org/licenses/by-nd/4.0/
@@ -84,7 +84,17 @@ mvn verify
 ```
 --
 
-[.tab_content.mac_section.linux_section]
+[.tab_content.mac_section]
+--
+[role='command']
+```
+export TESTCONTAINERS_RYUK_DISABLED=true
+cd system
+mvn verify
+```
+--
+
+[.tab_content.linux_section]
 --
 [role='command']
 ```
@@ -187,7 +197,7 @@ include::{common-includes}/os-tabs.adoc[]
 ```
 --
 
-[.tab_content.mac_section.linux_section]
+[.tab_content.mac_section]
 --
 [role='command']
 ```
@@ -195,6 +205,13 @@ include::{common-includes}/os-tabs.adoc[]
 ```
 --
 
+[.tab_content.linux_section]
+--
+[role='command']
+```
+./scripts/startKafka.sh
+```
+--
 
 Navigate to the `start/system` directory.
 
@@ -224,7 +241,7 @@ mvn liberty:devc
 ```
 --
 
-[.tab_content.mac_section.linux_section]
+[.tab_content.mac_section]
 --
 [role='command']
 ```
@@ -235,6 +252,16 @@ mvn liberty:devc
 For more information about disabling Ryuk, see the https://java.testcontainers.org/features/configuration/#disabling-ryuk[Testcontainers custom configuration^] document.
 --
 
+[.tab_content.linux_section]
+--
+[role='command']
+```
+export TESTCONTAINERS_RYUK_DISABLED=true
+mvn liberty:devc
+```
+
+For more information about disabling Ryuk, see the https://java.testcontainers.org/features/configuration/#disabling-ryuk[Testcontainers custom configuration^] document.
+--
 
 After you see the following message, your Liberty instance is ready in dev mode:
 
@@ -390,7 +417,15 @@ mvn liberty:devc
 ```
 --
 
-[.tab_content.mac_section.linux_section]
+[.tab_content.mac_section]
+--
+[role='command']
+```
+mvn liberty:devc
+```
+--
+
+[.tab_content.linux_section]
 --
 [role='command']
 ```
