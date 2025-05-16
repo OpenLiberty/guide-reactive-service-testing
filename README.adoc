@@ -63,13 +63,32 @@ The `finish` directory in the root of this guide contains the finished applicati
 
 To try out the tests, go to the `finish` directory and run the following Maven goal to install the `models` artifact to the local Maven repository:
 
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
 [role='command']
 ```
-cd finish
-mvn -pl models install
+mvnw.cmd -pl models install
+
 ```
+--
 
+[.tab_content.mac_section]
+--
+[role='command']
+```
+./mvnw -pl models install
+```
+--
 
+[.tab_content.linux_section]
+--
+[role='command']
+```
+./mvnw -pl models install
+```
+--
 
 Next, navigate to the `finish/system` directory and run the following Maven goal to build the `system` microservice and run the integration tests on an Open Liberty server in a container:
 
@@ -80,7 +99,7 @@ include::{common-includes}/os-tabs.adoc[]
 [role='command']
 ```
 cd system
-mvn verify
+mvnw.cmd verify
 ```
 --
 
@@ -90,7 +109,7 @@ mvn verify
 ```
 export TESTCONTAINERS_RYUK_DISABLED=true
 cd system
-mvn verify
+./mvnw verify
 ```
 --
 
@@ -100,7 +119,7 @@ mvn verify
 ```
 export TESTCONTAINERS_RYUK_DISABLED=true
 cd system
-mvn verify
+./mvnw verify
 ```
 --
 
@@ -178,10 +197,32 @@ The example reactive application consists of the `system` and `inventory` micros
 
 The `start` directory contains three directories: the `system` microservice directory, the `inventory` microservice directory, and the `models` directory. The `models` directory contains the model class that defines the structure of the system load data that is used in the application. Run the following Maven goal to install the packaged `models` artifact to the local Maven repository so it can be used later by the `system` and `inventory` microservices:
 
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
 [role='command']
 ```
-mvn -pl models install
+mvnw.cmd -pl models install
+
 ```
+--
+
+[.tab_content.mac_section]
+--
+[role='command']
+```
+./mvnw -pl models install
+```
+--
+
+[.tab_content.linux_section]
+--
+[role='command']
+```
+./mvnw -pl models install
+```
+--
 
 === Launching the system microservice in dev mode with container support
 
@@ -359,10 +400,31 @@ After you are finished running tests, stop the Open Liberty server by pressing `
 
 If you aren't running in dev mode, you can run the tests by running the following command:
 
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
 [role='command']
 ```
-mvn clean verify
+mvnw.cmd clean verify
 ```
+--
+
+[.tab_content.mac_section]
+--
+[role='command']
+```
+./mvnw clean verify
+```
+--
+
+[.tab_content.linux_section]
+--
+[role='command']
+```
+./mvnw clean verify
+```
+--
 
 You will see the following output:
 
@@ -513,10 +575,31 @@ After you are finished running tests, stop the Open Liberty server by pressing `
 
 If you aren't running in dev mode, you can run the tests by running the following command:
 
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
 [role='command']
 ```
-mvn clean verify
+mvnw.cmd clean verify
 ```
+--
+
+[.tab_content.mac_section]
+--
+[role='command']
+```
+./mvnw clean verify
+```
+--
+
+[.tab_content.linux_section]
+--
+[role='command']
+```
+./mvnw clean verify
+```
+--
 
 You will see the following output:
 
