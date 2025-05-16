@@ -237,7 +237,7 @@ include::{common-includes}/os-tabs.adoc[]
 --
 [role='command']
 ```
-mvn liberty:devc
+mvnw.cmd liberty:devc
 ```
 --
 
@@ -246,7 +246,7 @@ mvn liberty:devc
 [role='command']
 ```
 export TESTCONTAINERS_RYUK_DISABLED=true
-mvn liberty:devc
+./mvnw liberty:devc
 ```
 
 For more information about disabling Ryuk, see the https://java.testcontainers.org/features/configuration/#disabling-ryuk[Testcontainers custom configuration^] document.
@@ -257,7 +257,7 @@ For more information about disabling Ryuk, see the https://java.testcontainers.o
 [role='command']
 ```
 export TESTCONTAINERS_RYUK_DISABLED=true
-mvn liberty:devc
+./mvnw liberty:devc
 ```
 
 For more information about disabling Ryuk, see the https://java.testcontainers.org/features/configuration/#disabling-ryuk[Testcontainers custom configuration^] document.
@@ -413,7 +413,7 @@ include::{common-includes}/os-tabs.adoc[]
 --
 [role='command']
 ```
-mvn liberty:devc
+mvnw.cmd liberty:devc
 ```
 --
 
@@ -421,7 +421,7 @@ mvn liberty:devc
 --
 [role='command']
 ```
-mvn liberty:devc
+./mvnw liberty:devc
 ```
 --
 
@@ -429,7 +429,7 @@ mvn liberty:devc
 --
 [role='command']
 ```
-mvn liberty:devc
+./mvnw liberty:devc
 ```
 --
 
