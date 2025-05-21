@@ -90,7 +90,7 @@ mvnw.cmd -pl models install
 ```
 --
 
-Next, navigate to the `finish/system` directory and run the following Maven goal to build the `system` microservice and run the integration tests on an Open Liberty server in a container:
+Next, navigate to the `finish` directory and run the following Maven goal to build the `system` microservice and run the integration tests on an Open Liberty server in a container:
 
 include::{common-includes}/os-tabs.adoc[]
 
@@ -98,8 +98,7 @@ include::{common-includes}/os-tabs.adoc[]
 --
 [role='command']
 ```
-cd system
-mvnw.cmd verify
+mvnw.cmd -pl system verify
 ```
 --
 
@@ -108,8 +107,7 @@ mvnw.cmd verify
 [role='command']
 ```
 export TESTCONTAINERS_RYUK_DISABLED=true
-cd system
-./mvnw verify
+./mvnw -pl system verify
 ```
 --
 
@@ -118,8 +116,7 @@ cd system
 [role='command']
 ```
 export TESTCONTAINERS_RYUK_DISABLED=true
-cd system
-./mvnw verify
+./mvnw -pl system verify
 ```
 --
 
@@ -254,11 +251,11 @@ include::{common-includes}/os-tabs.adoc[]
 ```
 --
 
-Navigate to the `start/system` directory.
+Navigate to the `start` directory.
 
 ifdef::cloud-hosted[]
 ```bash
-cd /home/project/guide-reactive-service-testing/start/system
+cd /home/project/guide-reactive-service-testing/start
 ```
 
 In this IBM Cloud environment, you must first create the ***logs*** directory by running the following commands:
@@ -278,7 +275,7 @@ include::{common-includes}/os-tabs.adoc[]
 --
 [role='command']
 ```
-mvnw.cmd liberty:devc
+mvnw.cmd -pl system liberty:devc
 ```
 --
 
@@ -287,7 +284,7 @@ mvnw.cmd liberty:devc
 [role='command']
 ```
 export TESTCONTAINERS_RYUK_DISABLED=true
-./mvnw liberty:devc
+./mvnw -pl system liberty:devc
 ```
 
 For more information about disabling Ryuk, see the https://java.testcontainers.org/features/configuration/#disabling-ryuk[Testcontainers custom configuration^] document.
@@ -298,7 +295,7 @@ For more information about disabling Ryuk, see the https://java.testcontainers.o
 [role='command']
 ```
 export TESTCONTAINERS_RYUK_DISABLED=true
-./mvnw liberty:devc
+./mvnw -pl system liberty:devc
 ```
 
 For more information about disabling Ryuk, see the https://java.testcontainers.org/features/configuration/#disabling-ryuk[Testcontainers custom configuration^] document.
@@ -406,7 +403,7 @@ include::{common-includes}/os-tabs.adoc[]
 --
 [role='command']
 ```
-mvnw.cmd clean verify
+mvnw.cmd -pl system clean verify
 ```
 --
 
@@ -414,7 +411,7 @@ mvnw.cmd clean verify
 --
 [role='command']
 ```
-./mvnw clean verify
+./mvnw -pl system clean verify
 ```
 --
 
@@ -422,7 +419,7 @@ mvnw.cmd clean verify
 --
 [role='command']
 ```
-./mvnw clean verify
+./mvnw -pl system clean verify
 ```
 --
 
@@ -453,11 +450,11 @@ The `inventory` microservice is tested in the same way as the `system` microserv
 
 === Launching the inventory microservice in dev mode with container
 
-Navigate to the `start/inventory` directory.
+Navigate to the `start` directory.
 
 ifdef::cloud-hosted[]
 ```bash
-cd /home/project/guide-reactive-service-testing/start/inventory
+cd /home/project/guide-reactive-service-testing/start
 ```
 
 First, create the ***logs*** directory by running the following commands:
@@ -475,7 +472,7 @@ include::{common-includes}/os-tabs.adoc[]
 --
 [role='command']
 ```
-mvnw.cmd liberty:devc
+mvnw.cmd -pl inventory liberty:devc
 ```
 --
 
@@ -483,7 +480,7 @@ mvnw.cmd liberty:devc
 --
 [role='command']
 ```
-./mvnw liberty:devc
+./mvnw -pl inventory liberty:devc
 ```
 --
 
@@ -491,7 +488,7 @@ mvnw.cmd liberty:devc
 --
 [role='command']
 ```
-./mvnw liberty:devc
+./mvnw -pl inventory liberty:devc
 ```
 --
 
@@ -581,7 +578,7 @@ include::{common-includes}/os-tabs.adoc[]
 --
 [role='command']
 ```
-mvnw.cmd clean verify
+mvnw.cmd -pl inventory clean verify
 ```
 --
 
@@ -589,7 +586,7 @@ mvnw.cmd clean verify
 --
 [role='command']
 ```
-./mvnw clean verify
+./mvnw -pl inventory clean verify
 ```
 --
 
@@ -597,7 +594,7 @@ mvnw.cmd clean verify
 --
 [role='command']
 ```
-./mvnw clean verify
+./mvnw -pl inventory clean verify
 ```
 --
 
