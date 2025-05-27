@@ -251,13 +251,6 @@ include::{common-includes}/os-tabs.adoc[]
 ```
 --
 
-Navigate to the `start` directory.
-
-ifdef::cloud-hosted[]
-```bash
-cd /home/project/guide-reactive-service-testing/start
-```
-
 In this IBM Cloud environment, you must first create the ***logs*** directory by running the following commands:
 ```bash
 mkdir -p /home/project/guide-reactive-service-testing/start/system/target/liberty/wlp/usr/servers/defaultServer/logs
