@@ -16,7 +16,7 @@ docker run -d ^
     --network=%NETWORK% ^
     --name=kafka ^
     --rm ^
-    bitnami/kafka:latest
+    bitnamilegacy/kafka:latest
 
 start /b docker run -d ^
   -p 9083:9083 ^
