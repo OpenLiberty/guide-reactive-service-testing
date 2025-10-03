@@ -27,7 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.testcontainers.kafka.ConfluentKafkaContainer;
+import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.ImageFromDockerfile;
@@ -64,8 +64,8 @@ public class SystemServiceIT {
     // end::buildSystemImage[]
 
     // tag::kafkaContainer[]
-    private static ConfluentKafkaContainer kafkaContainer =
-        new ConfluentKafkaContainer("confluentinc/cp-kafka:latest")
+    private static KafkaContainer kafkaContainer =
+        new KafkaContainer("apache/kafka:latest")
             // tag::withListener[]
             .withListener("kafka:19092")
             // end::withListener[]

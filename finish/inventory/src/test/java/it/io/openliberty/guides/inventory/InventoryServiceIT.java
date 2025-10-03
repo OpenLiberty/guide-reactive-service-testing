@@ -40,7 +40,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 // tag::KafkaProducer[]
 import org.apache.kafka.clients.producer.KafkaProducer;
 // end::KafkaProducer[]
-import org.testcontainers.kafka.ConfluentKafkaContainer;
+import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.images.builder.ImageFromDockerfile;
@@ -71,8 +71,8 @@ public class InventoryServiceIT {
         new ImageFromDockerfile("inventory:1.0-SNAPSHOT")
             .withDockerfile(Paths.get("./Dockerfile"));
 
-    private static ConfluentKafkaContainer kafkaContainer =
-        new ConfluentKafkaContainer("confluentinc/cp-kafka:latest")
+    private static KafkaContainer kafkaContainer =
+        new KafkaContainer("apache/kafka:latest")
             .withListener("kafka:19092")
             .withNetwork(network);
 
