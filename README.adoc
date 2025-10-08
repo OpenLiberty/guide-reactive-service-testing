@@ -355,7 +355,7 @@ include::finish/system/Dockerfile[]
 
 Construct the [hotspot=buildSystemImage file=0]`systemImage` by using the `ImageFromDockerfile` class, which allows Testcontainers to build the Docker image from a Dockerfile during the test run time. For instance, the provided Dockerfile at the specified [hotspot file=3]`./Dockerfile` paths is used to generate the `system:1.0-SNAPSHOT` image.
 
-Use the [hotspot=kafkaContainer file=0]`kafkaContainer` class to instantiate the `kafkaContainer` test container, initiating the `confluentinc/cp-kafka:latest` Docker image. Similarly, use the `GenericContainer` class to create the [hotspot=systemContainer file=0]`systemContainer` test container, starting the `system:1.0-SNAPSHOT` Docker image.
+Use the [hotspot=kafkaContainer file=0]`kafkaContainer` class to instantiate the `kafkaContainer` test container, initiating the `apache/kafka:latest` Docker image. Similarly, use the `GenericContainer` class to create the [hotspot=systemContainer file=0]`systemContainer` test container, starting the `system:1.0-SNAPSHOT` Docker image.
  
 The [hotspot=withListener file=0]`withListener()` is configured to `kafka:19092`, as the containerized `system` microservice functions as an additional producer. Therefore, the Kafka container needs to set up a listener to accommodate this requirement. For more information about using an additional consumer or producer with a Kafka container, see the https://java.testcontainers.org/modules/kafka/[Testcontainers Kafka documentation^]
 
