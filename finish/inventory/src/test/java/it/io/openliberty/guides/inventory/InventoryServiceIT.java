@@ -20,11 +20,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
 
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriBuilder;
-
 // tag::KafkaProducer[]
 import org.apache.kafka.clients.producer.KafkaProducer;
 // end::KafkaProducer[]
@@ -52,6 +47,10 @@ import org.testcontainers.kafka.KafkaContainer;
 
 import io.openliberty.guides.models.SystemLoad;
 import io.openliberty.guides.models.SystemLoad.SystemLoadSerializer;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
 
 @Testcontainers
 // tag::InventoryServiceIT[]
